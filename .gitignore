@@ -1,3 +1,5 @@
 node_modules
-workshop/public/**
+workshop/public
+public
+**/output-template.yaml
 .DS_Store
