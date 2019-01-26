@@ -86,7 +86,7 @@ Resources:
               InputArtifacts:
                 - Name: BuildArtifact
               Configuration:
-                FunctionName: !GetAtt CodePipelineS3ObjectsPublicRead.Outputs.S3BatchAclFunctionName
+                FunctionName: !GetAtt CodePipelineS3ObjectsPublicRead.Outputs.PublicReadAclFunctionName
               RunOrder: 2
 
   CodeBuildProject:
@@ -107,8 +107,8 @@ Resources:
     Type: AWS::Serverless::Application
     Properties:
       Location:
-        ApplicationId: arn:aws:serverlessrepo:us-east-1:068896461592:applications/lambda-codepipeline-s3-objects-public-read
-        SemanticVersion: 0.0.2
+        ApplicationId: arn:aws:serverlessrepo:us-east-1:068896461592:applications/codepipeline-s3-objects-public-read
+        SemanticVersion: 0.0.1
       Parameters:
         S3BucketParameter: !Ref WebsiteBucket
         

@@ -9,7 +9,7 @@ phases:
 
   build:
     commands:
-      - hugo --source workshop --destination ../public --quiet
+      - hugo --source content --destination ../public --quiet
       
 artifacts:
   base-directory: public
