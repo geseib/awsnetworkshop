@@ -1,5 +1,195 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
 
+Parameters:
+  GitHubUsername:
+    Type: String
+    
+  GitHubOAuthToken:
+    Type: String
+    NoEcho: true
+    
+  GitHubRepository:
+    Type: String
+    
+  GitHubBranch:
+    Type: String
+
+Outputs:
+  WebsiteBucketName:
+    Value: !Ref WebsiteBucket
+    
 Resources:
-  S3Bucket:
-    Type: 'AWS::S3::Bucket'
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+
+  ArtifactStore:
+    Type: AWS::S3::Bucket
+    
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore:
+        Type: S3
+        Location: !Ref ArtifactStore
+      RoleArn: !GetAtt CodePipelineServiceRole.Arn
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: 1
+              OutputArtifacts:
+                - Name: SourceArtifact
+              Configuration:
+                  Owner: !Ref GitHubUsername
+                  OAuthToken: !Ref GitHubOAuthToken
+                  Repo: !Ref GitHubRepository
+                  Branch: !Ref GitHubBranch
+        - Name: Build
+          Actions:
+            - Name: Build
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: 1
+              InputArtifacts:
+                - Name: SourceArtifact
+              OutputArtifacts:
+                - Name: BuildArtifact
+              Configuration:
+                ProjectName: !Ref CodeBuildProject
+        - Name: Deploy
+          Actions:
+            - Name: deploy-to-s3
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: S3
+                Version: 1
+              InputArtifacts:
+                - Name: BuildArtifact
+              Configuration:
+                Extract: true
+                BucketName: !Ref WebsiteBucket
+              RunOrder: 1
+            - Name: update-s3-public-acl
+              ActionTypeId:
+                Category: Invoke
+                Owner: AWS
+                Provider: Lambda
+                Version: 1
+              InputArtifacts:
+                - Name: BuildArtifact
+              Configuration:
+                FunctionName: !GetAtt CodePipelineS3ObjectsPublicRead.Outputs.S3BatchAclFunctionName
+              RunOrder: 2
+
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: "aws/codebuild/python:3.7.1"
+        ImagePullCredentialsType: CODEBUILD
+      Source:
+        Type: CODEPIPELINE
+    
+  CodePipelineS3ObjectsPublicRead:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location:
+        ApplicationId: arn:aws:serverlessrepo:us-east-1:068896461592:applications/lambda-codepipeline-s3-objects-public-read
+        SemanticVersion: 0.0.2
+      Parameters:
+        S3BucketParameter: !Ref WebsiteBucket
+        
+  CodePipelineServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement: 
+          - Effect: Allow
+            Principal: 
+              Service: "codepipeline.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Policies: 
+        - PolicyName: CodePipeline
+          PolicyDocument: 
+            Version: "2012-10-17"          
+            Statement: 
+              - Effect: Allow
+                Action: 
+                  - "s3:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: 
+                  - "s3:GetObject"
+                  - "s3:GetObjectVersion"
+                  - "s3:GetBucketVersioning"
+                Resource: "*"
+              - Effect: Allow
+                Action: 
+                  - "s3:PutObject"
+                Resource: 
+                  - !GetAtt ArtifactStore.Arn
+              - Effect: Allow
+                Action: 
+                  - "cloudformation:GetTemplate"
+                  - "cloudformation:DescribeStackResource"
+                  - "cloudformation:DescribeStackResources"
+                  - "cloudformation:DescribeStackEvents"
+                  - "cloudformation:DescribeStacks"
+                  - "cloudformation:UpdateStack"
+                  - "sns:ListSubscriptionsByTopic"
+                Resource: "*"
+              - Effect: Allow
+                Action: 
+                  - "lambda:invokefunction"
+                  - "lambda:listfunctions"
+                Resource: "*"
+              - Effect: Allow
+                Action: 
+                  - "codebuild:BatchGetBuilds"
+                  - "codebuild:StartBuild"
+                Resource: "*"
+                
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement: 
+          - Effect: Allow
+            Principal: 
+              Service: "codebuild.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Policies: 
+        - PolicyName: CodeBuild
+          PolicyDocument:
+            Version: "2012-10-17"          
+            Statement: 
+              - Effect: Allow
+                Action: 
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "*"
+              - Effect: Allow
+                Action: 
+                  - "s3:GetObject"
+                  - "s3:GetObjectVersion"
+                Resource: "*"
+              - Effect: Allow
+                Action: 
+                  - "s3:PutObject"
+                Resource: "*"
