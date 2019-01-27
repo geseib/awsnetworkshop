@@ -17,10 +17,10 @@ This project allows you to scaffold a workshop similar to those available at [](
 
 ## Instructions
 
-
+[Installing the Sample Workshop in your AWS Account](#installing-the-sample-workshop-in-your-aws-account)
 
 ---
 
 ## Install the Sample Workshop in your AWS Account
 
-[![US East (N. Virginia)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/us-east-1.svg)](https://us-east-1.console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=aws-workshop-sample&templateURL=https://s3.amazonaws.com/aws-workshop-sample-us-east-1/pipeline-template.yaml)
+[![US East (N. Virginia)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/us-east-1.svg)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=aws-workshop-sample&templateURL=https://s3.amazonaws.com/aws-workshop-sample-us-east-1/pipeline-template.yaml)

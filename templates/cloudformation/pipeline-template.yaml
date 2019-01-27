@@ -16,12 +16,15 @@ Parameters:
     Type: String
 
 Outputs:
-  WebsiteBucketName:
-    Value: !Ref WebsiteBucket
+  WebsiteURL:
+    Value: !GetAtt WebsiteBucket.WebsiteURL
     
 Resources:
   WebsiteBucket:
     Type: AWS::S3::Bucket
+    Properties:
+      WebsiteConfiguration:
+        IndexDocument: index.html
 
   ArtifactStore:
     Type: AWS::S3::Bucket
