@@ -37,7 +37,7 @@ This project allows you to scaffold a workshop similar to those available at [cd
 
 3. Once the CloudFormation **Quick create stack** page loads in your web browser, optionally update the **Stack name**.
 
-4. Provide values for the following **Parameters**:
+4. In the **Parameters** section, provide values for:
 
     | Parameter | Description |
     | --- | --- |
@@ -46,12 +46,16 @@ This project allows you to scaffold a workshop similar to those available at [cd
     | GitHubRepository | The name of forked GitHub Repository (defaults to **aws-workshop-sample**) |
     | GitHubUsername | The GitHub username of the forked GitHub Repository |
 
-5. Check the boxes for the following **Capabilities and transforms**:
+5. In the **Capabilities and transforms** section, check the following boxes:
 
-    * **I acknowledge that AWS CloudFormation might create IAM resources.**
-    * **I acknowledge that AWS CloudFormation might create IAM resources with custom names.**
-    * **I acknowledge that AWS CloudFormation might require the following capability: CAPABILITY_AUTO_EXPAND**
+    [ ] I acknowledge that AWS CloudFormation might create IAM resources.\
+    [ ] I acknowledge that AWS CloudFormation might create IAM resources with custom names.\
+    [ ] I acknowledge that AWS CloudFormation might require the following capability: CAPABILITY_AUTO_EXPAND
     
+    **If you don’t see a checkbox for CAPABILITY_AUTO_EXPAND, look for a message at the top of the page (image below) that lets you use the new UI".**
+
+    ![CloudFormation New UI Dialog](images/cloudformation-new-ui-dialog.png)
+
 6. Click the **Create stack** button.
 
 7. Once the CloudFormation Stack has been created, click on the **Options** tab and note the value for **WebsiteURL**.
