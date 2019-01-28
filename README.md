@@ -7,9 +7,8 @@ This project allows you to scaffold a workshop similar to those available at [cd
 ├── buildspec.yml                     <-- Build Spec used to build this project in CodeBuild
 ├── LICENSE.txt                       <-- License file
 ├── README.md                         <-- This instructions file
-├── templates                         <-- Templates for the workshop
-│   └── cloudformation                <-- Cloudformation templates for the workshop
-│       └── pipeline-template.yaml    <-- Cloudformation templates for CodePipeline
+├── website                           <-- Website configuration and deployment
+│   └── pipeline-template.yaml        <-- Cloudformation templates for CodePipeline
 ├── code                              <-- Source code for the workshop
 ├── content                           <-- Website content for the workshop
 └── deck                              <-- Presentation deck
@@ -17,7 +16,9 @@ This project allows you to scaffold a workshop similar to those available at [cd
 
 ## Requirements
 
-* [Fork this repository](https://help.github.com/articles/fork-a-repo/) and create a [GitHub personal OAuth access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
+1. [Fork this repository](https://help.github.com/articles/fork-a-repo/).
+
+2. Create a [GitHub personal OAuth access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/).
 
 ## Instructions
 
@@ -25,7 +26,7 @@ This project allows you to scaffold a workshop similar to those available at [cd
 
 ## Install the Sample Workshop in your AWS Account
 
-1. Complete the [Requirements](#requirements)
+1. Complete the [Requirements](#requirements).
 
 2. Click on the CloudFormation Launch link below that corresponds to the AWS Region in which you want to deploy the workshop.
 
