@@ -6,7 +6,7 @@ weight: 50
 
 # VPC layout
 
-![Speficy Details Screenshot](images/hybrid-vpcs-diagram.png)
+![Speficy Details Screenshot](./images/hybrid-vpcs-diagram.png)
 
 There are lots of choices for VPC and Account Architectures, and this is mostly out-of-scope for this workshop. Take a look at what Androski Spicer presented at re:invent 2018 in his [From One to Many: Evolving VPC Design](https://www.youtube.com/watch?v=8K7GZFff_V0 "youtube video") session.
 In our case, we are going to provide three types of VPCs:
