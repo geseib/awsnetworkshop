@@ -6,7 +6,7 @@ weight: 60
 
 # IP Addressing
 
-![Speficy Details Screenshot](./images/hybrid-subnets-diagram.png)
+![Speficy Details Screenshot](../images/hybrid-subnets-diagram.png)
 
 Carving up and assigning private IP address(RFC 1918 addresses) space is big subject and can be daunting of you have a large enterprise today, especially with mergers. Even when you have a centralized IP address management system (IPAM), you will find undocumented address space being used and sometimes finding useable space is difficult. However we want to find large non-fragmented spaces so we can create a well-summarized network. Don't laugh, we all like a challenge, right?
 In our case we found that the 10.0.0.0/11 space was available (I know, fiction, right?). So, we are going to carve up /13's for our production and non-production and we will grab a /16's for our shared service and a /16 for our simulated datacenter.
