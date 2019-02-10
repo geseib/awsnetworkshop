@@ -1,5 +1,5 @@
 ---
-title: "Introduction"
+title: "Deploy VPCs"
 chapter: true
 weight: 40
 ---
