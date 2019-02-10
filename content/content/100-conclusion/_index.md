@@ -1,6 +1,6 @@
 +++
 title = "Congrats!"
-weight = 70
+weight = 100
 chapter = true
 +++
 

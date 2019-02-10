@@ -1,6 +1,6 @@
 +++
 title = "Clean up"
-weight = 60
+weight = 90
 chapter = true
 +++
 
