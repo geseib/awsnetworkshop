@@ -1,7 +1,7 @@
-baseURL = "https://foo.awsworkshops.io"
+baseURL = "https://networking.aws.seibtribe.com"
 languageCode = "en-us"
 defaultContentLanguage = "en"
-title = "AWS foo Workshop"
+title = "AWS Networking Workshop"
 theme = "learn"
 uglyurls = true
 sectionPagesMenu = "main"
@@ -11,7 +11,7 @@ pygmentsStyle = "monokai"
 [params]
 themeVariant = "mine"
 showVisitedLinks = false
-description = "AWS foo Workshop"
+description = "AWS Networking Workshop"
 disableSearch = true
 disableAssetsBusting = true
 disableLanguageSwitchingButton = true
