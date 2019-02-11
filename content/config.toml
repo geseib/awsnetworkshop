@@ -20,3 +20,7 @@ disableShortcutsTitle = true
 [outputs]
 home = [ "HTML", "AMP", "RSS", "JSON"]
 page = [ "HTML", "AMP"]
+
+[blackfriday]
+plainIDAnchors = true
+hrefTargetBlank = true
