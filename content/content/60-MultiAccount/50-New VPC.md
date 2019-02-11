@@ -12,17 +12,13 @@ Run CloudFormation template 4.tgw-vpcs.yaml to deploy the VPC in the Same Region
 
 1. In the AWS Management Console change to the region the VPCs and Transit Gateway were created **IN THE OTHER ACCOUNT**. This is in the upper right-hand drop-down menu. _note: Today, AWS Transit Gateway can only attach to VPCs in the same region as the Transit Gateway. There are architectures that allow for a multi-region design, for example using VPN and a Transit VPC. This is out of scope for this lab._
 
-1. In the AWS Management Console choose **Services** then select **CloudFormation**.
+1. Click on the CloudFormation Launch link below that corresponds to the AWS Region in which your partner deployed their Transit Gateway.
 
-1. In the main panel select **Create Stack** in the upper right-hand corner.<p>
-
-   ![Create Stack button](../images/createStack.png)
-
-1. Make sure **Template is ready** is selected from Prepare template options.
-
-1. At the **Create stack** screen, for **Template source** select **Upload a template file** and click **Choose file** from **Upload a Template file**. from your local files select **1.tgw-vpcs.yaml** and click **Open**.
-
-1. Back at the **Create stack** screen, click **Next** in the lower right.
+   [![US East (N. Virginia)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/us-east-1.svg)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=tgw1-dns&templateURL=https://s3.amazonaws.com/net-workshop-us-east-1/4.tgw-vpc-cross.yaml&param_AvailabilityZoneA=us-east-1a&param_AvailabilityZoneB=us-east-1b)
+   [![US East (Ohio)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/us-east-2.svg)](https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?stackName=tgw1-dns&templateURL=https://s3.amazonaws.com/net-workshop-us-east-2/4.tgw-vpc-cross.yaml&param_AvailabilityZoneA=us-east-2a&param_AvailabilityZoneB=us-east-2b)
+   [![US West (Oregon)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/us-west-2.svg)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/review?stackName=tgw1-dns&templateURL=https://s3.amazonaws.com/net-workshop-us-east-1/4.tgw-vpc-cross.yaml&param_AvailabilityZoneA=us-west-2a&param_AvailabilityZoneB=us-west-2b)
+   [![EU West (Ireland)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/eu-west-1.svg)](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/create/review?stackName=tgw1-dns&templateURL=https://s3.amazonaws.com/net-workshop-us-east-1/4.tgw-vpc-cross.yaml&param_AvailabilityZoneA=eu-west-1a&param_AvailabilityZoneB=eu-west-1b)
+   [![EU West (Singapore)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/ap-southeast-1.svg)](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-1#/stacks/create/review?stackName=tgw1-dns&templateURL=https://s3.amazonaws.com/net-workshop-us-east-2/4.tgw-vpc-cross.yaml&param_AvailabilityZoneA=ap-southeast-1a&param_AvailabilityZoneB=ap-southeast-1b)
 
 1. For the **Specify stack details** give the stack a name and Select two Availability Zones (AZs) to deploy to. _We will be deploying all of the VPCs in the same AZs, but that is not required by AWS Transit Gateway_. Click **Next**.
    ![Stack Parameters](../images/createStack-CROSSparameters.png)
