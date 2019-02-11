@@ -9,26 +9,14 @@ Deploy Transit Gateway and Datacenter Router
 We now are ready to start our connectivity and routing policy.
 Run CloudFormation template 2.tgw-csr.yaml to deploy the Transit Gateway, route Tables, and the Datacenter Router (Cisco CSR).
 
-1. In the AWS Management Console change to the region you are working in. This is in the upper right hand drop down menu.
+1. Click on the CloudFormation Launch link below that corresponds to the AWS Region in which you deploy the first stack.
 
-1. In the AWS Management Console choose **Services** then select **EC2**.
+   [![US East (N. Virginia)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/us-east-1.svg)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=tgw1-csr&templateURL=https://s3.amazonaws.com/net-workshop-us-east-1/2.tgw-csr.yaml&param_ParentStack=tgw1)
 
-1. From the left-hand menu select **Key Pairs**. _It's half way down, in the **Network & Security** section._
-
-1. Click **Create Key Pair** in the main panel and give your new key a name. Click **Create**.
-
-1. Save the keypair to your local machine for easy access later. _note: we will need this key to access the Cisco CSR router that is in our Simulated Datacenter VPC_.
-
-1. In the AWS Management Console choose **Services** then select **CloudFormation**.
-
-1. In the main panel select **Create Stack** in the upper right hand corner.<p>
-   ![Create Stack button](../images/createStack.png)
-
-1. Make sure **Template is ready** is selected from Prepare template options.
-
-1. At the **Create stack** screen, for **Template source** select **Upload a template file** and click **Choose file** from **Upload a Template file**. from your local files select **2.tgw-csr.yaml** and click **Open**.
-
-1. Back at the **Create stack** screen, clcik **Next** in the lower right.
+   [![US East (Ohio)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/us-east-2.svg)](https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?stackName=tgw1-csr&templateURL=https://s3.amazonaws.com/net-workshop-us-east-2/2.tgw-csr.yaml&param_ParentStack=tgw1)
+   [![US West (Oregon)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/us-west-2.svg)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/review?stackName=tgw1-cst&templateURL=https://s3.amazonaws.com/net-workshop-us-east-1/2.tgw-csr.yaml&param_ParentStack=tgw1)
+   [![EU West (Ireland)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/eu-west-1.svg)](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/create/review?stackName=tgw1-csr&templateURL=https://s3.amazonaws.com/net-workshop-us-east-1/2.tgw-csr.yaml&param_ParentStack=tgw1)
+   [![EU West (Singapore)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/ap-southeast-1.svg)](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-1#/stacks/create/review?stackName=tgw1-csr&templateURL=https://s3.amazonaws.com/net-workshop-us-east-2/2.tgw-csr.yaml&param_ParentStack=tgw1)
 
 1. For the **Specify stack details** give the stack a name (compounded names work well. i.e. if the VPC stack created in the setup module was named **TGW1** name this stack **TGW1-CSR**), pick the keypair you created earlier, and enter the name of your first stack (must be entered exactly to work). Click **Next**.
    ![Stack Parameters](../images/createStack-CSRparameters.png)
