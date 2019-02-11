@@ -1,0 +1,380 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "1 VPC in 2AZs using 10.0.0.0/8:"
+
+Metadata:
+  "AWS::CloudFormation::Interface":
+    ParameterGroups:
+      - Label:
+          default: "VPC Parameters"
+        Parameters:
+          - AvailabilityZoneA
+          - AvailabilityZoneB
+
+Parameters:
+  AvailabilityZoneA:
+    Description: Availability Zone 1
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: eu-central-1a
+  AvailabilityZoneB:
+    Description: Availability Zone 2
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: eu-central-1b
+
+Mappings:
+  RegionMap:
+    "ap-south-1":
+      AMI: "ami-00796998f258969fd"
+      SSM: "com.amazonaws.ap-south-1.ssm"
+      SSMM: "com.amazonaws.ap-south-1.ssmmessages"
+    "eu-west-3":
+      AMI: "ami-04992646d54c69ef4"
+      SSM: "com.amazonaws.eu-west-3.ssm"
+      SSMM: "com.amazonaws.eu-west-3.ssmmessages"
+    "eu-west-2":
+      AMI: "ami-00ee3b59e07408c27"
+      SSM: "com.amazonaws.eu-west-2.ssm"
+      SSMM: "com.amazonaws.eu-west-2.ssmmessages"
+    "eu-west-1":
+      AMI: "ami-09693313102a30b2c"
+      SSM: "com.amazonaws.eu-west-1.ssm"
+      SSMM: "com.amazonaws.eu-west-1.ssmmessages"
+    "ap-northeast-3":
+      AMI: "ami-00f7ef6bf92e8f916"
+    "ap-northeast-2":
+      AMI: "ami-012566705322e9a8e"
+    "ap-northeast-1":
+      AMI: "ami-00f9d04b3b3092052"
+    "sa-east-1":
+      AMI: "ami-0112d42866980b373"
+    "ca-central-1":
+      AMI: "ami-05cac140c6a1fb960"
+      SSM: "com.amazonaws.ca-central-1.ssm"
+      SSMM: "com.amazonaws.ca-central-1.ssmmessages"
+    "ap-southeast-1":
+      AMI: "ami-01da99628f381e50a"
+      SSM: "com.amazonaws.ap-southeast-1.ssm"
+      SSMM: "com.amazonaws.ap-southeast-1.ssmmessages"
+    "ap-southeast-2":
+      AMI: "ami-00e17d1165b9dd3ec"
+      SSM: "com.amazonaws.ap-southeast-2.ssm"
+      SSMM: "com.amazonaws.ap-southeast-2.ssmmessages"
+    "eu-central-1":
+      AMI: "ami-02ea8f348fa28c108"
+      SSM: "com.amazonaws.eu-central-1.ssm"
+      SSMM: "com.amazonaws.eu-central-1.ssmmessages"
+    "us-east-1":
+      AMI: "ami-009d6802948d06e52"
+      SSM: "com.amazonaws.us-east-1.ssm"
+      SSMM: "com.amazonaws.us-east-1.ssmmessages"
+    "us-east-2":
+      AMI: "ami-02e680c4540db351e"
+      SSM: "com.amazonaws.us-east-2.ssm"
+      SSMM: "com.amazonaws.us-east-2.ssmmessages"
+    "us-west-1":
+      AMI: "ami-011b6930a81cd6aaf"
+      SSM: "com.amazonaws.us-west-1.ssm"
+      SSMM: "com.amazonaws.us-west-1.ssmmessages"
+    "us-west-2":
+      AMI: "ami-01bbe152bf19d0289"
+      SSM: "com.amazonaws.us-west-2.ssm"
+      SSMM: "com.amazonaws.us-west-2.ssmmessages"
+
+Resources:
+  # Non-Prod 1 Resources
+  VPCNP3:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: "10.18.0.0/16"
+      EnableDnsSupport: "true"
+      EnableDnsHostnames: "true"
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [NP3, Ref: "AWS::StackName"]]
+        - Key: project
+          Value: TGW-Demo
+
+  PublicSubnetANP3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      CidrBlock: "10.18.0.0/22"
+      AvailabilityZone:
+        Ref: AvailabilityZoneA
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [NP3, Ref: "AWS::StackName", Pub-A Subnet]]
+
+  PublicSubnetBNP3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      CidrBlock: "10.18.4.0/22"
+      AvailabilityZone:
+        Ref: AvailabilityZoneB
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [NP3, Ref: "AWS::StackName", Pub-B Subnet]]
+
+  PublicSubnetRouteTableNP3:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [NP3, Ref: "AWS::StackName", Public Route Table]]
+
+  PublicASubnetRouteTableAssociationNP3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PublicSubnetRouteTableNP3
+      SubnetId:
+        Ref: PublicSubnetANP3
+
+  PublicBSubnetRouteTableAssociationNP3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PublicSubnetRouteTableNP3
+      SubnetId:
+        Ref: PublicSubnetBNP3
+
+  PrivateSubnetANP3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      CidrBlock: "10.18.8.0/21"
+      AvailabilityZone:
+        Ref: AvailabilityZoneA
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [NP3, Ref: "AWS::StackName", Priv-A Subnet]]
+
+  PrivateSubnetBNP3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      CidrBlock: "10.18.16.0/21"
+      AvailabilityZone:
+        Ref: AvailabilityZoneB
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [NP3, Ref: "AWS::StackName", Priv-B Subnet]]
+
+  PrivateSubnetRouteTableNP3:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [NP3, Ref: "AWS::StackName", Private Route Table]]
+
+  PrivateASubnetRouteTableAssociationNP3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PrivateSubnetRouteTableNP3
+      SubnetId:
+        Ref: PrivateSubnetANP3
+
+  PrivateBSubnetRouteTableAssociationNP3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PrivateSubnetRouteTableNP3
+      SubnetId:
+        Ref: PrivateSubnetBNP3
+
+  ServerRoleNP3:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Join ["-", [NP3, Ref: "AWS::StackName", "SSMRole"]]
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+  InstanceProfileNP3:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref ServerRoleNP3
+
+  NP3Ec2SecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open-up ports for ICMP and SSH from 10.x.x.x
+      GroupName: !Join ["-", [NP3, Ref: "AWS::StackName", "EC2-sec-group"]]
+      VpcId:
+        Ref: VPCNP3
+      SecurityGroupIngress:
+        - IpProtocol: icmp
+          CidrIp: 10.0.0.0/8
+          FromPort: "-1"
+          ToPort: "-1"
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: 10.4.0.0/16
+
+  ServerEc2NP3:
+    Type: AWS::EC2::Instance
+    DependsOn: PrivateSubnetBNP3
+    Properties:
+      SubnetId:
+        Ref: PrivateSubnetBNP3
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - Ref: NP3Ec2SecGroup
+      IamInstanceProfile:
+        Ref: InstanceProfileNP3
+      Tags:
+        - Key: Name
+          Value: !Sub "NP3-${AWS::StackName}-Server"
+
+  AttachSubnetANP3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      CidrBlock: "10.18.24.0/24"
+      AvailabilityZone:
+        Ref: AvailabilityZoneA
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [NP3, Ref: "AWS::StackName", Attach-A Subnet]]
+
+  AttachSubnetBNP3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      CidrBlock: "10.18.25.0/24"
+      AvailabilityZone:
+        Ref: AvailabilityZoneB
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [NP3, Ref: "AWS::StackName", Attach-B Subnet]]
+
+  AttachSubnetRouteTableNP3:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [NP3, Ref: "AWS::StackName", Attach Route Table]]
+
+  AttachASubnetRouteTableAssociationNP3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: AttachSubnetRouteTableNP3
+      SubnetId:
+        Ref: AttachSubnetANP3
+
+  AttachBSubnetRouteTableAssociationNP3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: AttachSubnetRouteTableNP3
+      SubnetId:
+        Ref: AttachSubnetBNP3
+
+  EndpointSecGroupNP3:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open-up ports for local VPC
+      GroupName: !Join ["-", [NP3, Ref: "AWS::StackName", "vpc-sec-group"]]
+      VpcId:
+        Ref: VPCNP3
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "1"
+          ToPort: "65535"
+          CidrIp: 10.18.0.0/16
+        - IpProtocol: udp
+          FromPort: "1"
+          ToPort: "65535"
+          CidrIp: 10.18.0.0/16
+
+  SSMEndpointNP3:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSM]
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: True
+      SubnetIds:
+        - Ref: AttachSubnetANP3
+        - Ref: AttachSubnetBNP3
+      SecurityGroupIds:
+        - Ref: EndpointSecGroupNP3
+
+  SSMMEndpointNP3:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId:
+        Ref: VPCNP3
+      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSMM]
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: True
+      SubnetIds:
+        - Ref: AttachSubnetANP3
+        - Ref: AttachSubnetBNP3
+      SecurityGroupIds:
+        - Ref: EndpointSecGroupNP3
+
+Outputs:
+  # Non-Prod 1 Outputs
+  VPCNP3:
+    Description: "The Created VPC"
+    Value: !Ref VPCNP3
+    Export:
+      Name: !Sub "NP3-${AWS::StackName}-VPC"
+
+  AttachSubnetANP3:
+    Description: "NP3 Attach Subnet A"
+    Value: !Ref AttachSubnetANP3
+    Export:
+      Name: !Sub "NP3-${AWS::StackName}-AttachSubnetA"
+  AttachSubnetBNP3:
+    Description: "NP3 Attach Subnet B"
+    Value: !Ref AttachSubnetBNP3
+    Export:
+      Name: !Sub "NP3-${AWS::StackName}-AttachSubnetB"
+  PrivateSubnetRouteTableNP3:
+    Description: "NP3 Private Route Table"
+    Value: !Ref PrivateSubnetRouteTableNP3
+    Export:
+      Name: !Sub "NP3-${AWS::StackName}-PrivateRouteTable"
+
+  ServerNP3:
+    Description: "NP3 EC2 IP address"
+    Value: !GetAtt ServerEc2NP3.PrivateIp
+    Export:
+      Name: !Sub "NP3-${AWS::StackName}-ServerIP"

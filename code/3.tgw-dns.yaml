@@ -1,0 +1,425 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Bind EC2 Instances Deployed into a VPC Created by 1.vpc-dns.yaml"
+Parameters:
+  VPCName:
+    Description: "Stack name of parent VPC stack."
+    Type: String
+  Zone:
+    Description: "DNS Zone Name for Organziation."
+    Type: String
+    Default: "example.com"
+
+Mappings:
+  RegionMap:
+    "ap-south-1":
+      AMI: "ami-00796998f258969fd"
+    "eu-west-3":
+      AMI: "ami-04992646d54c69ef4"
+    "eu-west-2":
+      AMI: "ami-00ee3b59e07408c27"
+    "eu-west-1":
+      AMI: "ami-09693313102a30b2c"
+    "ap-northeast-3":
+      AMI: "ami-00f7ef6bf92e8f916"
+    "ap-northeast-2":
+      AMI: "ami-012566705322e9a8e"
+    "ap-northeast-1":
+      AMI: "ami-00f9d04b3b3092052"
+    "sa-east-1":
+      AMI: "ami-0112d42866980b373"
+    "ca-central-1":
+      AMI: "ami-05cac140c6a1fb960"
+    "ap-southeast-1":
+      AMI: "ami-01da99628f381e50a"
+    "ap-southeast-2":
+      AMI: "ami-00e17d1165b9dd3ec"
+    "eu-central-1":
+      AMI: "ami-02ea8f348fa28c108"
+    "us-east-1":
+      AMI: "ami-009d6802948d06e52"
+    "us-east-2":
+      AMI: "ami-02e680c4540db351e"
+    "us-west-1":
+      AMI: "ami-011b6930a81cd6aaf"
+    "us-west-2":
+      AMI: "ami-01bbe152bf19d0289"
+
+Resources:
+  # Datacenter Bind Server Setup
+  DNSServerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Join ["-", [Ref: "AWS::StackName", "SSMRole"]]
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+  DNSInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref DNSServerRole
+  BindSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open-up ports for bind
+      GroupName: !Join ["-", [Ref: "AWS::StackName", "dns-sec-group"]]
+      VpcId:
+        Fn::ImportValue: !Sub "DC1-${VPCName}-VPC"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "53"
+          ToPort: "53"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: udp
+          FromPort: "53"
+          ToPort: "53"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: -1
+          CidrIp: 10.0.0.0/16
+
+  BindENI:
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      SubnetId:
+        Fn::ImportValue: !Sub "DC1-${VPCName}-PrivateSubnetA"
+      Description: Interface for Bind Server
+      GroupSet:
+        - Ref: BindSecGroup
+      SourceDestCheck: true
+      Tags:
+        - Key: Name
+          Value: Bind
+
+  BindEc2:
+    Type: AWS::EC2::Instance
+    Properties:
+      NetworkInterfaces:
+        - NetworkInterfaceId: !Ref BindENI
+          DeviceIndex: 0
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      InstanceType: t2.large
+      IamInstanceProfile:
+        Ref: DNSInstanceProfile
+      UserData:
+        Fn::Base64:
+          Fn::Sub:
+            - |
+              #!/bin/bash
+              yum install -y bind bind-libs bind-utils
+              chkconfig named on
+              cp  /etc/named.conf /etc/named.conf.Bk
+              echo >  /etc/named.conf
+              cat << 'EOF' >> /etc/named.conf
+              options {
+               directory "/var/named";
+               version "not currently available";
+              # Listen to the loopback device only
+               listen-on { any; };
+               listen-on-v6 { ::1; };
+              # Do not query from the specified source port range
+              # (Adjust depending your firewall configuration)
+               avoid-v4-udp-ports { range 1 32767; };
+               avoid-v6-udp-ports { range 1 32767; };
+              # Forward all DNS queries to the Google Public DNS.
+               forwarders { 8.8.8.8;4.2.2.5; };
+              # forward only;
+              # Expire negative answer ASAP.
+              # i.e. Do not cache DNS query failure.
+               max-ncache-ttl 1200; # 3 seconds
+              # Disable non-relevant operations
+               allow-transfer { none; };
+               allow-update-forwarding { none; };
+               allow-notify { none; };
+               allow-recursion { any; };
+              };
+              zone "${thiszone}" in {
+              type master;
+              file "/etc/named/db.${thiszone}";
+              allow-update { none; };
+              };
+              zone "aws.${thiszone}" in {
+              type forward;
+              forwarders { 10.0.8.11; 10.0.16.11; };
+              };
+              EOF
+              echo >  /etc/named/db.${thiszone}
+              cat << 'EOF' >> /etc/named/db.${thiszone}
+              $TTL 86400
+              @       IN      SOA     ${thiszone}. admin.${thiszone}. (
+                          3         ; Serial
+                          604800     ; Refresh
+                          86400     ; Retry
+                          2419200     ; Expire
+                          604800 )   ; Negative Cache TTL
+                      
+                      ; name servers - NS records
+              @        IN      NS      ns1.${thiszone}.com.
+
+              ; name servers - A records
+              ns1          IN      A       ${thisserver}
+              test        IN      A      ${thisserver}
+
+              $ORIGIN aws.${thiszone}.
+              @       IN      NS      ep1.aws.${thiszone}.
+
+                      IN      NS      ep2.aws.${thiszone}.
+
+              ep1 IN      A       10.0.8.11
+              ep2 IN      A       10.0.16.11
+              EOF
+
+              systemctl start named
+            - thisserver: !GetAtt BindENI.PrimaryPrivateIpAddress
+              thiszone: !Ref Zone
+      Tags:
+        - Key: Name
+          Value:
+            Ref: "AWS::StackName"
+
+  # Datacenter AWS Resolver to connect to Bind Server locally
+
+  DC1ResolverSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open-up ports for bind
+      GroupName: !Join ["-", [Ref: "AWS::StackName", "dc-dns-sec-group"]]
+      VpcId:
+        "Fn::ImportValue": !Sub "DC1-${VPCName}-VPC"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "53"
+          ToPort: "53"
+          CidrIp: 10.4.0.0/0
+        - IpProtocol: udp
+          FromPort: "53"
+          ToPort: "53"
+          CidrIp: 10.4.0.0/0
+
+  DC1DNSOutboundEndpoint:
+    Type: "AWS::Route53Resolver::ResolverEndpoint"
+    Properties:
+      Direction: "outbound"
+      IpAddresses:
+        - SubnetId:
+            "Fn::ImportValue": !Sub "DC1-${VPCName}-PrivateSubnetA"
+        - SubnetId:
+            "Fn::ImportValue": !Sub "DC1-${VPCName}-PrivateSubnetB"
+      Name: !Join ["-", [Ref: "AWS::StackName", "dc1outendpoint"]]
+      SecurityGroupIds:
+        - !Ref DC1ResolverSecGroup
+
+  DC1DNSRule:
+    Type: "AWS::Route53Resolver::ResolverRule"
+    Properties:
+      DomainName: !Ref "Zone"
+      Name: "dccorpdomain"
+      ResolverEndpointId: !GetAtt DC1DNSOutboundEndpoint.ResolverEndpointId
+      RuleType: "FORWARD"
+      TargetIps:
+        - Ip: !GetAtt BindENI.PrimaryPrivateIpAddress
+          Port: "53"
+
+  DNSRule3AssociateDC1:
+    Type: "AWS::Route53Resolver::ResolverRuleAssociation"
+    Properties:
+      Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociateDC1"]]
+      ResolverRuleId: !GetAtt DC1DNSRule.ResolverRuleId
+      VPCId:
+        "Fn::ImportValue": !Sub "DC1-${VPCName}-VPC"
+
+  # DCS-1 AWS Resolver setup
+  ResolverSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open-up ports for bind
+      GroupName: !Join ["-", [Ref: "AWS::StackName", "dns-sec-group"]]
+      VpcId:
+        "Fn::ImportValue": !Sub "DCS1-${VPCName}-VPC"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "53"
+          ToPort: "53"
+          CidrIp: 10.4.0.0/0
+        - IpProtocol: udp
+          FromPort: "53"
+          ToPort: "53"
+          CidrIp: 10.4.0.0/0
+
+  DNSOutboundEndpoint:
+    Type: "AWS::Route53Resolver::ResolverEndpoint"
+    Properties:
+      Direction: "outbound"
+      IpAddresses:
+        - Ip: "10.0.8.10"
+          SubnetId:
+            "Fn::ImportValue": !Sub "DCS1-${VPCName}-PrivateSubnetA"
+        - Ip: "10.0.16.10"
+          SubnetId:
+            "Fn::ImportValue": !Sub "DCS1-${VPCName}-PrivateSubnetB"
+      Name: !Join ["-", [Ref: "AWS::StackName", "outendpoint"]]
+      SecurityGroupIds:
+        - !Ref ResolverSecGroup
+
+  DNSInboundEndpoint:
+    Type: "AWS::Route53Resolver::ResolverEndpoint"
+    Properties:
+      Direction: "inbound"
+      IpAddresses:
+        - Ip: "10.0.8.11"
+          SubnetId:
+            "Fn::ImportValue": !Sub "DCS1-${VPCName}-PrivateSubnetA"
+        - Ip: "10.0.16.11"
+          SubnetId:
+            "Fn::ImportValue": !Sub "DCS1-${VPCName}-PrivateSubnetB"
+      Name: !Join ["-", [Ref: "AWS::StackName", "inendpoint"]]
+      SecurityGroupIds:
+        - !Ref ResolverSecGroup
+
+  DNSRule1:
+    Type: "AWS::Route53Resolver::ResolverRule"
+    Properties:
+      DomainName: "."
+      Name: !Join ["-", [Ref: "AWS::StackName", "wildcard"]]
+      ResolverEndpointId: !GetAtt DNSOutboundEndpoint.ResolverEndpointId
+      RuleType: "FORWARD"
+      TargetIps:
+        - Ip: !GetAtt BindENI.PrimaryPrivateIpAddress
+          Port: "53"
+
+  DNSRule2:
+    Type: "AWS::Route53Resolver::ResolverRule"
+    Properties:
+      DomainName: "amazonaws.com"
+      Name: !Join ["-", [Ref: "AWS::StackName", "amazon"]]
+      RuleType: "SYSTEM"
+
+  DNSRule3:
+    Type: "AWS::Route53Resolver::ResolverRule"
+    Properties:
+      DomainName: !Ref "Zone"
+      Name: "corpdomain"
+      ResolverEndpointId: !GetAtt DNSOutboundEndpoint.ResolverEndpointId
+      RuleType: "FORWARD"
+      TargetIps:
+        - Ip: !GetAtt BindENI.PrimaryPrivateIpAddress
+          Port: "53"
+
+  DNSRule1AssociateNP2:
+    Type: "AWS::Route53Resolver::ResolverRuleAssociation"
+    Properties:
+      Name: !Join ["-", [Ref: "AWS::StackName", "wildcardAssociateNP2"]]
+      ResolverRuleId: !GetAtt DNSRule1.ResolverRuleId
+      VPCId:
+        "Fn::ImportValue": !Sub "NP2-${VPCName}-VPC"
+
+  DNSRule2AssociateNP2:
+    Type: "AWS::Route53Resolver::ResolverRuleAssociation"
+    Properties:
+      Name: !Join ["-", [Ref: "AWS::StackName", "amazonAssociateNP2"]]
+      ResolverRuleId: !GetAtt DNSRule2.ResolverRuleId
+      VPCId:
+        "Fn::ImportValue": !Sub "NP2-${VPCName}-VPC"
+
+  DNSRule3AssociateNP2:
+    Type: "AWS::Route53Resolver::ResolverRuleAssociation"
+    Properties:
+      Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociateNP2"]]
+      ResolverRuleId: !GetAtt DNSRule3.ResolverRuleId
+      VPCId:
+        "Fn::ImportValue": !Sub "NP2-${VPCName}-VPC"
+
+  DNSRule3AssociateNP1:
+    Type: "AWS::Route53Resolver::ResolverRuleAssociation"
+    Properties:
+      Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociateNP1"]]
+      ResolverRuleId: !GetAtt DNSRule3.ResolverRuleId
+      VPCId:
+        "Fn::ImportValue": !Sub "NP1-${VPCName}-VPC"
+
+  DNSRule3AssociateDCS:
+    Type: "AWS::Route53Resolver::ResolverRuleAssociation"
+    Properties:
+      Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociate"]]
+      ResolverRuleId: !GetAtt DNSRule3.ResolverRuleId
+      VPCId:
+        "Fn::ImportValue": !Sub "DCS1-${VPCName}-VPC"
+
+  DNSRule3AssociateP1:
+    Type: "AWS::Route53Resolver::ResolverRuleAssociation"
+    Properties:
+      Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociate"]]
+      ResolverRuleId: !GetAtt DNSRule3.ResolverRuleId
+      VPCId:
+        "Fn::ImportValue": !Sub "P1-${VPCName}-VPC"
+
+  # Create A Private Hosted Zone in Route 53
+  DNSZone:
+    Type: "AWS::Route53::HostedZone"
+    Properties:
+      HostedZoneConfig:
+        Comment: "My hosted zone"
+      Name: !Join [".", ["aws", Ref: Zone]]
+      VPCs:
+        - VPCId:
+            Fn::ImportValue: !Sub "DCS1-${VPCName}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+
+  NP1DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref "DNSZone"
+      Comment: DNS name for NP1 Server.
+      Name: !Join ["", [np1.aws., !Ref "Zone", .]]
+      Type: A
+      TTL: "30"
+      ResourceRecords:
+        - "Fn::ImportValue": !Sub "NP1-${VPCName}-ServerIP"
+
+  NP2DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref "DNSZone"
+      Comment: DNS name for NP2 Server.
+      Name: !Join ["", [np2.aws., !Ref "Zone", .]]
+      Type: A
+      TTL: "30"
+      ResourceRecords:
+        - "Fn::ImportValue": !Sub "NP2-${VPCName}-ServerIP"
+
+  P1DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref "DNSZone"
+      Comment: DNS name for P1 Server.
+      Name: !Join ["", [p1.aws., !Ref "Zone", .]]
+      Type: A
+      TTL: "30"
+      ResourceRecords:
+        - "Fn::ImportValue": !Sub "P1-${VPCName}-ServerIP"
+
+Outputs:
+  BindSession:
+    Description: session command
+    Value:
+      Fn::Join:
+        - " "
+        - - "aws ssm start-session --target"
+          - !Ref BindEc2
+    Export:
+      Name: !Sub "${AWS::StackName}-bind-session"
+
+  BindIP:
+    Description: BindServer Ip Address
+    Value: !GetAtt BindENI.PrimaryPrivateIpAddress
+    Export:
+      Name: !Sub "${AWS::StackName}-bind-ip"

@@ -1,0 +1,412 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Add Transit Gateway and CSR to TGW-Demo"
+
+Metadata:
+  "AWS::CloudFormation::Interface":
+    ParameterGroups:
+      - Label:
+          default: "VPC Parameters"
+        Parameters:
+          - AvailabilityZoneA
+          - AvailabilityZoneB
+
+Parameters:
+  ParentStack:
+    Description: "Name of the CFN Stack for VPCs"
+    Type: String
+    Default: "TGW8"
+  KeyPair:
+    Description: "Keypair to access the CSR"
+    Type: "AWS::EC2::KeyPair::KeyName"
+    Default: "csr1000v-tgw"
+
+Mappings:
+  # AMI for Cisco CSR1kv
+  RegionMap:
+    "ap-south-1":
+      AMI: "ami-0bde53dcc89863774"
+    "eu-west-3":
+      AMI: "ami-030690944026827fc"
+    "eu-north-1":
+      AMI: "ami-3872fe46"
+    "eu-west-2":
+      AMI: "ami-0799bfc972a871e99"
+    "eu-west-1":
+      AMI: "ami-06706de706c63bdf0"
+    "ap-northeast-2":
+      AMI: "ami-0287d2dfaea2653e8"
+    "ap-northeast-1":
+      AMI: "ami-064fad029163bc712"
+    "sa-east-1":
+      AMI: "ami-04e46fb7714051cd4"
+    "ca-central-1":
+      AMI: "ami-0653de36648437dca"
+    "ap-southeast-1":
+      AMI: "ami-08475ba1f0c348489"
+    "ap-southeast-2":
+      AMI: "ami-07844289ef48951c1"
+    "eu-central-1":
+      AMI: "ami-02fa3e99abcb32ee8"
+    "us-east-1":
+      AMI: "ami-0d1e6af4c329efd82"
+    "us-east-2":
+      AMI: "ami-0a7ff2b6b77a28edc"
+    "us-west-1":
+      AMI: "ami-03071ea2421d5ad89"
+    "us-west-2":
+      AMI: "ami-0bd4d0d69610e277c"
+
+Resources:
+  # Create Transit Gateway
+  TransitGateway:
+    Type: "AWS::EC2::TransitGateway"
+    Properties:
+      AmazonSideAsn: 65000
+      Description: "TGW Route Integration Test"
+      AutoAcceptSharedAttachments: "enable"
+      DefaultRouteTableAssociation: "disable"
+      DnsSupport: "enable"
+      VpnEcmpSupport: "enable"
+      Tags:
+        - Key: Name
+          Value: !Ref ParentStack
+        - Key: Application
+          Value: !Ref "AWS::StackId"
+
+  # Transit Gateway Route Table Creation
+
+  RouteTableGreen:
+    Type: "AWS::EC2::TransitGatewayRouteTable"
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Green Route Table
+      TransitGatewayId: !Ref TransitGateway
+
+  RouteTableRed:
+    Type: "AWS::EC2::TransitGatewayRouteTable"
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Red Route Table
+      TransitGatewayId: !Ref TransitGateway
+
+  RouteTableBlue:
+    Type: "AWS::EC2::TransitGatewayRouteTable"
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Blue Route Table
+      TransitGatewayId: !Ref TransitGateway
+
+  # Customer Gateway for TGW to DC1 Connectivity
+  CustomerGateway:
+    Type: AWS::EC2::CustomerGateway
+    DependsOn: CSRIP
+    Properties:
+      BgpAsn: 65001
+      IpAddress: !Ref CSRIP
+      Tags:
+        - Key: Name
+          Value: DC1-CGW
+      Type: ipsec.1
+
+  # VPN Router in the Datacenter
+
+  CSRIP:
+    Type: "AWS::EC2::EIP"
+    Properties:
+      Domain: vpc
+
+  ServerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Join ["-", [DC1, Ref: "AWS::StackName", "SSMRole"]]
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref ServerRole
+
+  CSRSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open-up ports for local VPC and SSH
+      GroupName: !Join ["-", [CSR, Ref: "AWS::StackName", "sec-group"]]
+      VpcId:
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-VPC"
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          CidrIp: 10.4.0.0/16
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: 10.4.0.0/16
+
+  CSRENI:
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      SubnetId:
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-PublicSubnetA"
+      Description: Interface for controlling traffic such as SSH
+      GroupSet:
+        - Ref: CSRSecGroup
+      SourceDestCheck: false
+      Tags:
+        - Key: Name
+          Value: CSR
+
+  CSRInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      NetworkInterfaces:
+        - NetworkInterfaceId: !Ref CSRENI
+          DeviceIndex: 0
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      InstanceType: c5.large
+      KeyName: !Ref KeyPair
+      IamInstanceProfile:
+        Ref: InstanceProfile
+      Tags:
+        - Key: Name
+          Value: !Sub "DC1-${AWS::StackName}-CSR"
+
+  AssociateCSREIP:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt CSRIP.AllocationId
+      NetworkInterfaceId: !Ref CSRENI
+
+  PrivateDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: CSRENI
+    Properties:
+      RouteTableId:
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-PrivateRouteTable"
+      DestinationCidrBlock: 10.0.0.0/11
+      NetworkInterfaceId:
+        Ref: CSRENI
+  
+  DC1NATEIP:
+    Type: "AWS::EC2::EIP"
+    Properties:
+      Domain: vpc
+
+  DC1NATGateway:
+    Type: "AWS::EC2::NatGateway"
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - DC1NATEIP
+          - AllocationId
+      SubnetId:
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-PublicSubnetA"
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [DC1, "AWS::StackName", NATGW]]
+
+  PrivateDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: DC1NATGateway
+    Properties:
+      RouteTableId:
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-PrivateRouteTable"
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: DC1NATGateway
+
+  PrivateAWSRoute:
+    Type: AWS::EC2::Route
+    DependsOn: CSRENI
+    Properties:
+      RouteTableId:
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-PrivateRouteTable"
+      DestinationCidrBlock: 10.0.0.0/11
+      NetworkInterfaceId:
+        Ref: CSRENI
+  
+  PublicAWSRoute:
+    Type: AWS::EC2::Route
+    DependsOn: CSRENI
+    Properties:
+      RouteTableId:
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-PublicRouteTable"
+      DestinationCidrBlock: 10.0.0.0/11
+      NetworkInterfaceId:
+        Ref: CSRENI
+
+  # Non-Prod 1 Connect to the Transit Gateway
+  AttachNP1:
+    Type: "AWS::EC2::TransitGatewayAttachment"
+    Properties:
+      SubnetIds:
+        - Fn::ImportValue: !Sub "NP1-${ParentStack}-AttachSubnetA"
+        - Fn::ImportValue: !Sub "NP1-${ParentStack}-AttachSubnetB"
+      Tags:
+        - Key: Name
+          Value: NP1Attach
+      TransitGatewayId: !Ref TransitGateway
+      VpcId:
+        Fn::ImportValue: !Sub "NP1-${ParentStack}-VPC"
+
+  AssociateNP1RouteTable:
+    Type: "AWS::EC2::TransitGatewayRouteTableAssociation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachNP1
+      TransitGatewayRouteTableId: !Ref RouteTableRed
+
+  PropagateNP1Red:
+    Type: "AWS::EC2::TransitGatewayRouteTablePropagation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachNP1
+      TransitGatewayRouteTableId: !Ref RouteTableRed
+
+  PropagateNP1Green:
+    Type: "AWS::EC2::TransitGatewayRouteTablePropagation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachNP1
+      TransitGatewayRouteTableId: !Ref RouteTableGreen
+
+  # Non-Prod 2 Connect to the Transit Gateway
+  AttachNP2:
+    Type: "AWS::EC2::TransitGatewayAttachment"
+    Properties:
+      SubnetIds:
+        - Fn::ImportValue: !Sub "NP2-${ParentStack}-AttachSubnetA"
+        - Fn::ImportValue: !Sub "NP2-${ParentStack}-AttachSubnetB"
+      Tags:
+        - Key: Name
+          Value: NP2Attach
+      TransitGatewayId: !Ref TransitGateway
+      VpcId:
+        Fn::ImportValue: !Sub "NP2-${ParentStack}-VPC"
+
+  AssociateNP2RouteTable:
+    Type: "AWS::EC2::TransitGatewayRouteTableAssociation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachNP2
+      TransitGatewayRouteTableId: !Ref RouteTableRed
+
+  PropagateNP2Red:
+    Type: "AWS::EC2::TransitGatewayRouteTablePropagation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachNP2
+      TransitGatewayRouteTableId: !Ref RouteTableRed
+
+  PropagateNP2Green:
+    Type: "AWS::EC2::TransitGatewayRouteTablePropagation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachNP2
+      TransitGatewayRouteTableId: !Ref RouteTableGreen
+
+  # Prod 1 Connect to the Transit Gateway
+  AttachP1:
+    Type: "AWS::EC2::TransitGatewayAttachment"
+    Properties:
+      SubnetIds:
+        - Fn::ImportValue: !Sub "P1-${ParentStack}-AttachSubnetA"
+        - Fn::ImportValue: !Sub "P1-${ParentStack}-AttachSubnetB"
+      Tags:
+        - Key: Name
+          Value: P1Attach
+      TransitGatewayId: !Ref TransitGateway
+      VpcId:
+        Fn::ImportValue: !Sub "P1-${ParentStack}-VPC"
+
+  AssociateP1RouteTable:
+    Type: "AWS::EC2::TransitGatewayRouteTableAssociation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachP1
+      TransitGatewayRouteTableId: !Ref RouteTableBlue
+
+  PropagateP1Blue:
+    Type: "AWS::EC2::TransitGatewayRouteTablePropagation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachP1
+      TransitGatewayRouteTableId: !Ref RouteTableBlue
+
+  PropagateP1Green:
+    Type: "AWS::EC2::TransitGatewayRouteTablePropagation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachP1
+      TransitGatewayRouteTableId: !Ref RouteTableGreen
+
+  # Datacenter Services 1 Connect to the Transit Gateway
+  AttachDCS1:
+    Type: "AWS::EC2::TransitGatewayAttachment"
+    Properties:
+      SubnetIds:
+        - Fn::ImportValue: !Sub "DCS1-${ParentStack}-AttachSubnetA"
+        - Fn::ImportValue: !Sub "DCS1-${ParentStack}-AttachSubnetB"
+      Tags:
+        - Key: Name
+          Value: DCS1Attach
+      TransitGatewayId: !Ref TransitGateway
+      VpcId:
+        Fn::ImportValue: !Sub "DCS1-${ParentStack}-VPC"
+
+  AssociateDCS1RouteTable:
+    Type: "AWS::EC2::TransitGatewayRouteTableAssociation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachDCS1
+      TransitGatewayRouteTableId: !Ref RouteTableGreen
+
+  PropagateDCS1Red:
+    Type: "AWS::EC2::TransitGatewayRouteTablePropagation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachDCS1
+      TransitGatewayRouteTableId: !Ref RouteTableRed
+
+  PropagateDCS1Blue:
+    Type: "AWS::EC2::TransitGatewayRouteTablePropagation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachDCS1
+      TransitGatewayRouteTableId: !Ref RouteTableBlue
+
+  PropagateDCS1Green:
+    Type: "AWS::EC2::TransitGatewayRouteTablePropagation"
+    Properties:
+      TransitGatewayAttachmentId: !Ref AttachDCS1
+      TransitGatewayRouteTableId: !Ref RouteTableGreen
+
+  DefaultRouteRed:
+    Type: "AWS::EC2::TransitGatewayRoute"
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayAttachmentId: !Ref AttachDCS1
+      TransitGatewayRouteTableId: !Ref RouteTableRed
+
+  DefaultRouteBlue:
+    Type: "AWS::EC2::TransitGatewayRoute"
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayAttachmentId: !Ref AttachDCS1
+      TransitGatewayRouteTableId: !Ref RouteTableBlue
+
+Outputs:
+  # Datacenter 1 Outputs
+  CSRSSH:
+    Description: "ssh command to CSR"
+    Value:
+      !Join [
+        "",
+        ["ssh -i ~/.ssh/", Ref: "KeyPair", ".pem ec2-user@", !GetAtt "CSRENI.PrimaryPrivateIpAddress"],
+      ]
+    Export:
+      Name: !Sub "DC1-${AWS::StackName}-VPC"
+
+
