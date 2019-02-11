@@ -3,14 +3,16 @@ title = "Git the Cloudformation Templates"
 weight = 100
 +++
 
-## Grab the files in Zip format
+# An AWS Account
 
-https://github.com/geseib/tgwwalk/archive/master.zip
+### Admin access to the AWS account
 
-# OR
+### Access to one of the following regions in that AWS Account:
 
-## Clone the Github repo
+- N. Virginia (us-east-1)
+- Ohio (us-east-2)
+- Oregon (us-west-2)
+- Ireland (eu-west-1)
+- Singapore (ap-southeast-1)
 
-```
-git clone https://github.com/geseib/tgwwalk.git
-```
+### You will need to remove all exisiting VPCs in the region you are working with, so ideally this is a new account, or one where you do not have anything deployed in one of the above regions. \*if this is a new account or account provided by the workshop, you are in good shape.
