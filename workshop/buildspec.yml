@@ -19,7 +19,7 @@ artifacts:
         - '**/*'
       name: website-$(date +%Y-%m-%d)
     ResourcesArtifact:
-      base-directory: resources
+      base-directory: resources/code
       files:
         - '**/*'
       name: resources-$(date +%Y-%m-%d)
