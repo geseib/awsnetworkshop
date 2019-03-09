@@ -1,0 +1,112 @@
+crypto isakmp policy 200
+  encryption aes 128
+  authentication pre-share
+  group 2
+  lifetime 28800
+  hash sha
+exit
+
+crypto keyring keyring-vpn-3
+	local-address gig1
+  pre-shared-key address tun1address key awsamazon
+exit
+
+! An ISAKMP profile is used to associate the keyring with the particular
+! endpoint.
+!
+crypto isakmp profile isakmp-vpn-3
+  local-address gig 1
+  match identity address tun1address
+  keyring keyring-vpn-3
+exit
+
+crypto ipsec transform-set ipsec-prop-vpn-3 esp-aes 128 esp-sha-hmac
+  mode tunnel
+exit
+
+crypto ipsec profile ipsec-vpn-3
+  set pfs group2
+  set security-association lifetime seconds 3600
+  set transform-set ipsec-prop-vpn-3
+exit
+
+crypto ipsec df-bit clear
+
+crypto isakmp keepalive 10 10 on-demand
+
+crypto ipsec security-association replay window-size 128
+
+crypto ipsec fragmentation before-encryption
+
+interface Tunnel3
+  ip address 169.254.12.2 255.255.255.252
+  ip virtual-reassembly
+  tunnel source gig1
+  tunnel destination tun1address
+  tunnel mode ipsec ipv4
+  tunnel protection ipsec profile ipsec-vpn-3
+  ip tcp adjust-mss 1379
+  no shutdown
+exit
+
+router bgp 65001
+  neighbor 169.254.12.1 remote-as 65000
+  neighbor 169.254.12.1 activate
+  neighbor 169.254.12.1 timers 10 30 30
+  address-family ipv4 unicast
+    neighbor 169.254.12.1 remote-as 65000
+    neighbor 169.254.12.1 timers 10 30 30
+    neighbor 169.254.12.1 activate
+    neighbor 169.254.12.1 soft-reconfiguration inbound
+! To advertise additional prefixes to Amazon VPC, copy the 'network' statement
+! and identify the prefix you wish to advertise. Make sure the prefix is present
+! in the routing table of the device with a valid next-hop.
+
+crypto keyring keyring-vpn-4
+	local-address gig1
+  pre-shared-key address tun2address key awsamazon
+exit
+
+! An ISAKMP profile is used to associate the keyring with the particular
+! endpoint.
+!
+crypto isakmp profile isakmp-vpn-4
+  local-address gig 1
+  match identity address tun2address
+  keyring keyring-vpn-4
+exit
+
+crypto ipsec transform-set ipsec-prop-vpn-4 esp-aes 128 esp-sha-hmac
+  mode tunnel
+exit
+
+crypto ipsec profile ipsec-vpn-4
+  set pfs group2
+  set security-association lifetime seconds 3600
+  set transform-set ipsec-prop-vpn-4
+exit
+
+interface Tunnel4
+  ip address 169.254.13.2 255.255.255.252
+  ip virtual-reassembly
+  tunnel source gig1
+  tunnel destination tun2address
+  tunnel mode ipsec ipv4
+  tunnel protection ipsec profile ipsec-vpn-4
+  ip tcp adjust-mss 1379
+  no shutdown
+exit
+
+router bgp 65001
+  neighbor 169.254.13.1 remote-as 65000
+  neighbor 169.254.13.1 activate
+  neighbor 169.254.13.1 timers 10 30 30
+  address-family ipv4 unicast
+    neighbor 169.254.13.1 remote-as 65000
+    neighbor 169.254.13.1 timers 10 30 30
+    neighbor 169.254.13.1 activate
+    neighbor 169.254.13.1 soft-reconfiguration inbound
+! To advertise additional prefixes to Amazon VPC, copy the 'network' statement
+! and identify the prefix you wish to advertise. Make sure the prefix is present
+! in the routing table of the device with a valid next-hop.
+  exit

@@ -1,0 +1,127 @@
+
+set system root-authentication encrypted-password $5$jdfvppXR$0AKg0uNvkO8L8y1moU157mKVCKhRR.8RdSHOkxUt.R3
+
+set interfaces ge-0/0/0 unit 0 family inet addres 10.4.8.11/21
+set interfaces ge-0/0/1 unit 0 family inet addres 10.4.0.12/22
+
+
+set routing-instances aws instance-type virtual-router
+
+set routing-instances aws interface ge-0/0/1.0
+set routing-instances aws interface ge-0/0/0.0
+set routing-instances aws interface st0.1
+set routing-instances aws interface st0.2
+set routing-instances aws routing-options static route 0.0.0.0/0 next-hop 10.4.0.1
+set routing-instances aws routing-options static route 10.4.0.0/16 next-hop 10.4.8.1
+set security zones security-zone untrust interfaces ge-0/0/1.0
+set security zones security-zone trust interfaces ge-0/0/0.0
+set security zones security-zone trust interfaces st0.1
+set security zones security-zone trust interfaces st0.2
+
+
+set security ike proposal ike-prop-vpn-1 authentication-method pre-shared-keys 
+set security ike proposal ike-prop-vpn-1 authentication-algorithm sha1
+set security ike proposal ike-prop-vpn-1 encryption-algorithm aes-128-cbc
+set security ike proposal ike-prop-vpn-1 lifetime-seconds 28800
+set security ike proposal ike-prop-vpn-1 dh-group group2
+
+set security ike policy ike-pol-vpn-1 mode main 
+set security ike policy ike-pol-vpn-1 proposals ike-prop-vpn-1
+set security ike policy ike-pol-vpn-1 pre-shared-key ascii-text awsamazon
+
+set security ike gateway gw-vpn-1 ike-policy ike-pol-vpn-1
+set security ike gateway gw-vpn-1 external-interface ge-0/0/1.0
+set security ike gateway gw-vpn-1 address tun1address
+set security ike gateway gw-vpn-1 no-nat-traversal
+
+set security ike gateway gw-vpn-1 dead-peer-detection interval 10 threshold 3
+
+
+set security ipsec proposal ipsec-prop-vpn-1 protocol esp
+set security ipsec proposal ipsec-prop-vpn-1 authentication-algorithm hmac-sha1-96
+set security ipsec proposal ipsec-prop-vpn-1 encryption-algorithm aes-128-cbc
+set security ipsec proposal ipsec-prop-vpn-1 lifetime-seconds 3600
+
+set security ipsec policy ipsec-pol-vpn-1 perfect-forward-secrecy keys group2
+set security ipsec policy ipsec-pol-vpn-1 proposals ipsec-prop-vpn-1
+
+
+set security ipsec vpn vpn-1 ike gateway gw-vpn-1
+set security ipsec vpn vpn-1 ike ipsec-policy ipsec-pol-vpn-1
+set security ipsec vpn vpn-1 df-bit clear 
+
+
+set interfaces st0.1 family inet address 169.254.10.2/30
+set interfaces st0.1 family inet mtu 1436
+set security zones security-zone trust interfaces st0.1
+set security ipsec vpn vpn-1 bind-interface st0.1
+          
+set security zones security-zone untrust host-inbound-traffic system-services ike
+
+set security zones security-zone trust host-inbound-traffic protocols bgp
+
+set security flow tcp-mss ipsec-vpn mss 1379
+
+set routing-options forwarding-table export loadbal
+set policy-options policy-statement loadbal then load-balance per-packet
+
+set policy-options policy-statement EXPORT-DC term default from route-filter 10.4.0.0/16 exact                                                               
+set policy-options policy-statement EXPORT-DC term default then accept     
+set policy-options policy-statement EXPORT-DC term reject then reject
+set routing-instances aws protocols bgp group ebgp type external
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.10.1 export EXPORT-DC 
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.10.1 peer-as 65000
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.10.1 hold-time 30
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.10.1 local-as 65001
+
+set security ike proposal ike-prop-vpn-2 authentication-method pre-shared-keys 
+set security ike proposal ike-prop-vpn-2 authentication-algorithm sha1
+set security ike proposal ike-prop-vpn-2 encryption-algorithm aes-128-cbc
+set security ike proposal ike-prop-vpn-2 lifetime-seconds 28800
+set security ike proposal ike-prop-vpn-2 dh-group group2
+
+set security ike policy ike-pol-vpn-2 mode main 
+set security ike policy ike-pol-vpn-2 proposals ike-prop-vpn-2
+set security ike policy ike-pol-vpn-2 pre-shared-key ascii-text awsamazon
+
+set security ike gateway gw-vpn-2 ike-policy ike-pol-vpn-2
+set security ike gateway gw-vpn-2 external-interface ge-0/0/1.0
+set security ike gateway gw-vpn-2 address tun2address
+set security ike gateway gw-vpn-2 no-nat-traversal
+
+set security ike gateway gw-vpn-2 dead-peer-detection interval 10 threshold 3
+
+
+set security ipsec proposal ipsec-prop-vpn-2 protocol esp
+set security ipsec proposal ipsec-prop-vpn-2 authentication-algorithm hmac-sha1-96
+set security ipsec proposal ipsec-prop-vpn-2 encryption-algorithm aes-128-cbc
+set security ipsec proposal ipsec-prop-vpn-2 lifetime-seconds 3600
+
+set security ipsec policy ipsec-pol-vpn-2 perfect-forward-secrecy keys group2
+set security ipsec policy ipsec-pol-vpn-2 proposals ipsec-prop-vpn-2
+
+
+set security ipsec vpn vpn-2 ike gateway gw-vpn-2
+set security ipsec vpn vpn-2 ike ipsec-policy ipsec-pol-vpn-2
+set security ipsec vpn vpn-2 df-bit clear 
+
+
+set interfaces st0.2 family inet address 169.254.11.2/30
+set interfaces st0.2 family inet mtu 1436
+set security zones security-zone trust interfaces st0.2
+set security ipsec vpn vpn-2 bind-interface st0.2
+          
+set security zones security-zone untrust host-inbound-traffic system-services ike
+
+set security zones security-zone trust host-inbound-traffic protocols bgp
+
+set security flow tcp-mss ipsec-vpn mss 1379
+ 
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.11.1 export EXPORT-DC 
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.11.1 peer-as 65000
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.11.1 hold-time 30
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.11.1 local-as 65001
+
+
+
+

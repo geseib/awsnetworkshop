@@ -1,0 +1,108 @@
+
+
+set routing-instances aws interface st0.3
+set routing-instances aws interface st0.4
+set security zones security-zone trust interfaces st0.3
+set security zones security-zone trust interfaces st0.4
+
+
+set security ike proposal ike-prop-vpn-3 authentication-method pre-shared-keys 
+set security ike proposal ike-prop-vpn-3 authentication-algorithm sha1
+set security ike proposal ike-prop-vpn-3 encryption-algorithm aes-128-cbc
+set security ike proposal ike-prop-vpn-3 lifetime-seconds 28800
+set security ike proposal ike-prop-vpn-3 dh-group group2
+
+set security ike policy ike-pol-vpn-3 mode main 
+set security ike policy ike-pol-vpn-3 proposals ike-prop-vpn-3
+set security ike policy ike-pol-vpn-3 pre-shared-key ascii-text awsamazon
+
+set security ike gateway gw-vpn-3 ike-policy ike-pol-vpn-3
+set security ike gateway gw-vpn-3 external-interface ge-0/0/1.0
+set security ike gateway gw-vpn-3 address tun1address
+set security ike gateway gw-vpn-3 no-nat-traversal
+
+set security ike gateway gw-vpn-3 dead-peer-detection interval 10 threshold 3
+
+
+set security ipsec proposal ipsec-prop-vpn-3 protocol esp
+set security ipsec proposal ipsec-prop-vpn-3 authentication-algorithm hmac-sha1-96
+set security ipsec proposal ipsec-prop-vpn-3 encryption-algorithm aes-128-cbc
+set security ipsec proposal ipsec-prop-vpn-3 lifetime-seconds 3600
+
+set security ipsec policy ipsec-pol-vpn-3 perfect-forward-secrecy keys group2
+set security ipsec policy ipsec-pol-vpn-3 proposals ipsec-prop-vpn-3
+
+
+set security ipsec vpn vpn-3 ike gateway gw-vpn-3
+set security ipsec vpn vpn-3 ike ipsec-policy ipsec-pol-vpn-3
+set security ipsec vpn vpn-3 df-bit clear 
+
+
+set interfaces st0.3 family inet address 169.254.12.2/30
+set interfaces st0.3 family inet mtu 1436
+set security zones security-zone trust interfaces st0.3
+set security ipsec vpn vpn-3 bind-interface st0.3
+          
+set security zones security-zone untrust host-inbound-traffic system-services ike
+
+set security zones security-zone trust host-inbound-traffic protocols bgp
+
+set security flow tcp-mss ipsec-vpn mss 1379
+ 
+set routing-instances aws protocols bgp group ebgp type external
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.12.1 export EXPORT-DC 
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.12.1 peer-as 65000
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.12.1 hold-time 30
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.12.1 local-as 65001
+
+set security ike proposal ike-prop-vpn-4 authentication-method pre-shared-keys 
+set security ike proposal ike-prop-vpn-4 authentication-algorithm sha1
+set security ike proposal ike-prop-vpn-4 encryption-algorithm aes-128-cbc
+set security ike proposal ike-prop-vpn-4 lifetime-seconds 28800
+set security ike proposal ike-prop-vpn-4 dh-group group2
+
+set security ike policy ike-pol-vpn-4 mode main 
+set security ike policy ike-pol-vpn-4 proposals ike-prop-vpn-4
+set security ike policy ike-pol-vpn-4 pre-shared-key ascii-text awsamazon
+
+set security ike gateway gw-vpn-4 ike-policy ike-pol-vpn-4
+set security ike gateway gw-vpn-4 external-interface ge-0/0/1.0
+set security ike gateway gw-vpn-4 address tun2address
+set security ike gateway gw-vpn-4 no-nat-traversal
+
+set security ike gateway gw-vpn-4 dead-peer-detection interval 10 threshold 3
+
+
+set security ipsec proposal ipsec-prop-vpn-4 protocol esp
+set security ipsec proposal ipsec-prop-vpn-4 authentication-algorithm hmac-sha1-96
+set security ipsec proposal ipsec-prop-vpn-4 encryption-algorithm aes-128-cbc
+set security ipsec proposal ipsec-prop-vpn-4 lifetime-seconds 3600
+
+set security ipsec policy ipsec-pol-vpn-4 perfect-forward-secrecy keys group2
+set security ipsec policy ipsec-pol-vpn-4 proposals ipsec-prop-vpn-4
+
+
+set security ipsec vpn vpn-4 ike gateway gw-vpn-4
+set security ipsec vpn vpn-4 ike ipsec-policy ipsec-pol-vpn-4
+set security ipsec vpn vpn-4 df-bit clear 
+
+
+set interfaces st0.4 family inet address 169.254.13.2/30
+set interfaces st0.4 family inet mtu 1436
+set security zones security-zone trust interfaces st0.4
+set security ipsec vpn vpn-4 bind-interface st0.4
+          
+set security zones security-zone untrust host-inbound-traffic system-services ike
+
+set security zones security-zone trust host-inbound-traffic protocols bgp
+
+set security flow tcp-mss ipsec-vpn mss 1379
+ 
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.13.1 export EXPORT-DC 
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.13.1 peer-as 65000
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.13.1 hold-time 30
+set routing-instances aws protocols bgp group ebgp neighbor 169.254.13.1 local-as 65001
+
+
+
+
