@@ -9,9 +9,9 @@ pygmentsCodeFences = true
 pygmentsStyle = "monokai"
 
 [params]
-editURL = "https://github.com/geseib/networkshopdev/edit/master/workshop/content/"
+editURL = "https://github.com/geseib/awsnetworkshop/edit/master/workshop/content/"
 themeVariant = "mine"
-showVisitedLinks = false
+showVisitedLinks = true
 description = "AWS Networking Workshop"
 disableSearch = false
 disableAssetsBusting = true
