@@ -18,7 +18,7 @@ This project allows you to scaffold a workshop similar to those available at [cd
 
 1. [Fork this repository](https://help.github.com/articles/fork-a-repo/).
 
-2. Create a [GitHub personal OAuth access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/).
+2. Create a [GitHub personal OAuth access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/).  `repo` permissions are required.
 
 ## Instructions
 
@@ -28,16 +28,18 @@ This project allows you to scaffold a workshop similar to those available at [cd
 
 1. Complete the [Requirements](#requirements).
 
-2. Click on the CloudFormation Launch link below that corresponds to the AWS Region in which you want to deploy the workshop.
+1. Click on the CloudFormation Launch link below that corresponds to the AWS Region in which you want to deploy the workshop.
 
     [![US East (N. Virginia)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/us-east-1.svg)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=aws-workshop-sample&templateURL=https://s3.amazonaws.com/aws-workshop-sample-us-east-1/pipeline-template.yaml&param_GitHubBranch=master&param_GitHubRepository=aws-workshop-sample)      
 
 
-    ***Note:* You must use the new [CloudFormation Management Console](https://aws.amazon.com/about-aws/whats-new/2018/11/new-aws-cloudformation-management-console-now-available/) when creating the CloudFormation stack because the template uses the [CAPABILITY_AUTO_EXPAND](https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateStack.html) to install a [Nested Serverless Application](https://github.com/samdengler/codepipeline-s3-objects-public-read) to ensure Read Public access to the website S3 Objects.**
+1. This workshop uses the CloudFormation CAPABILITY_AUTO_EXPAND capability, which requires the new CloudFormation Console UI.  If you see the following message at the top of the page, click on the link to **Try it out now and provide us feedback.** to use the new interface.
 
-3. Once the CloudFormation **Quick create stack** page loads in your web browser, optionally update the **Stack name**.
+    ![CloudFormation New UI Dialog](images/cloudformation-new-ui-dialog.png)
 
-4. In the **Parameters** section, provide values for:
+1. Once the CloudFormation **Quick create stack** page loads in your web browser, optionally update the **Stack name**.
+
+1. In the **Parameters** section, provide values for:
 
     | Parameter | Description |
     | --- | --- |
@@ -46,20 +48,18 @@ This project allows you to scaffold a workshop similar to those available at [cd
     | GitHubRepository | The name of forked GitHub Repository (defaults to **aws-workshop-sample**) |
     | GitHubUsername | The GitHub username of the forked GitHub Repository |
 
-5. In the **Capabilities and transforms** section, check the following boxes:
+1. In the **Capabilities and transforms** section, check the following boxes:
 
-    [ ] I acknowledge that AWS CloudFormation might create IAM resources.\
-    [ ] I acknowledge that AWS CloudFormation might create IAM resources with custom names.\
-    [ ] I acknowledge that AWS CloudFormation might require the following capability: CAPABILITY_AUTO_EXPAND
-    
-    **If you don’t see a checkbox for CAPABILITY_AUTO_EXPAND, look for a message at the top of the page (image below) that lets you use the new UI".**
+    ![CloudFormation Capabilities](images/cloudformation-capabilities.png)
+
+1. If you don’t see a checkbox for CAPABILITY_AUTO_EXPAND, look for a message at the top of the page (image below) and click on the link to **Try it out now and provide us feedback.** to use the new interface.
 
     ![CloudFormation New UI Dialog](images/cloudformation-new-ui-dialog.png)
 
-6. Click the **Create stack** button.
+1. Click the **Create stack** button.
 
-7. Once the CloudFormation Stack has been created, click on the **Options** tab and note the value for **WebsiteURL**.
+1. Once the CloudFormation Stack has been created, click on the **Options** tab and note the value for **WebsiteURL**.
 
-8. Paste the **WebsiteURL** into your web browser's URL address bar to visit the templated workshop website.
+1. Paste the **WebsiteURL** into your web browser's URL address bar to visit the templated workshop website.
 
-9. Congratulations!  You now have a working workshop website.
+1. Congratulations!  You now have a working workshop website.
