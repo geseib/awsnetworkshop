@@ -6,7 +6,7 @@ weight: 80
 
 ## Routing Boundaries
 
-If you tested between the P1 server and a NP1 or NP2 server, you should have also seen a reply ping. But that's **not** what we wanted. Look at the VPC route table and the Associated Transit Gateway Route table (_for P1 this should be Blue, for NP1 or NP2 this should be Red_) Follow the logic to understand what's going on. See if see whats causing the issue, before looking below to solve it.
+If you tested between the P1 server and a NP1 or NP2 server, you should have also seen a reply ping. But that's **not** what we wanted. Look at the VPC route table and the Associated Transit Gateway Route table (_for P1 this should be Blue, for NP1 or NP2 this should be Red_) Follow the logic to understand what's going on. See if you can figure out what is causing the issue, before looking below to solve it.
 
  <details>
    <summary>SPOLIER Fixing Mysterious Prod to Non-Prod routing</summary><p>
