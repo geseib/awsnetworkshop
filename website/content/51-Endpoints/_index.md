@@ -1,7 +1,7 @@
 +++
 title = "VPC Endpoints"
 chapter = true
-weight = 61
+weight = 51
 +++
 
 # VPC Endpoints

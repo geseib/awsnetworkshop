@@ -1,7 +1,7 @@
 +++
 title = "DNS Setup"
 chapter = true
-weight = 60
+weight = 50
 +++
 
 # DNS between On-Prem and the Cloud
