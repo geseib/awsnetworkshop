@@ -4,7 +4,7 @@ chapter: true
 weight: 40
 ---
 
-# Verify DNS communication
+# Verify Endpoint DNS Resolution
 
 1. In the AWS Management Console choose **Services** then select **Systems Manager**.
 
@@ -14,7 +14,7 @@ weight: 40
 
 1. Lets dig kms._your_region_.amazonaws.com. you should get a response with two 10.0.x.x addresses.
 
-![DNS DC to DCS](../images/dns-dc1tonp1.png)
+![NP2 to KMS Endpoint](../images/kms-endpoint.png)
 
 ```
 
@@ -43,7 +43,7 @@ kms.us-east-2.amazonaws.com. 60 IN      A       10.0.13.161
 
 1. Since we only applied this to the NP2 , lets test by using **Session Manager** to shell to NP1, and using dig to lookup kms._your_region_.amazonaws.com. It should return the public ip address of the KMS API.
 
-![DNS NP1 to DC](../images/dns-np1todc.png)
+![NP1 to KMS Public Endpoint](../images/kms-noendpoint-np1.png)
 
 ```
 

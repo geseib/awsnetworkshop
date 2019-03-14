@@ -4,7 +4,7 @@ chapter: true
 weight: 30
 ---
 
-# Deploy a Central Endpoint and Share with DNS with the NP2 VPC
+## Deploy a Central Endpoint and Share DNS with the NP2 VPC
 
 Run CloudFormation template 4.tgw-endpoints.yaml to deploy a KMS VPC endpoint in the Datacenter Service VPC as well as add AWS Route53 Private Zone for the endpoint which is Associated with the NP2 VPC.
 

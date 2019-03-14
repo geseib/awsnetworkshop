@@ -1,7 +1,7 @@
 ---
 title: "Change VPC Endpoint"
 chapter: true
-weight: 40
+weight: 50
 ---
 
 # Associate NP1 VPC with the KMS Private Hosted Zone
@@ -29,7 +29,7 @@ Lets change that to use the VPC endpoints with 10.0.x.x addresses in the Datacen
 
 1. Lets dig kms._your_region_.amazonaws.com. you should no longer get the public IP address and instead get a response with two 10.0.x.x addresses.
 
-![DNS DC to DCS](../images/dns-dc1tonp1.png)
+![NP1 to VPC Endpoint](../images/kms-endpoint-np1.png)
 
 ```
 

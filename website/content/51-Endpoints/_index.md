@@ -12,10 +12,10 @@ Endpoints are virtual devices. They are horizontally scaled, redundant, and high
 
 In a multi-VPC envornment, such as this workshop, we have a choice to make where these VPC Endpoints reside: In the local VPC that is accessing the AWS Service, or in a common, shared VPC. Such as the DCS1 in this workshop.
 
-## Local VPC Endpoint
+## Public Endpoint
 
-![Local VPC Endpoint](../images/dns-dc1tonp1.png)
+![public Endpoint](../images/kms-noendpoint.png)
 
 ## Central VPC Endpoint
 
-![Central VPC Endpoint](../images/dns-np1todc.png)
+![Central VPC Endpoint](../images/kms-endpoint.png)
