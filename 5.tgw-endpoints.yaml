@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "VPC Endpoints in local and Shared Resource VPC"
+
+Parameters:
+  ParentStack:
+    Description: "Stack name of parent VPC stack."
+    Type: String
+
+Resources:
+  # Create a security group that allows access to HTTPS from all 10.0.0.0 addresses (internal)
+  IntEndpointSecGroupDCS1:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open-up HTTPS for internalIP
+      GroupName: !Join ["-", [DCS1, Ref: "ParentStack", "int-sec-group"]]
+      VpcId:
+        "Fn::ImportValue": !Sub "DCS1-${ParentStack}-VPC"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "443"
+          ToPort: "443"
+          CidrIp: 10.0.0.0/8
+
+  # Create KMS endpoint in the shared VPC DCS1
+  KMSEndpointDCS1:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId:
+        "Fn::ImportValue": !Sub "DCS1-${ParentStack}-VPC"
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.kms"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: True
+      SubnetIds:
+        - "Fn::ImportValue": !Sub "DCS1-${ParentStack}-PrivateSubnetA"
+        - "Fn::ImportValue": !Sub "DCS1-${ParentStack}-PrivateSubnetB"
+      SecurityGroupIds:
+        - Ref: IntEndpointSecGroupDCS1
+
+  # Create A Private Hosted Zone in Route 53 for KMS endpont
+  DNSZone:
+    Type: "AWS::Route53::HostedZone"
+    Properties:
+      HostedZoneConfig:
+        Comment: "My hosted zone"
+      Name: !Sub "kms.${AWS::Region}.amazonaws.com"
+      VPCs:
+        - VPCId:
+            Fn::ImportValue: !Sub "NP2-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+
+  KMSEPDNSRecord:
+    DependsOn: KMSEndpointDCS1
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref "DNSZone"
+      Comment: DNS name for KMS Endpoint.
+      Name: !Sub "kms.${AWS::Region}.amazonaws.com"
+      Type: A
+      AliasTarget:
+        DNSName:
+          !Select [
+            1,
+            !Split [":", !Select [0, !GetAtt KMSEndpointDCS1.DnsEntries]],
+          ]
+        HostedZoneId:
+          !Select [
+            0,
+            !Split [":", !Select [0, !GetAtt KMSEndpointDCS1.DnsEntries]],
+          ]
+
+Outputs:
+  KMSEPDNSRecord:
+    Value:
+      !Select [1, !Split [":", !Select [0, !GetAtt KMSEndpointDCS1.DnsEntries]]]
+  KMSEPDNSZone:
+    Value:
+      !Select [0, !Split [":", !Select [0, !GetAtt KMSEndpointDCS1.DnsEntries]]]
