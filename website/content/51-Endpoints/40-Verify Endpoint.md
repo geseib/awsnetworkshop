@@ -1,5 +1,5 @@
 ---
-title: "Verify DNS"
+title: "Verify VPC Endpoint"
 chapter: true
 weight: 40
 ---

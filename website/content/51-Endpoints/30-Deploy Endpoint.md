@@ -1,5 +1,5 @@
 ---
-title: "Deploy DNS Server"
+title: "Deploy VPC Endpoint"
 chapter: true
 weight: 30
 ---
