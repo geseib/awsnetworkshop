@@ -1,5 +1,5 @@
 +++
-title = "DNS Setup"
+title = "VPC Endpoints"
 chapter = true
 weight = 61
 +++
