@@ -85,7 +85,7 @@ Resources:
           ToPort: "53"
           CidrIp: 0.0.0.0/0
         - IpProtocol: -1
-          CidrIp: 10.0.0.0/16
+          CidrIp: 10.0.0.0/8
 
   BindENI:
     Type: AWS::EC2::NetworkInterface
@@ -170,7 +170,7 @@ Resources:
               test        IN      A      ${thisserver}
 
               ; other servers
-
+              dc1         IN      A      10.4.16.10
 
               $ORIGIN aws.${thiszone}.
               @       IN      NS      ep1.aws.${thiszone}.
@@ -253,11 +253,11 @@ Resources:
         - IpProtocol: tcp
           FromPort: "53"
           ToPort: "53"
-          CidrIp: 10.4.0.0/0
+          CidrIp: 10.0.0.0/8
         - IpProtocol: udp
           FromPort: "53"
           ToPort: "53"
-          CidrIp: 10.4.0.0/0
+          CidrIp: 10.0.0.0/8
 
   DNSOutboundEndpoint:
     Type: "AWS::Route53Resolver::ResolverEndpoint"
@@ -300,6 +300,7 @@ Resources:
         - Ip: !GetAtt BindENI.PrimaryPrivateIpAddress
           Port: "53"
 
+  #Rule to resolve aws service hostnames through the AWSProvidedDNS
   DNSRule2:
     Type: "AWS::Route53Resolver::ResolverRule"
     Properties:
@@ -307,6 +308,7 @@ Resources:
       Name: !Join ["-", [Ref: "AWS::StackName", "amazon"]]
       RuleType: "SYSTEM"
 
+  #Rule to forward any corp domain DNS request that are not covered my Private Hosted Zones
   DNSRule3:
     Type: "AWS::Route53Resolver::ResolverRule"
     Properties:
@@ -318,6 +320,7 @@ Resources:
         - Ip: !GetAtt BindENI.PrimaryPrivateIpAddress
           Port: "53"
 
+  # Only NP2 will forward External Queries through the Datacenter Bind Server (except aws services, see rule 2)
   DNSRule1AssociateNP2:
     Type: "AWS::Route53Resolver::ResolverRuleAssociation"
     Properties:
@@ -333,6 +336,14 @@ Resources:
       ResolverRuleId: !GetAtt DNSRule2.ResolverRuleId
       VPCId:
         "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+
+  DNSRule2AssociateP1:
+    Type: "AWS::Route53Resolver::ResolverRuleAssociation"
+    Properties:
+      Name: !Join ["-", [Ref: "AWS::StackName", "amazonAssociateP1"]]
+      ResolverRuleId: !GetAtt DNSRule2.ResolverRuleId
+      VPCId:
+        "Fn::ImportValue": !Sub "P1-${ParentStack}-VPC"
 
   DNSRule3AssociateNP2:
     Type: "AWS::Route53Resolver::ResolverRuleAssociation"
@@ -366,22 +377,25 @@ Resources:
       VPCId:
         "Fn::ImportValue": !Sub "P1-${ParentStack}-VPC"
 
-  # Create A Private Hosted Zone in Route 53
-  DNSZone:
+  # Create Np1 Private Hosted Zone in Route 53
+  NP1Zone:
     Type: "AWS::Route53::HostedZone"
     Properties:
       HostedZoneConfig:
         Comment: "My hosted zone"
-      Name: !Join [".", ["aws", Ref: Zone]]
+      Name: !Join [".", ["np1", "aws", Ref: Zone]]
       VPCs:
         - VPCId:
             Fn::ImportValue: !Sub "DCS1-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+        - VPCId:
+            Fn::ImportValue: !Sub "NP1-${ParentStack}-VPC"
           VPCRegion: !Ref "AWS::Region"
 
   NP1DNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !Ref "DNSZone"
+      HostedZoneId: !Ref "Np1Zone"
       Comment: DNS name for NP1 Server.
       Name: !Join ["", [np1.aws., !Ref "Zone", .]]
       Type: A
@@ -389,16 +403,46 @@ Resources:
       ResourceRecords:
         - "Fn::ImportValue": !Sub "NP1-${ParentStack}-ServerIP"
 
+  # Create Np2 Private Hosted Zone in Route 53
+  NP2Zone:
+    Type: "AWS::Route53::HostedZone"
+    Properties:
+      HostedZoneConfig:
+        Comment: "NP2 hosted zone"
+      Name: !Join [".", ["np2", "aws", Ref: Zone]]
+      VPCs:
+        - VPCId:
+            Fn::ImportValue: !Sub "DCS1-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+        - VPCId:
+            Fn::ImportValue: !Sub "NP2-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+
   NP2DNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !Ref "DNSZone"
+      HostedZoneId: !Ref "NP2Zone"
       Comment: DNS name for NP2 Server.
       Name: !Join ["", [np2.aws., !Ref "Zone", .]]
       Type: A
       TTL: "30"
       ResourceRecords:
         - "Fn::ImportValue": !Sub "NP2-${ParentStack}-ServerIP"
+
+  # Create P1 Private Hosted Zone in Route 53
+  P1Zone:
+    Type: "AWS::Route53::HostedZone"
+    Properties:
+      HostedZoneConfig:
+        Comment: "P1 hosted zone"
+      Name: !Join [".", ["p1", "aws", Ref: Zone]]
+      VPCs:
+        - VPCId:
+            Fn::ImportValue: !Sub "DCS1-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+        - VPCId:
+            Fn::ImportValue: !Sub "P1-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
 
   P1DNSRecord:
     Type: AWS::Route53::RecordSet
