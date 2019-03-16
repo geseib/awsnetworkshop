@@ -1,8 +1,8 @@
----
-title: "Definitions"
-chapter: true
-weight: 80
----
++++
+menutitle = "Definitions"
+chapter = false
+weight = 80
++++
 
 **Key Definitions**
 

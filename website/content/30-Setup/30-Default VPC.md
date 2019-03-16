@@ -1,10 +1,10 @@
----
-title: "Delete Default VPC"
-chapter: true
-weight: 30
----
++++
+menutitle = "Delete Default VPC"
+chapter = false
+weight = 30
++++
 
-# Getting Started and Deleting Default VPC
+## Getting Started and Deleting Default VPC
 
 First, we need to get our infrastructure in place. The following CloudFormation template will build out _five_ VPCs. In order to do that we will first remove the default VPC. \*note: if you ever remove you default VPC in your own account, you can recreate it via the console or the CLI see the [documentation](https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html#create-default-vpc "AWS Default VPC Documentation").
 
@@ -18,7 +18,7 @@ Since we will be deploying Cloud9 into our Datacenter VPC, we need to pick one o
 - Ireland (eu-west-1)
 - Singapore (ap-southeast-1)
 
-### 1. Delete Default VPC
+### Delete Default VPC
 
 A default VPC is automatically created for each region in your account. Some customers choose to remove the Default VPC and replace with ones they have planned out to keep things simple and secure. We are going to remove the default VPC for another reason: the number of VPCs per region in an account is soft limited to 5 and our Lab uses five VPCs. If you require more than five in your own accounts, its easy to increase them by making a limit request through the support console, while logged into your account: https://console.aws.amazon.com/support/cases#/create.
 

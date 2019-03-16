@@ -1,12 +1,13 @@
----
-title: "Create VPC"
-chapter: true
-weight: 50
----
-
-# Create A new VPC for Non-Production
++++
+title = "Create A new VPC for Non-Production"
+menutitle = "Create VPC"
+chapter = false
+weight = 50
++++
 
 Run CloudFormation template 4.tgw-vpcs.yaml to deploy the VPC in the Same Region as the other accounts Transit Gateway was built in.
+
+_note: this should be done in another account. not in the Account with the TGW._
 
 ## HOW TO Deploy the VPC
 

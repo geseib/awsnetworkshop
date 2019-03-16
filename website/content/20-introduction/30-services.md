@@ -1,8 +1,8 @@
----
-title: "Services Covered"
-chapter: true
-weight: 30
----
++++
+menutitle = "Services Covered"
+chapter = false
+weight = 30
++++
 
 # AWS Services Explored
 

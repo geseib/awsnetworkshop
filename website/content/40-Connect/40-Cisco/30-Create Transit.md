@@ -1,8 +1,8 @@
----
-title: "Deploy Transit Gateway"
-chapter: true
-weight: 30
----
++++
+menutitle = "Deploy Transit Gateway"
+chapter = false
+weight = 30
++++
 
 ## Deploy Transit Gateway and Datacenter Router
 

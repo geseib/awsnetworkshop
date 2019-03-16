@@ -1,8 +1,8 @@
----
-title: "Routing Boundries"
-chapter: true
-weight: 80
----
++++
+menutitle = "Routing Boundries"
+chapter = false
+weight = 80
++++
 
 ## Routing Boundaries
 

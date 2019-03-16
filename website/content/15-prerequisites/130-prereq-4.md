@@ -1,5 +1,5 @@
 +++
-title = "Click Through Agreement for Juniper SRX"
+menutitle = "Click Through Agreement for Juniper SRX"
 weight = 130
 +++
 

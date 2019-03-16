@@ -1,8 +1,8 @@
----
-title: "Deploy VPC Endpoint"
-chapter: true
-weight: 30
----
++++
+menutitle = "Deploy VPC Endpoint"
+chapter = false
+weight = 30
++++
 
 ## Deploy a Central Endpoint and Share DNS with the NP2 VPC
 

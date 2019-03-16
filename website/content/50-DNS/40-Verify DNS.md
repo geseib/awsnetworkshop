@@ -1,10 +1,11 @@
----
-title: "Verify DNS"
-chapter: true
-weight: 40
----
++++
+title = "Verify DNS"
+menutitle = "Verify DNS"
+chapter = false
+weight = 40
++++
 
-# Verify DNS communication
+## Verify DNS Communication Between the Datacenter and VPCs
 
 1. In the AWS Management Console choose **Services** then select **Systems Manager**.
 
@@ -28,7 +29,7 @@ PING 10.16.18.220 (10.16.18.220) 56(84) bytes of data.
 64 bytes from 10.16.18.220: icmp_seq=6 ttl=254 time=0.673 ms
 64 bytes from 10.16.18.220: icmp_seq=7 ttl=254 time=0.806 ms
 ^C
---- 10.16.18.220 ping statistics ---
++++ 10.16.18.220 ping statistics +++
 7 packets transmitted, 7 received, 0% packet loss, time 6042ms
 rtt min/avg/max/mdev = 0.673/0.824/1.096/0.130 ms
 ```

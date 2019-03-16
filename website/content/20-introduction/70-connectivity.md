@@ -1,8 +1,8 @@
----
-title: "Connectivity"
-chapter: true
-weight: 70
----
++++
+menutitle = "Connectivity"
+chapter = false
+weight = 70
++++
 
 # Connectivity
 

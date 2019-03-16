@@ -1,5 +1,5 @@
 +++
-title = "Click Through Agreement for Cisco CSR"
+menutitle = "Click Through Agreement for Cisco CSR"
 weight = 120
 +++
 

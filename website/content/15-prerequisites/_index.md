@@ -1,10 +1,9 @@
 +++
-title = "Prerequisites"
-chapter = true
+menutitle = "Prerequisites for the Workshop"
+menumenutitle = "Prerequisites"
+chapter = false
 weight = 15
 +++
-
-# Prerequisites for the Workshop
 
 To perform this workshop, you'll need the following:
 

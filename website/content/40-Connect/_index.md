@@ -1,6 +1,6 @@
 +++
-title = "Connecting the Datacenter to AWS "
-chapter = true
+menutitle = "Connecting the Datacenter to AWS "
+chapter = false
 weight = 40
 +++
 

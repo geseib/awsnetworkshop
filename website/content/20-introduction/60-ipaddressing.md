@@ -1,8 +1,8 @@
----
-title: "IP Addressing"
-chapter: true
-weight: 60
----
++++
+menutitle = "IP Addressing"
+chapter = false
+weight = 60
++++
 
 # IP Addressing
 

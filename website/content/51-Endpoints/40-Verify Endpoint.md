@@ -1,8 +1,8 @@
----
-title: "Verify VPC Endpoint"
-chapter: true
-weight: 40
----
++++
+menutitle = "Verify VPC Endpoint"
+chapter = false
+weight = 40
++++
 
 # Verify Endpoint DNS Resolution
 

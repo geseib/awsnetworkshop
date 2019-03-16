@@ -1,10 +1,10 @@
----
-title: "Troublshooting DNS"
-chapter: true
-weight: 50
----
++++
+menutitle = "Troublshooting DNS"
+chapter = false
+weight = 50
++++
 
-# Troubleshooting DNS
+## Troubleshooting DNS
 
 If you are not able to successfully use **dig** and **ping** using the DNS names, make sure you completed all of the routing changes in the previous module.
 

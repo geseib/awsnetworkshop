@@ -1,10 +1,11 @@
----
-title: "Attach VPC"
-chapter: true
-weight: 60
----
++++
+title = "Attach VPC"
+menutitle = "Attach VPC"
+chapter = false
+weight = 60
++++
 
-# Create a Transit Gateway Attachment to the Shared Transit Gateway
+## Create a Transit Gateway Attachment to the Shared Transit Gateway
 
 In the earlier deployment of our Transit Gateway, we allowed CloudFormation to deploy our Attachments to the VPCs. This time we will walk through the install manually.
 

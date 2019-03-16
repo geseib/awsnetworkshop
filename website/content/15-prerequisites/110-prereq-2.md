@@ -1,5 +1,5 @@
 +++
-title = "Second AWS Account or a Workshop Partner"
+menutitle = "Second AWS Account or a Workshop Partner"
 weight = 110
 +++
 

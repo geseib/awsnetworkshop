@@ -1,6 +1,6 @@
 +++
-title = "Juniper in Datacenter"
-chapter = true
+menutitle = "Juniper in Datacenter"
+chapter = false
 weight = 45
 +++
 

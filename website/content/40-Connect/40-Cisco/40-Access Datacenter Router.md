@@ -1,8 +1,8 @@
----
-title: "Access the Datacenter Router"
-chapter: true
-weight: 40
----
++++
+menutitle = "Access the Datacenter Router"
+chapter = false
+weight = 40
++++
 
 ## Access CSR using AWS Cloud9 Environment
 

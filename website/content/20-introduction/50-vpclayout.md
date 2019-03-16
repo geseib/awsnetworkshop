@@ -1,8 +1,8 @@
----
-title: "VPC Layout"
-chapter: true
-weight: 50
----
++++
+menumenutitle = "VPC Layout"
+chapter = false
+weight = 50
++++
 
 # VPC layout
 

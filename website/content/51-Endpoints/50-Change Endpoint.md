@@ -1,15 +1,16 @@
----
-title: "Change VPC Endpoint"
-chapter: true
-weight: 50
----
++++
+title = "Change VPC Endpoint"
+menutitle = "Change VPC Endpoint"
+chapter = false
+weight = 50
++++
 
-# Associate NP1 VPC with the KMS Private Hosted Zone
+## Associate NP1 VPC with the KMS Private Hosted Zone
 
 Currently, the server in NP1 is resolving the public IP address for the KMS API. THis means it will communicate to it through the NAT Gateway and Internet Gateway (IGW) in the Datacenter Services VPC.
 Lets change that to use the VPC endpoints with 10.0.x.x addresses in the Datacenter Services VPC.
 
-## Associate NP1 VPC with the Route53 Private Hosted Zone
+### Associate NP1 VPC with the Route53 Private Hosted Zone
 
 1. In the AWS Management Console choose **Services** then select **Route53**.
 
@@ -19,7 +20,7 @@ Lets change that to use the VPC endpoints with 10.0.x.x addresses in the Datacen
 
 1. Click the bottom-right button, **Associate VPC**
 
-## Verify DNS communication
+### Verify DNS communication
 
 1. In the AWS Management Console choose **Services** then select **Systems Manager**.
 

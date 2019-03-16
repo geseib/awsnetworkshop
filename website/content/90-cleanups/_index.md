@@ -1,7 +1,7 @@
 +++
-title = "Clean up"
+menutitle = "Clean up"
 weight = 90
-chapter = true
+chapter = false
 +++
 
 # Clean up

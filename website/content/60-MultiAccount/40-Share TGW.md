@@ -1,10 +1,10 @@
----
-title: "Share TGW"
-chapter: true
-weight: 40
----
++++
+menutitle = "Share TGW"
+chapter = false
+weight = 40
++++
 
-# Share the Transit Gateway for Cross-Account Access
+## Share the Transit Gateway for Cross-Account Access
 
 The first scenario we want to walk through is sharing the Transit Gateway so that we can easily route between VPCs that are in other accounts but still in our organization. We can share outside of our organization too through invitations. In this case we are going to share with the organization.
 
@@ -22,8 +22,8 @@ The first scenario we want to walk through is sharing the Transit Gateway so tha
    **OPTION 2**
 
    - Just to the left of the Region Drop down, click on your login drop-down menu and select **My organization**. On **Your account belongs to the following organization:** screen, make a note of the **Organization ID** (it will start with an **o-**)
-   
-   *note: in order for organziation sharing to work, you must change your Resource Access Manger Settings from the master account. login to the master account and change this setting as shown below.*
+
+   _note: in order for organziation sharing to work, you must change your Resource Access Manger Settings from the master account. login to the master account and change this setting as shown below._
 
    ![Org Sharing](../images/ram-orgSettings.png)
 

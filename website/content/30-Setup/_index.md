@@ -1,6 +1,6 @@
 +++
-title = "Setup"
-chapter = true
+menutitle = "Setup"
+chapter = false
 weight = 30
 +++
 

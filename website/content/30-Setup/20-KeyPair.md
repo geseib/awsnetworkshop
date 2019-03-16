@@ -1,14 +1,14 @@
----
-title: "Create KeyPair"
-chapter: true
-weight: 20
----
++++
+menutitle = "Create KeyPair"
+chapter = false
+weight = 20
++++
 
-# Getting Started and Deleting Default VPC
+## Getting Started and Deleting Default VPC
 
 For our simulated Datacenter Router we will need to use a SSH keypair to access. When you create a KeyPair in AWS, the public key is stored in your account in the region you create it. The Private key is immediately downloadable. In fact its the only time its available, so download and store it safely.
 
-## Create Key Pair in AWS Console
+### Create Key Pair in AWS Console
 
 1. In the AWS Management Console change to the region you are working in. This is in the upper right hand drop down menu.
 
