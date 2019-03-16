@@ -1,10 +1,8 @@
 +++
-menutitle = "IP Addressing"
+title = "IP Addressing"
 chapter = false
 weight = 60
 +++
-
-# IP Addressing
 
 ![Speficy Details Screenshot](../images/hybrid-subnets-diagram.png)
 

@@ -1,6 +1,7 @@
 +++
-menutitle = "Multi-Account Sharing and Communications"
-menumenutitle = "MultiAccount"
+
+title = "Multi-Account Sharing and Communications"
+menutitle = "MultiAccount"
 chapter = false
 weight = 60
 +++

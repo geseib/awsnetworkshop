@@ -1,5 +1,5 @@
 +++
-menutitle = "Deploy Transit Gateway"
+title = "Deploy Transit Gateway"
 chapter = false
 weight = 30
 +++

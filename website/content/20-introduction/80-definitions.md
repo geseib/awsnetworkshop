@@ -1,5 +1,5 @@
 +++
-menutitle = "Definitions"
+title = "Definitions"
 chapter = false
 weight = 80
 +++

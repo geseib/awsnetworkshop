@@ -1,5 +1,5 @@
 +++
-menutitle = "Access the Datacenter Router"
+title = "Access the Datacenter Router"
 chapter = false
 weight = 40
 +++

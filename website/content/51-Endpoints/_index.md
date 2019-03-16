@@ -1,10 +1,8 @@
 +++
-menutitle = "VPC Endpoints"
+title = "VPC Endpoints"
 chapter = false
 weight = 51
 +++
-
-# VPC Endpoints
 
 We can use VPC endpoints if we require communications between services in our VPCs and supported AWS services without travesing an Internet Gateway, NAT Gateway, VPN connection, or AWS Direct Connect.
 

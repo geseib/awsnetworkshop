@@ -1,10 +1,9 @@
 +++
+title = "Setup the Datacenter and VPCs"
 menutitle = "Setup"
 chapter = false
 weight = 30
 +++
-
-# Setup the Datacenter and VPCs
 
 ![Specify Details Screenshot](../images/hybrid-subnets-diagram.png)
 

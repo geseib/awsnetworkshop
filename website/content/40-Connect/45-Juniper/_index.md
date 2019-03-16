@@ -1,5 +1,5 @@
 +++
-menutitle = "Juniper in Datacenter"
+title = "Juniper in Datacenter"
 chapter = false
 weight = 45
 +++

@@ -1,10 +1,8 @@
 +++
-menumenutitle = "VPC Layout"
+title = "VPC Layout"
 chapter = false
 weight = 50
 +++
-
-# VPC layout
 
 ![Speficy Details Screenshot](../images/hybrid-vpcs-diagram.png)
 

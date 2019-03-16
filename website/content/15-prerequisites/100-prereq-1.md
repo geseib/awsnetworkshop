@@ -1,5 +1,5 @@
 +++
-menutitle = "Access to an AWS Account"
+title = "Access to an AWS Account"
 weight = 100
 +++
 

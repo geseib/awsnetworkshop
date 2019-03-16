@@ -1,5 +1,5 @@
 +++
-menutitle = "VPN Setup"
+title = "VPN Setup"
 chapter = false
 weight = 50
 +++

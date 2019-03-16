@@ -1,5 +1,5 @@
 +++
-menutitle = "Delete Default VPC"
+title = "Delete Default VPC"
 chapter = false
 weight = 30
 +++

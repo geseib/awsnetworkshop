@@ -1,5 +1,5 @@
 +++
-menutitle = "Create KeyPair"
+title = "Create KeyPair"
 chapter = false
 weight = 20
 +++

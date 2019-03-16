@@ -1,10 +1,10 @@
 +++
-menutitle = "AWS Networking Workshop"
+title = "AWS Networking Workshop"
 chapter = false
 weight = 1
 +++
 
-# AWS Networking Workshop
+### What to expect
 
 This Networking workshop shows how to setup communication between multiple VPCs and on-premise resources in our Datacenter.
 

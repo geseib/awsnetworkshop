@@ -1,10 +1,9 @@
 +++
+title = "AWS Services Explored"
 menutitle = "Services Covered"
 chapter = false
 weight = 30
 +++
-
-# AWS Services Explored
 
 - **Amazon Virtual Private Cloud (VPC)** - logically isolated section of the AWS Cloud.
 - **AWS Transit Gateway** - connectivity and routing between VPCs and Datacenter.

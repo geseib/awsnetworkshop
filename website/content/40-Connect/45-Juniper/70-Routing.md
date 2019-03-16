@@ -1,5 +1,5 @@
 +++
-menutitle = "Transit Gateway Routing"
+title = "Transit Gateway Routing"
 chapter = false
 weight = 70
 +++

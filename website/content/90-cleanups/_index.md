@@ -1,10 +1,8 @@
 +++
-menutitle = "Clean up"
+title = "Clean up"
 weight = 90
 chapter = false
 +++
-
-# Clean up
 
 After you have completed the workshop, in order to keep charges to a minimum, always delete resources you no longer need.
 
