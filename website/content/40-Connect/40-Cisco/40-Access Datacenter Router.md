@@ -1,8 +1,8 @@
----
-title: "Access the Datacenter Router"
-chapter: true
-weight: 40
----
++++
+title = "Access the Datacenter Router"
+chapter = false
+weight = 40
++++
 
 ## Access CSR using AWS Cloud9 Environment
 
@@ -17,7 +17,7 @@ In order to access and work on the Datacenter router, we will use AWS Cloud9. Cl
 
 1. This will bring up the Cloud9 Console and download the github repo to your working folder.
 
-1. From the **file** menu select **Upload Local Files...** and click **Select files** button, navigate to the key file you created earlier. _note: it should have a .pem extension_. In the Cloud9 console, the file will show up in the left-hand folder list. 
+1. From the **file** menu select **Upload Local Files...** and click **Select files** button, navigate to the key file you created earlier. _note: it should have a .pem extension_. In the Cloud9 console, the file will show up in the left-hand folder list.
    ![Upload file to Cloud9](/images/cloud9-uploadfile.png)
 
 1. In the main panel click the **x** sign next to the **welcome** tab to close this tab.

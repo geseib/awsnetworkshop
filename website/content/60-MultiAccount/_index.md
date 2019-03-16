@@ -1,10 +1,10 @@
 +++
-title = "MultiAccount"
-chapter = true
+
+title = "Multi-Account Sharing and Communications"
+menutitle = "MultiAccount"
+chapter = false
 weight = 60
 +++
-
-# Multi-Account Sharing and Communications
 
 ![Specify Details Screenshot](../images/Multiaccount-diagram.png)
 

@@ -1,6 +1,6 @@
 +++
-title = "Cisco Router in Datacenter"
-chapter = true
+menutitle = "Cisco Router in Datacenter"
+chapter = false
 weight = 41
 +++
 

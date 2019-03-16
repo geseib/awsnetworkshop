@@ -1,12 +1,16 @@
----
-title: "Deploy VPCs"
-chapter: true
-weight: 40
----
++++
+menutitle = "Deploy VPCs"
+chapter = false
+weight = 40
++++
 
-# Deploy Our Five VPCs
+## We will deploy five VPCs:
 
-### Run CloudFormation template 1.tgw-vpcs.yaml to deploy the VPCs.
+- Three for our Development, Test, and Production environments.
+- One for our shared services, such as VPC Endpoints and Hybrid DNS, and NAT Gateway.
+- One emulating our Datacenter.
+
+## Run CloudFormation template 1.tgw-vpcs.yaml to deploy the VPCs.
 
 1. Click on the CloudFormation Launch link below that corresponds to the AWS Region in which you want to deploy the workshop. _note: if you are sharing an account with someone else be sure to pick differnt regions._
 

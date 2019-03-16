@@ -1,10 +1,9 @@
----
-title: "Verify VPC Endpoint"
-chapter: true
-weight: 40
----
-
-# Verify Endpoint DNS Resolution
++++
+title = "Verify VPC Endpoint DNS Resolution"
+menutitle = "Verify VPC Endpoint"
+chapter = false
+weight = 40
++++
 
 1. In the AWS Management Console choose **Services** then select **Systems Manager**.
 

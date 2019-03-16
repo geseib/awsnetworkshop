@@ -1,10 +1,9 @@
----
-title: "Deploy DNS Server"
-chapter: true
-weight: 30
----
-
-# Build out DNS Infrastructure
++++
+title = "Build out DNS Infrastructure"
+menutitle = "Deploy DNS Server"
+chapter = false
+weight = 30
++++
 
 Run CloudFormation template 3.tgw-dns.yaml to deploy the Bind server in the Datacenter as well as add AWS Route53 Resolver endpoints in the Datacenter Services VPC.
 

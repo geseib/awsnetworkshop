@@ -1,6 +1,6 @@
 +++
 title = "Connecting the Datacenter to AWS "
-chapter = true
+chapter = false
 weight = 40
 +++
 

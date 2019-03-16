@@ -1,6 +1,6 @@
 +++
 title = "Juniper in Datacenter"
-chapter = true
+chapter = false
 weight = 45
 +++
 

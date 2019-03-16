@@ -1,10 +1,8 @@
----
-title: "Connectivity"
-chapter: true
-weight: 70
----
-
-# Connectivity
++++
+title = "Connectivity"
+chapter = false
+weight = 70
++++
 
 For connectivity between VPCs, AWS Transit Gateway make life easy. It will form the core of our VPC to VPC and VPC to Datacenter communication.
 

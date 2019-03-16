@@ -1,8 +1,8 @@
----
-title: "VPN Setup"
-chapter: true
-weight: 50
----
++++
+title = "VPN Setup"
+chapter = false
+weight = 50
++++
 
 ## Setup VPN Between Datacenter and Transit Gateway
 
