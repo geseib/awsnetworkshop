@@ -1,5 +1,6 @@
 +++
-menutitle = "Prerequisites for the Workshop"
+title = "Prerequisites for the Workshop"
+menutitle = "Prereqs for the Workshop"
 menumenutitle = "Prerequisites"
 chapter = false
 weight = 15
