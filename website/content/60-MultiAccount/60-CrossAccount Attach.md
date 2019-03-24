@@ -48,6 +48,6 @@ In the earlier deployment of our Transit Gateway, we allowed CloudFormation to d
 
 1. While at the **Transit Gateway Route Tables**, take a look at the **Propagations** tab. These are the Resources that dynamically inform the route table. An attachment can propagate to multiple route tables. For the New Non-Production (NP3) VPC, we want to propagate to the Non-Prod(Red) route table and the Datacenter/Datacenter Services ROute table (Green) route table. Lets start with the **Red Route Table**. We can see all of the VPCs are propagating their CIDR to the route table.
 
-1. Click in **Create Propagation** on the field "chose attachment to propagate" select the attachment with "Name Tag" NP3Attac and click in **create propagation**.
+1. Click in **Create Propagation** on the field "chose attachment to propagate" select the attachment with "Name Tag" NP3Attach and click in **create propagation**.
 
 1. Repeat the above step on the propagations tab for the **Green Route Table**.
