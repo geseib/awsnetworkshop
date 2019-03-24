@@ -1,8 +1,8 @@
 # AWS Networking Workshop
 
-If you are just looking to run this workshop, it can be viewed and run from [this website](https://awsnetworkshop.aws.seibtribe.com)
+If you are just looking to run this workshop, it can be viewed and run from [this website](https://networking.aworkshop.io)
 
-But if you are looking to modify or enhance, this project allows you to scaffold a workshop like [this website](https://awsnetworkshop.aws.seibtribe.com). Fork it and make something new with it...
+But if you are looking to modify or enhance, this project allows you to scaffold a workshop like [this website](https://networking.aworkshop.io). Fork it and make something new with it...
 
 Finally, if you are looking to build something entirely different, take a look at the scaffolding this workshop is built off of, [this repo](https://github.com/samdengler/aws-workshop-sample)
 
