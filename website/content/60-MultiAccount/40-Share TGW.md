@@ -39,4 +39,5 @@ The first scenario we want to walk through is sharing the Transit Gateway so tha
 - **Seclect Resource type** - from the drop down select **Transit Gateways**.
 - **ID** - from the list, select the Transit Gateway you created for the Lab
 - **Principals - optional** - in the search box, paste the account number or organization ID you recorded a few steps up (depending on which option you picked above). Click the **add** button to the right.
+
   Verify you have everything entered correctly and click the **Create resource share** in the bottom right of the main panel.
