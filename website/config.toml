@@ -31,7 +31,7 @@ hrefTargetBlank = true
 
 [[menu.shortcuts]]
 name = "<i class='fab fa-github'></i> GitHub Project"
-url = "https://github.com/geseib/networkshopdev"
+url = "https://github.com/geseib/awsnetworkshop"
 weight = 30
 
 [[menu.shortcuts]]
