@@ -1,0 +1,317 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Privatelink in TGW Workshop"
+
+Parameters:
+  ParentStack:
+    Description: "Stack name of parent VPC stack."
+    Type: String
+
+  AllAZs:
+    Description: "Do you want to deploy NLB across all AZs in new non-routable subnets"
+    Type: String
+    AllowedValues:
+      - 'yes'
+      - 'no'
+    Default: 'yes'
+
+Conditions:
+  CreateSubnets: !Equals [!Ref AllAZs, 'yes']
+  UsePrivateSubnets: !Equals [!Ref AllAZs, 'no']
+  Has3AZS: !Equals [!FindInMap [ RegionMap, !Ref "AWS::Region", AZS ], "3"]
+  Has4AZS: !Equals [!FindInMap [ RegionMap, !Ref "AWS::Region", AZS ], "4"]
+  Has5AZS: !Equals [!FindInMap [ RegionMap, !Ref "AWS::Region", AZS ], "5"]
+  CreateSubnet3: !And [!Or [Condition: Has3AZS, Condition: Has4AZS, Condition: Has5AZS], Condition: CreateSubnets]
+  CreateSubnet4: !And [!Or [Condition: Has4AZS, Condition: Has5AZS], Condition: CreateSubnets]
+  CreateSubnet5: !And [Condition: Has5AZS, Condition: CreateSubnets]
+    
+Mappings:
+  RegionMap:
+    'eu-north-1': 
+      AMI: "ami-d16fe6af"
+    'ap-south-1': 
+      AMI: "ami-0889b8a448de4fc44"
+    'eu-west-3': 
+      AMI: "ami-0451ae4fd8dd178f7"
+    'eu-west-2': 
+      AMI: "ami-09ead922c1dad67e4"
+    'eu-west-1': 
+      AMI: "ami-07683a44e80cd32c5"
+      AZS: "3"
+    'ap-northeast-3': 
+      AMI: "ami-088d713d672ed235e"
+    'ap-northeast-2': 
+      AMI: "ami-047f7b46bd6dd5d84"
+    'ap-northeast-1': 
+      AMI: "ami-0f9ae750e8274075b"
+    'sa-east-1': 
+      AMI: "ami-0669a96e355eac82f"
+    'ca-central-1': 
+      AMI: "ami-03338e1f67dae0168"
+      AZS: "2"
+    'ap-southeast-1': 
+      AMI: "ami-0b419c3a4b01d1859"
+      AZS: "3"
+    'ap-southeast-2': 
+      AMI: "ami-04481c741a0311bbb"
+      AZS: "3"
+    'eu-central-1': 
+      AMI: "ami-09def150731bdbcc2"
+    'us-east-1': 
+      AMI: "ami-0de53d8956e8dcf80"
+      AZS: "5"
+    'us-east-2': 
+      AMI: "ami-02bcbb802e03574ba"
+      AZS: "3"
+    'us-west-1': 
+      AMI: "ami-0019ef04ac50be30f"
+      AZS: "3"
+    'us-west-2': 
+      AMI: "ami-061392db613a6357b"
+      AZS: "4"
+
+Resources:
+
+  #Create Subnets
+  VpcCIDR:
+    Condition: CreateSubnets
+    Type: AWS::EC2::VPCCidrBlock
+    Properties : 
+        CidrBlock : 100.64.0.0/21
+        VpcId :
+          "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+
+
+  Subnet1:
+    Type: AWS::EC2::Subnet
+    Condition: CreateSubnets
+    DependsOn: VpcCIDR
+    Properties:
+      VpcId:
+        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+      CidrBlock: 100.64.1.0/24
+      AvailabilityZone: 
+        Fn::Select: 
+          - 0
+          - Fn::GetAZs: ""
+      Tags:
+        - Key: Name
+          Value: !Sub 'NP2-nlb-${ParentStack}-subnet-1'
+
+  Subnet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: VpcCIDR
+    Condition: CreateSubnets
+    Properties:
+      VpcId:
+        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+      CidrBlock: 100.64.2.0/24
+      AvailabilityZone: 
+        Fn::Select: 
+          - 1
+          - Fn::GetAZs: ""
+      Tags:
+        - Key: Name
+          Value: !Sub 'NP2-nlb-${ParentStack}-subnet-2'
+
+  Subnet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: VpcCIDR
+    Condition: CreateSubnet3
+    Properties:
+      VpcId: 
+        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+      CidrBlock: 100.64.3.0/24
+      AvailabilityZone: 
+        Fn::Select: 
+          - 2
+          - Fn::GetAZs: ""
+      Tags:
+        - Key: Name
+          Value: !Sub 'NP2-nlb-${ParentStack}-subnet-3'
+
+  Subnet4:
+    Type: AWS::EC2::Subnet
+    DependsOn: VpcCIDR
+    Condition: CreateSubnet4
+    Properties:
+      VpcId:
+        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+      CidrBlock: 100.64.4.0/24
+      AvailabilityZone: 
+        Fn::Select: 
+          - 3
+          - Fn::GetAZs: ""
+      Tags:
+        - Key: Name
+          Value: !Sub 'NP2-nlb-${ParentStack}-subnet-4'
+
+  Subnet5:
+    Type: AWS::EC2::Subnet
+    DependsOn: VpcCIDR
+    Condition: CreateSubnet5
+    Properties:
+      VpcId:
+        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+      CidrBlock: 100.64.5.0/24
+      AvailabilityZone: 
+        Fn::Select: 
+          - 4
+          - Fn::GetAZs: ""
+      Tags:
+        - Key: Name
+          Value: !Sub 'NP2-nlb-${ParentStack}-subnet-5'
+
+  NP2WebLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    DependsOn: WebInstanceProfileNP2
+    Properties : 
+      LaunchTemplateData : 
+        UserData: 
+          Fn::Base64:
+            Fn::Sub:
+              - |
+                #!/bin/bash
+                /usr/bin/yum -y install httpd php
+                /sbin/chkconfig httpd on
+                /sbin/service httpd start
+                /bin/echo -n "Welcome to my web server. Server private IP is " > /var/www/html/index.php
+                /opt/aws/bin/ec2-metadata -o | /bin/cut -d" " -f2 >> /var/www/html/index.php
+                /bin/echo -n "Availability Zone: " >> /var/www/html/index.php
+                /opt/aws/bin/ec2-metadata -z | /bin/cut -d" " -f2 >> /var/www/html/index.php
+                /bin/echo "Stack Name: ${parentstack}" >> /var/www/html/index.php
+                /bin/echo "your ip is <?php \$ip = isset(\$_SERVER['HTTP_CLIENT_IP']) ? \$_SERVER['HTTP_CLIENT_IP'] : isset(\$_SERVER['HTTP_X_FORWARDED_FOR']) ? \$_SERVER['HTTP_X_FORWARDED_FOR'] : \$_SERVER['REMOTE_ADDR']; echo \$ip;?>" >> /var/www/html/index.php
+                /bin/echo "" >> /var/www/html/index.php
+              - parentstack: !Ref ParentStack
+        InstanceType: t2.micro
+        IamInstanceProfile:
+          Name : !Ref WebInstanceProfileNP2
+        SecurityGroupIds:
+          - Ref: NP2WebEC2SecGroup
+        ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+        TagSpecifications:
+          -
+            ResourceType: instance
+            Tags:
+              -
+                Key: Name
+                Value: !Sub 'NP2-${ParentStack}-WebServer'   
+      LaunchTemplateName : !Join ["-", [NP2, Ref: "ParentStack", "WebTemplate"]]
+
+  # Create a security group that allows access to HTTP from all 10.0.0.0 addresses (internal)
+  NP2WebEC2SecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open-up HTTP for internalIP
+      GroupName: !Join ["-", [NP2, Ref: "ParentStack", "int-sec-group"]]
+      VpcId:
+        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 10.0.0.0/8
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 100.64.0.0/21
+        - IpProtocol: tcp
+          FromPort: "8080"
+          ToPort: "8080"
+          CidrIp: 10.0.0.0/8
+
+  NP2WebAutoScalingGroup:
+    DependsOn: NP2TargetGroup
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - "Fn::ImportValue": !Sub "NP2-${ParentStack}-PrivateSubnetA"
+        - "Fn::ImportValue": !Sub "NP2-${ParentStack}-PrivateSubnetB"
+      LaunchTemplate :
+        LaunchTemplateId: !Ref NP2WebLaunchTemplate
+        Version: !GetAtt NP2WebLaunchTemplate.LatestVersionNumber
+      MinSize: 2
+      MaxSize: 2
+      DesiredCapacity: 2
+      TargetGroupARNs:
+        - !Ref NP2TargetGroup
+
+  NP2privateNLB:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Type: network
+      Name: !Sub '${ParentStack}-NP2-NLB'
+      Scheme: internal
+      LoadBalancerAttributes:
+        -
+          Key: load_balancing.cross_zone.enabled
+          Value: true
+      Subnets:
+        - !If [CreateSubnets, !Ref Subnet1, "Fn::ImportValue": !Sub "NP2-${ParentStack}-PrivateSubnetA"]
+        - !If [CreateSubnets, !Ref Subnet2, "Fn::ImportValue": !Sub "NP2-${ParentStack}-PrivateSubnetB"]
+        - !If [CreateSubnet3, !Ref Subnet3, !Ref "AWS::NoValue"]
+        - !If [CreateSubnet4, !Ref Subnet4, !Ref "AWS::NoValue"]
+        - !If [CreateSubnet5, !Ref Subnet5, !Ref "AWS::NoValue"]
+      Tags:
+        -
+          Key: Name
+          Value: !Sub '${ParentStack}-NP2-NLB'
+
+
+  NLBListener:
+    Type : AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        -
+          Type: forward
+          TargetGroupArn: !Ref NP2TargetGroup
+      LoadBalancerArn: !Ref NP2privateNLB
+      Port: 80
+      Protocol: TCP
+
+  NP2TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      # HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: 200-399
+      Name: !Sub '${ParentStack}-NP2-http-tg'
+      Port: 80
+      Protocol: TCP
+      Tags:
+        - 
+          Key: Name
+          Value: !Sub '${ParentStack}-NP2-http-tg'      
+      VpcId:
+        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+
+  WebServerRoleNP2:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Join ["-", [NP2, Ref: "ParentStack", "WebSSMRole"]]
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+  WebInstanceProfileNP2:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref WebServerRoleNP2
+
+
+

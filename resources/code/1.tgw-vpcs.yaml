@@ -1699,3 +1699,23 @@ Outputs:
     Value: !Ref PrivateSubnetRouteTableDCS1
     Export:
       Name: !Sub "DCS1-${AWS::StackName}-PrivateRouteTable"
+  PrivateSubnetANP1:
+    Description: "NP1 Private Subnet A"
+    Value: !Ref PrivateSubnetANP1
+    Export:
+      Name: !Sub "NP1-${AWS::StackName}-PrivateSubnetA"
+  PrivateSubnetBNP1:
+    Description: "NP1 Private Subnet B"
+    Value: !Ref PrivateSubnetBNP1
+    Export:
+      Name: !Sub "NP1-${AWS::StackName}-PrivateSubnetB"  
+  PrivateSubnetANP2:
+    Description: "NP2 Private Subnet A"
+    Value: !Ref PrivateSubnetANP2
+    Export:
+      Name: !Sub "NP2-${AWS::StackName}-PrivateSubnetA"
+  PrivateSubnetBNP2:
+    Description: "NP2 Private Subnet B"
+    Value: !Ref PrivateSubnetBNP2
+    Export:
+      Name: !Sub "NP2-${AWS::StackName}-PrivateSubnetB"  
