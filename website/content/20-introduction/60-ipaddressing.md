@@ -1,10 +1,8 @@
----
-title: "IP Addressing"
-chapter: true
-weight: 60
----
-
-# IP Addressing
++++
+title = "IP Addressing"
+chapter = false
+weight = 60
++++
 
 ![Speficy Details Screenshot](../images/hybrid-subnets-diagram.png)
 

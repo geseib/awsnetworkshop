@@ -1,10 +1,9 @@
----
-title: "Investigate"
-chapter: true
-weight: 50
----
-
-# Investigate the VPCs
++++
+title = "Investigate the VPCs"
+menutitle = "Investigate"
+chapter = false
+weight = 50
++++
 
 ## Look at the Subnets, route tables, etc.
 

@@ -220,6 +220,7 @@ Resources:
       Roles:
         - !Ref ServerRoleNP1
 
+#ICMP is allowed from anywhere within 10.0.0.0 address space (not recommended for real environments) 
   NP1Ec2SecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -303,6 +304,7 @@ Resources:
         Ref: AttachSubnetRouteTableNP1
       SubnetId:
         Ref: AttachSubnetBNP1
+
 
   EndpointSecGroupNP1:
     Type: AWS::EC2::SecurityGroup
@@ -492,7 +494,7 @@ Resources:
   NP2Ec2SecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Open-up ports for ICMP and SSH from 10.x.x.x
+      GroupDescription: Open-up ports for ICMP from 10.x.x.x and SSH from Datacenter
       GroupName: !Join ["-", [NP2, Ref: "AWS::StackName", "EC2-sec-group"]]
       VpcId:
         Ref: VPCNP2
@@ -761,7 +763,7 @@ Resources:
   P1Ec2SecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Open-up ports for ICMP and SSH from 10.x.x.x
+      GroupDescription: Open-up ports for ICMP from 10.x.x.x and SSH from Datacenter
       GroupName: !Join ["-", [P1, Ref: "AWS::StackName", "EC2-sec-group"]]
       VpcId:
         Ref: VPCP1
@@ -1050,6 +1052,7 @@ Resources:
     Properties:
       SubnetId:
         Ref: PrivateSubnetBDC1
+      PrivateIpAddress: 10.4.16.10
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       InstanceType: t2.micro
       SecurityGroupIds:

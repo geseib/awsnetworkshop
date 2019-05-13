@@ -1,15 +1,17 @@
----
-title: "Attach VPC"
-chapter: true
-weight: 60
----
++++
+title = "Attach VPC"
+menutitle = "Attach VPC"
+chapter = false
+weight = 60
++++
 
-# Create a Transit Gateway Attachment to the Shared Transit Gateway
+## Create a Transit Gateway Attachment to the Shared Transit Gateway
 
 In the earlier deployment of our Transit Gateway, we allowed CloudFormation to deploy our Attachments to the VPCs. This time we will walk through the install manually.
 
 ## HOW TO Attach VPC to Transit Gateway
 
+**Switch to the other account (from which one you shared the Transtit gateway**
 1. In the AWS Management Console change to the region you are working in. This is in the upper right hand drop down menu.
 
 1. In the AWS Management Console choose **Services** then select **VPC**.
@@ -46,5 +48,7 @@ In the earlier deployment of our Transit Gateway, we allowed CloudFormation to d
    ![Associate VPN](../images/tgw-vpnassocationspending.png)
 
 1. While at the **Transit Gateway Route Tables**, take a look at the **Propagations** tab. These are the Resources that dynamically inform the route table. An attachment can propagate to multiple route tables. For the New Non-Production (NP3) VPC, we want to propagate to the Non-Prod(Red) route table and the Datacenter/Datacenter Services ROute table (Green) route table. Lets start with the **Red Route Table**. We can see all of the VPCs are propagating their CIDR to the route table.
+
+1. Click in **Create Propagation** on the field "chose attachment to propagate" select the attachment with "Name Tag" NP3Attach and click in **create propagation**.
 
 1. Repeat the above step on the propagations tab for the **Green Route Table**.

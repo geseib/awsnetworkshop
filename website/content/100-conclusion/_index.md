@@ -1,7 +1,7 @@
 +++
-title = "Congrats!"
+menutitle = "Congrats!"
 weight = 100
-chapter = true
+chapter = false
 +++
 
 # Congratulations!

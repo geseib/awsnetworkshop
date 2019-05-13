@@ -1,8 +1,8 @@
----
-title: "VPN Setup"
-chapter: true
-weight: 50
----
++++
+title = "VPN Setup"
+chapter = false
+weight = 50
++++
 
 ## Setup VPN Between Datacenter and Transit Gateway
 
@@ -44,6 +44,8 @@ In a real production environment we would setup a second router for redundancy a
     ![Associate VPN](/images/tgw-vpnassocationspending.png)
 
 1.  While at the **Transit Gateway Route Tables**, take a look at the **Propagations** tab. These are the Resources that Dynamically inform the route table. An attachment can propagate to multiple route tables. For the Datacenter, we want to propagate to all of the route tables so the VPC associated with each route table can route back to the datacenter. Lets start with the **Green Route Table**. We can see all of the VPCs are propagating their CIDR to the route table. Since the **Datacenter Services VPC** is also associated with this route table, we need to propagate the VPN routes to the **Green Route Table**.
+
+1. Click in **Create Propagation** on the field "chose attachment to propagate" select the attachment with "Name Tag" NP3Attac and click in **create propagation**.
 
 1.  Repeat the above step on the propagations tab for the **Red Route Table** and the **Blue Route Table**.
 

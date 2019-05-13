@@ -1,6 +1,6 @@
 +++
-title = "Introduction"
-chapter = true
+menutitle = "Introduction"
+chapter = false
 weight = 20
 +++
 

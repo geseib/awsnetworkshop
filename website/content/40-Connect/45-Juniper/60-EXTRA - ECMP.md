@@ -1,8 +1,8 @@
----
-title: "EXTRA- ECMP"
-chapter: true
-weight: 60
----
++++
+title = "EXTRA- ECMP"
+chapter = false
+weight = 60
++++
 
 ## Extra: Create 2 more Equal Cost Paths to the Datacenter
 

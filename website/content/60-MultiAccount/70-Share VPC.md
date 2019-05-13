@@ -1,12 +1,12 @@
----
-title: "Share VPC"
-chapter: true
-weight: 70
----
++++
+title = "Share VPC"
+chapter = false
+weight = 70
++++
 
-# Share a VPC
+## Share a VPC with another account
 
-*note: VPCs (or more spacifically a VPCs Subnets) can only be shared with AWS accounts in the same organziation. To complete this lab use AWS Organzaitions. If you are given access by AWS at an AWS Event this is take care of for you.*
+_note: VPCs (or more spacifically a VPCs Subnets) can only be shared with AWS accounts in the same organziation. To complete this lab use AWS Organzaitions. If you are given access by AWS at an AWS Event this is take care of for you._
 
 Attaching VPCs in other Accounts is super useful and has its place. But many times, we dont need things to be in separate networks, we just need to separate out who can manage the resources we put in the network. Customer's in the past often created this isolation by using Resource Tags, IAM polices, and IAM roles. Many times, creating a new account and VPC just for this separation. Now with Resource Access Manager and the ability to share Subnets in a VPC, multiple accounts can place resources into the same VPC. Each account having the ability to define its own account limits, security policy, and IAM roles. It also makes the for a cleaner and easier to use network. To be clear, having multiple VPCs still has its place such as isolating security tiers, limiting audit scope, etc.) Lets take a look.
 
@@ -18,7 +18,7 @@ Attaching VPCs in other Accounts is super useful and has its place. But many tim
 
    **OPTION 1**
 
-   - Pair up with someone else completing this walkthrough and share your account number with them, and jot their account number down as well. You will use this when identifying **Principals** later. *note: AWS account must be in the same AWS ORganziation*
+   - Pair up with someone else completing this walkthrough and share your account number with them, and jot their account number down as well. You will use this when identifying **Principals** later. _note: AWS account must be in the same AWS ORganziation_
      You will deploy and EC2 instance in the other accounts NP-2 VPC and from their ping the server in NP1 VPC.
 
    **OPTION 2**
