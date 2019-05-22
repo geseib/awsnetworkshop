@@ -1,5 +1,5 @@
 +++
-title = "VPC PrivateLink"
+title = "VPC PrivateLink (for your own Services)"
 chapter = true
 weight = 52
 +++
