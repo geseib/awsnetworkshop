@@ -6,7 +6,7 @@ weight: 30
 
 ## Deploy a LoadBalanced Web in the NP2 VPC
 
-Run CloudFormation template 6.tgw-privatelink.yaml to deploy a Network LoadBalncer in either new subnets or the private subnets. The template will also deploy a Web Application using an Autoscaling Group in the NP2 private subnets.
+Run CloudFormation template 6.tgw-privatelink.yaml to deploy a Network LoadBalancer in either new subnets or the private subnets. The template will also deploy a Web Application using an Autoscaling Group in the NP2 private subnets.
 
 ## HOW TO Deploy the NLB and Autoscaling Group
 

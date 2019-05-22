@@ -1,5 +1,5 @@
 +++
-title = "VPC Endpoints"
+title = "VPC Endpoints (for AWS Services)"
 chapter = false
 weight = 51
 +++

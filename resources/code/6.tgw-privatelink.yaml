@@ -181,6 +181,11 @@ Resources:
                 /bin/echo "Stack Name: ${parentstack}" >> /var/www/html/index.php
                 /bin/echo "your ip is <?php \$ip = isset(\$_SERVER['HTTP_CLIENT_IP']) ? \$_SERVER['HTTP_CLIENT_IP'] : isset(\$_SERVER['HTTP_X_FORWARDED_FOR']) ? \$_SERVER['HTTP_X_FORWARDED_FOR'] : \$_SERVER['REMOTE_ADDR']; echo \$ip;?>" >> /var/www/html/index.php
                 /bin/echo "" >> /var/www/html/index.php
+                /bin/echo "LoadModule remoteip_module modules/mod_remoteip.so" > /etc/httpd/conf.d/remoteip.conf
+                /bin/echo "RemoteIPHeader X-Forwarded-For" >> /etc/httpd/conf.d/remoteip.conf
+                /bin/echo "RemoteIPInternalProxy 100.64.0.0/10" >> /etc/httpd/conf.d/remoteip.conf
+                /bin/echo "RemoteIPProxyProtocol On" >> /etc/httpd/conf/httpd.conf
+
               - parentstack: !Ref ParentStack
         InstanceType: t2.micro
         IamInstanceProfile:
