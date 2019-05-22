@@ -1,6 +1,6 @@
 +++
 title = "Verify NLB App"
-menutitle = "Verify DNS"
+menutitle = "Verify App"
 chapter = false
 weight = 40
 +++
@@ -23,7 +23,7 @@ Stack Name: tgw2
 your ip is 10.17.18.25
 ```
 
-![Curl web.np2.aws...](../images/plnp2tonp2flow.png)
+![Curl web.np2.aws...](../images/pl-np2tonp2flow.png)
 
 ## Routing Boundaries
 
@@ -32,7 +32,7 @@ If you chose add new subnets and tested between the NP1 server and the web servi
  <details>
    <summary>SPOLIER Diving deeper into VPC routing</summary><p>
 
-      If you take a look athe addresses resolved when doing a DIG or looking in the console at the new subents that were created, you should have a pretty good hint.
+  If you take a look at the addresses resolved when doing a DIG or looking in the console at the new subents that were created, you should have a pretty good hint.
 
 Is it the Transit Gateway Routes?
 
@@ -55,6 +55,8 @@ Is it the Transit Gateway Routes?
 
   Nope, the 0.0.0.0/0 route would send the traffic to the Transit Gateway and thats the direction we want it to go.
 </details>
+
+## Lets Take a closer look
 
 1. In the AWS Management Console choose **Services** then select **Systems Manager**.
 

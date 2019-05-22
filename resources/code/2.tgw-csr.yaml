@@ -28,10 +28,12 @@ Parameters:
     AllowedValues: 
       - Cisco
       - Juniper
-    ConstraintDescription: must specify Cisco or Juniper.
+      - OpenSwan
+    ConstraintDescription: must specify Cisco, Juniper, or OpenSwan.
 Conditions: 
   CreateCiscoCSR: !Equals [ !Ref RouterChoice, Cisco ]
   CreateJuniperSRX: !Equals [ !Ref RouterChoice, Juniper ]
+  CreateOpenSwan: !Equals [ !Ref RouterChoice, OpenSwan]
 
 Mappings:
   # AMI for Cisco CSR1kv and Juniper SRX
@@ -75,6 +77,7 @@ Mappings:
     "us-east-2":
       CSRAMI: "ami-0a7ff2b6b77a28edc"
       SRXAMI: ami-00230365
+      SWANAMI: "ami-0ebbf2179e615c338"
     "us-west-1":
       CSRAMI: "ami-03071ea2421d5ad89"
       SRXAMI: ami-9186aff1
@@ -145,6 +148,18 @@ Resources:
     Properties:
       BgpAsn: 65001
       IpAddress: !Ref vSRXEip12
+      Tags:
+        - Key: Name
+          Value: DC1-CGW
+      Type: ipsec.1
+  
+  SwanCustomerGateway:
+    Condition: CreateOpenSwan
+    Type: AWS::EC2::CustomerGateway
+    DependsOn: SwanIP
+    Properties:
+      BgpAsn: 65001
+      IpAddress: !Ref SwanIP
       Tags:
         - Key: Name
           Value: DC1-CGW
@@ -362,7 +377,145 @@ Resources:
       DestinationCidrBlock: 10.0.0.0/11
       NetworkInterfaceId:
         Ref: vSRXInterface11
-  
+
+#OpenSwan VPN 
+  SwanSecGroup:
+    Condition: CreateOpenSwan
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: OpenSwan Security Group Rules
+      VpcId:
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-VPC"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: 10.4.0.0/16
+        - IpProtocol: icmp
+          FromPort: "-1"
+          ToPort: "-1"
+          CidrIp: 10.0.0.0/8
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          FromPort: "0"
+          ToPort: "65535"
+          CidrIp: 0.0.0.0/0
+
+  SwanIP:
+    Condition: CreateOpenSwan
+    Type: "AWS::EC2::EIP"
+    Properties:
+      Domain: vpc
+
+  SwanInterface:
+    Condition: CreateOpenSwan
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      SubnetId:
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-PublicSubnetA"
+      Description: Interface for VPN and SSH
+      GroupSet:
+        - Ref: SwanSecGroup
+      SourceDestCheck: false
+      Tags:
+        - Key: Name
+          Value: OpenSwan  
+
+  SwanInstance:
+    Type: AWS::EC2::Instance
+    Condition: CreateOpenSwan
+    DependsOn:
+    - SwanInterface
+    Properties:
+      IamInstanceProfile:
+        Ref: InstanceProfile
+      ImageId:
+        Fn::FindInMap:
+          - RegionMap
+          - Ref: AWS::Region
+          - SWANAMI
+      InstanceType: t3.nano
+      KeyName: !Ref KeyPair
+      NetworkInterfaces:
+      - DeviceIndex: 0
+        NetworkInterfaceId:
+          Ref: SwanInterface
+      SourceDestCheck: false
+      Tags:
+      - Key: Name
+        Value: OpenSwan VPN
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+            amazon-linux-extras install epel
+            yum install -y strongswan
+            echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+            sysctl -p /etc/sysctl.conf
+            PUBLICIP=$(curl -s http://169.254.169.254/2018-09-24/meta-data/public-ipv4)
+            PRIVATEIP=$(curl -s http://169.254.169.254/2018-09-24/meta-data/local-ipv4)
+            cat <<EOT >>/tmp/ipsec.conf.template
+            conn %default
+              ikelifetime=60m
+              keylife=20m
+              rekeymargin=3m
+              keyingtries=1
+              authby=secret
+              keyexchange=ikev2
+              mobike=no
+
+            conn dc2aws1
+              closeaction=restart
+              dpdaction=restart
+              authby=secret
+              left={PRIVATEIP}
+              leftid={PUBLICIP}
+              leftsubnet=0.0.0.0/0
+              right={VPN1}
+              rightsubnet=10.0.0.0/8
+              ike=aes256-sha1-modp1024!
+              esp=aes256-sha1!
+              reauth=no
+              auto=start
+            
+            conn dc2aws2
+              closeaction=restart
+              dpdaction=restart
+              authby=secret
+              left={PRIVATEIP}
+              leftid={PUBLICIP}
+              leftsubnet=0.0.0.0/0
+              right={VPN2}
+              rightsubnet=10.0.0.0/8
+              ike=aes256-sha1-modp1024!
+              esp=aes256-sha1!
+              reauth=no
+              auto=start
+
+
+            EOT
+            sed -i "s/{PUBLICIP}/$PUBLICIP/" /tmp/ipsec.conf.template
+            sed -i "s/{PRIVATEIP}/$PRIVATEIP/" /tmp/ipsec.conf.template
+            mv -f /tmp/ipsec.conf.template /etc/strongswan/ipsec.conf
+            echo "$PUBLICIP 10.1.1.1 : PSK \"amazonaws\"" >> /etc/strongswan/ipsec.secrets
+            systemctl enable strongswan
+            systemctl start strongswan
+            strongswan up dc2aws1
+            strongswan up dc2aws2
+            
+  SwanPrivateDefaultRoute:
+    Condition: CreateOpenSwan
+    Type: AWS::EC2::Route
+    DependsOn: SwanInterface
+    Properties:
+      RouteTableId:
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-PrivateRouteTable"
+      DestinationCidrBlock: 10.0.0.0/11
+      NetworkInterfaceId:
+        Ref: SwanInterface
+
 # Create NAT Gateway for BindServer To Get out to Internet
 
   DC1NATEIP:
