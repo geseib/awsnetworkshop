@@ -185,6 +185,7 @@ Resources:
                 /bin/echo "RemoteIPHeader X-Forwarded-For" >> /etc/httpd/conf.d/remoteip.conf
                 /bin/echo "RemoteIPInternalProxy 100.64.0.0/10" >> /etc/httpd/conf.d/remoteip.conf
                 /bin/echo "RemoteIPProxyProtocol On" >> /etc/httpd/conf/httpd.conf
+                /sbin/service httpd restart
 
               - parentstack: !Ref ParentStack
         InstanceType: t2.micro
@@ -207,7 +208,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Open-up HTTP for internalIP
-      GroupName: !Join ["-", [NP2, Ref: "ParentStack", "int-sec-group"]]
+      GroupName: !Join ["-", [NP2, Ref: "ParentStack", "web-sec-group"]]
       VpcId:
         "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
       SecurityGroupIngress:
@@ -223,6 +224,24 @@ Resources:
           FromPort: "8080"
           ToPort: "8080"
           CidrIp: 10.0.0.0/8
+
+  NP1WebEC2SecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open-up HTTP for internalIP
+      GroupName: !Join ["-", [NP1, Ref: "ParentStack", "web-sec-group"]]
+      VpcId:
+        "Fn::ImportValue": !Sub "NP1-${ParentStack}-VPC"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 10.0.0.0/8
+        - IpProtocol: tcp
+          FromPort: "8080"
+          ToPort: "8080"
+          CidrIp: 10.0.0.0/8
+  
 
   NP2WebAutoScalingGroup:
     DependsOn: NP2TargetGroup
