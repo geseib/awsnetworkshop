@@ -1,11 +1,10 @@
 +++
-title = "Create NP2 Endpoint Service"
-menutitle = "Create Endpoint Service"
+title = "Create NP2 Peering Request"
 chapter = false
 weight = 50
 +++
 
-## Create Endpoint Service
+## Create VPC Peering Request in NP2
 As the Service Provider, you want to enable your NLB to be shared with other VPCs. You Can whitelist AWS accounts that can create Endpoints in their VPCs if they explicitly know the name of your new Endpoint Service. if with the Whitelisting, you also have the ability to require explicit aknowledgement from the service provider side, before their PrivateLink becomes active.
 
 1. In the AWS Management Console choose **Services** then select **VPC**.
