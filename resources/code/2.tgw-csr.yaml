@@ -56,6 +56,7 @@ Mappings:
       SRXAMI: ami-2bbe6745
     "ap-northeast-1":
       CSRAMI: "ami-064fad029163bc712"
+      SRXAMI: ami-02729164
     "sa-east-1":
       CSRAMI: "ami-04e46fb7714051cd4"
       SRXAMI: ami-0656216a

@@ -43,6 +43,7 @@ Mappings:
       AMI: "ami-047f7b46bd6dd5d84"
     'ap-northeast-1': 
       AMI: "ami-0f9ae750e8274075b"
+      AZS: 3
     'sa-east-1': 
       AMI: "ami-0669a96e355eac82f"
     'ca-central-1': 
