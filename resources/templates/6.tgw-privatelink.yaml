@@ -43,6 +43,7 @@ Mappings:
       AMI: "ami-047f7b46bd6dd5d84"
     'ap-northeast-1': 
       AMI: "ami-0f9ae750e8274075b"
+      AZS: 3
     'sa-east-1': 
       AMI: "ami-0669a96e355eac82f"
     'ca-central-1': 
@@ -181,6 +182,12 @@ Resources:
                 /bin/echo "Stack Name: ${parentstack}" >> /var/www/html/index.php
                 /bin/echo "your ip is <?php \$ip = isset(\$_SERVER['HTTP_CLIENT_IP']) ? \$_SERVER['HTTP_CLIENT_IP'] : isset(\$_SERVER['HTTP_X_FORWARDED_FOR']) ? \$_SERVER['HTTP_X_FORWARDED_FOR'] : \$_SERVER['REMOTE_ADDR']; echo \$ip;?>" >> /var/www/html/index.php
                 /bin/echo "" >> /var/www/html/index.php
+                /bin/echo "LoadModule remoteip_module modules/mod_remoteip.so" > /etc/httpd/conf.d/remoteip.conf
+                /bin/echo "RemoteIPHeader X-Forwarded-For" >> /etc/httpd/conf.d/remoteip.conf
+                /bin/echo "RemoteIPInternalProxy 100.64.0.0/10" >> /etc/httpd/conf.d/remoteip.conf
+                /bin/echo "RemoteIPProxyProtocol On" >> /etc/httpd/conf/httpd.conf
+                /sbin/service httpd restart
+
               - parentstack: !Ref ParentStack
         InstanceType: t2.micro
         IamInstanceProfile:
@@ -202,7 +209,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Open-up HTTP for internalIP
-      GroupName: !Join ["-", [NP2, Ref: "ParentStack", "int-sec-group"]]
+      GroupName: !Join ["-", [NP2, Ref: "ParentStack", "web-sec-group"]]
       VpcId:
         "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
       SecurityGroupIngress:
@@ -218,6 +225,24 @@ Resources:
           FromPort: "8080"
           ToPort: "8080"
           CidrIp: 10.0.0.0/8
+
+  NP1WebEC2SecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open-up HTTP for internalIP
+      GroupName: !Join ["-", [NP1, Ref: "ParentStack", "web-sec-group"]]
+      VpcId:
+        "Fn::ImportValue": !Sub "NP1-${ParentStack}-VPC"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 10.0.0.0/8
+        - IpProtocol: tcp
+          FromPort: "8080"
+          ToPort: "8080"
+          CidrIp: 10.0.0.0/8
+  
 
   NP2WebAutoScalingGroup:
     DependsOn: NP2TargetGroup

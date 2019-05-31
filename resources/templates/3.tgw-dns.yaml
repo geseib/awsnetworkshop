@@ -471,3 +471,22 @@ Outputs:
     Value: !GetAtt BindENI.PrimaryPrivateIpAddress
     Export:
       Name: !Sub "${ParentStack}-bind-ip"
+
+  NP1Zone:
+    Description: NP1 DNS Hoseted Zone ID
+    Value: !Ref "NP1Zone"
+    Export:
+      Name: !Sub "${ParentStack}-NP1-Zone"
+
+  NP2Zone:
+    Description: NP2 DNS Hoseted Zone ID
+    Value: !Ref "NP2Zone"
+    Export:
+      Name: !Sub "${ParentStack}-NP2-Zone"
+  
+  P1Zone:
+    Description: P1 DNS Hoseted Zone ID
+    Value: !Ref "P1Zone"
+    Export:
+      Name: !Sub "${ParentStack}-P1-Zone"
+  
