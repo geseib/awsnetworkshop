@@ -1,20 +1,25 @@
 +++
-title = "VPC PrivateLink (for your own Services)"
+title = "VPC Peering"
 chapter = true
-weight = 52
+weight = 55
 +++
 
-# VPC PrivateLink
+# VPC Peering
 
-AWS PrivateLink simplifies the security of data shared with cloud-based applications by eliminating the exposure of data to the public Internet. AWS PrivateLink provides private connectivity between VPCs, AWS services, and on-premises applications, securely on the Amazon network. AWS PrivateLink makes it easy to connect services across different accounts and VPCs to significantly simplify the network architecture.
+Amazon Virtual Private Cloud (Amazon VPC) enables you to launch AWS resources into a virtual network that you've defined.
 
-While we could choose to provide connectivity to an application via the Transit Gateway, there may be times where we want to share access to an application to clients that do not have a route that application. 
+A VPC peering connection is a networking connection between two VPCs that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different regions (also known as an inter-region VPC peering connection).
 
-A couple of Scenarios:
-1. application in a VPC that has no VPN or TGW access to other VPCS.
-1. application in a VPC which has overlapping IP addresses with the VPC you want to share with
-1. Sharing an applilcation with partners or cusotmers that should only have access to a single application.
-1. limit the firewall rules for access to an on premise application by using Privatelink as a single point of access for all VPCs in a region
+While we could choose to provide connectivity to an application via the Transit Gateway, there may be times where we want to share access to an VPC from another VPC when there is not a route between them. 
+
+##A couple of Scenarios:
+1. multiple applications in a VPC that has no VPN or TGW access to other VPCS.
+1. you need more bandwidth that Transit Gateway provides. While TGW provides over 40Gbps per Availability Zone, Peering within the same regions is nearly unlimited, only limited by the individual Instances and services bandwidth limits. **i.e. you could have 100 instances of i3.8xlarge with 10Gbps each talking to 100 instances i3.8xlarge in another VPC. Over VPC peering, they could be running at near line rate to each other.
+
+##Caveats
+1. The two VPCs cannot have overlapping IP address spaces in their CIDRs. 
+1. 
+
 
 The most important factor in deciding to use PrivateLink is "Do I want to provide application connectivity where Broader networking connectivty is not available, possible, or desirable by security
 
