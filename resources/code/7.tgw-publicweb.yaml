@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "Privatelink in TGW Workshop"
+Description: "Public Web Servers in TGW Workshop"
 
 Parameters:
   ParentStack:
@@ -10,20 +10,34 @@ Parameters:
     Description: "Do you want to deploy NLB across all AZs in new non-routable subnets"
     Type: String
     AllowedValues:
-      - 'yes'
-      - 'no'
-    Default: 'yes'
+      - 'public'
+      - 'private'
+      - 'new'
+    Default: 'new'
+
+  WhichVPC:
+    Description: "Which VPC to deploy to"
+    Type: String
+    AllowedValues:
+      - 'NP1'
+      - 'NP2'
+      - 'DCS1'
+      - 'P1'
+      - 'DC1'
+    Default: 'NP1'
 
 Conditions:
-  CreateSubnets: !Equals [!Ref AllAZs, 'yes']
-  UsePrivateSubnets: !Equals [!Ref AllAZs, 'no']
+  CreateSubnets: !Equals [!Ref AllAZs, 'new']
+  UsePrivateSubnets: !Equals [!Ref AllAZs, 'private']
+  UsePublicSubnets: !Equals [!Ref AllAZs, 'public']
+  CreatePrivateNLB: !Or [Condition: CreateSubnets, Condition: UsePrivateSubnets]
   Has3AZS: !Equals [!FindInMap [ RegionMap, !Ref "AWS::Region", AZS ], "3"]
   Has4AZS: !Equals [!FindInMap [ RegionMap, !Ref "AWS::Region", AZS ], "4"]
   Has5AZS: !Equals [!FindInMap [ RegionMap, !Ref "AWS::Region", AZS ], "5"]
   CreateSubnet3: !And [!Or [Condition: Has3AZS, Condition: Has4AZS, Condition: Has5AZS], Condition: CreateSubnets]
   CreateSubnet4: !And [!Or [Condition: Has4AZS, Condition: Has5AZS], Condition: CreateSubnets]
   CreateSubnet5: !And [Condition: Has5AZS, Condition: CreateSubnets]
-    
+
 Mappings:
   RegionMap:
     'eu-north-1': 
@@ -79,7 +93,7 @@ Resources:
     Properties : 
         CidrBlock : 100.64.0.0/21
         VpcId :
-          "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+          "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-VPC"
 
 
   Subnet1:
@@ -88,7 +102,7 @@ Resources:
     DependsOn: VpcCIDR
     Properties:
       VpcId:
-        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+        "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-VPC"
       CidrBlock: 100.64.1.0/24
       AvailabilityZone: 
         Fn::Select: 
@@ -96,7 +110,7 @@ Resources:
           - Fn::GetAZs: ""
       Tags:
         - Key: Name
-          Value: !Sub 'NP2-nlb-${ParentStack}-subnet-1'
+          Value: !Sub '${WhichVPC}-nlb-${ParentStack}-subnet-1'
 
   Subnet2:
     Type: AWS::EC2::Subnet
@@ -104,7 +118,7 @@ Resources:
     Condition: CreateSubnets
     Properties:
       VpcId:
-        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+        "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-VPC"
       CidrBlock: 100.64.2.0/24
       AvailabilityZone: 
         Fn::Select: 
@@ -112,7 +126,7 @@ Resources:
           - Fn::GetAZs: ""
       Tags:
         - Key: Name
-          Value: !Sub 'NP2-nlb-${ParentStack}-subnet-2'
+          Value: !Sub '${WhichVPC}-nlb-${ParentStack}-subnet-2'
 
   Subnet3:
     Type: AWS::EC2::Subnet
@@ -120,7 +134,7 @@ Resources:
     Condition: CreateSubnet3
     Properties:
       VpcId: 
-        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+        "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-VPC"
       CidrBlock: 100.64.3.0/24
       AvailabilityZone: 
         Fn::Select: 
@@ -128,7 +142,7 @@ Resources:
           - Fn::GetAZs: ""
       Tags:
         - Key: Name
-          Value: !Sub 'NP2-nlb-${ParentStack}-subnet-3'
+          Value: !Sub '${WhichVPC}-nlb-${ParentStack}-subnet-3'
 
   Subnet4:
     Type: AWS::EC2::Subnet
@@ -136,7 +150,7 @@ Resources:
     Condition: CreateSubnet4
     Properties:
       VpcId:
-        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+        "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-VPC"
       CidrBlock: 100.64.4.0/24
       AvailabilityZone: 
         Fn::Select: 
@@ -144,7 +158,7 @@ Resources:
           - Fn::GetAZs: ""
       Tags:
         - Key: Name
-          Value: !Sub 'NP2-nlb-${ParentStack}-subnet-4'
+          Value: !Sub '${WhichVPC}-nlb-${ParentStack}-subnet-4'
 
   Subnet5:
     Type: AWS::EC2::Subnet
@@ -152,7 +166,7 @@ Resources:
     Condition: CreateSubnet5
     Properties:
       VpcId:
-        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+        "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-VPC"
       CidrBlock: 100.64.5.0/24
       AvailabilityZone: 
         Fn::Select: 
@@ -160,11 +174,11 @@ Resources:
           - Fn::GetAZs: ""
       Tags:
         - Key: Name
-          Value: !Sub 'NP2-nlb-${ParentStack}-subnet-5'
+          Value: !Sub '${WhichVPC}-nlb-${ParentStack}-subnet-5'
 
-  NP2WebLaunchTemplate:
+  WebLaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
-    DependsOn: WebInstanceProfileNP2
+    DependsOn: WebInstanceProfile
     Properties : 
       LaunchTemplateData : 
         UserData: 
@@ -193,9 +207,9 @@ Resources:
               - parentstack: !Ref ParentStack
         InstanceType: t2.micro
         IamInstanceProfile:
-          Name : !Ref WebInstanceProfileNP2
+          Name : !Ref WebInstanceProfile
         SecurityGroupIds:
-          - Ref: NP2WebEC2SecGroup
+          - Ref: WebEC2SecGroup
         ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
         TagSpecifications:
           -
@@ -203,17 +217,17 @@ Resources:
             Tags:
               -
                 Key: Name
-                Value: !Sub 'NP2-${ParentStack}-WebServer'   
-      LaunchTemplateName : !Join ["-", [NP2, Ref: "ParentStack", "WebTemplate"]]
+                Value: !Sub '${WhichVPC}-${ParentStack}-WebServer'   
+      LaunchTemplateName : !Join ["-", [Ref: "WhichVPC", Ref: "ParentStack", "WebTemplate"]]
 
   # Create a security group that allows access to HTTP from all 10.0.0.0 addresses (internal)
-  NP2WebEC2SecGroup:
+  WebEC2SecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Open-up HTTP for internalIP
-      GroupName: !Join ["-", [NP2, Ref: "ParentStack", "web-sec-group"]]
+      GroupName: !Join ["-", [Ref: "WhichVPC", Ref: "ParentStack", "web-sec-group"]]
       VpcId:
-        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+        "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-VPC"
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "80"
@@ -223,16 +237,19 @@ Resources:
           FromPort: "80"
           ToPort: "80"
           CidrIp: 100.64.0.0/21
-        - IpProtocol: tcp
-          FromPort: "8080"
-          ToPort: "8080"
-          CidrIp: 10.0.0.0/8
+        - !If 
+          - UsePublicSubnets
+          - IpProtocol: tcp
+            FromPort: "80"
+            ToPort: "80"
+            CidrIp: 0.0.0.0/0
+          - !Ref "AWS::NoValue"
 
   NP1WebEC2SecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Open-up HTTP for internalIP
-      GroupName: !Join ["-", [NP1, Ref: "ParentStack", "web-sec-group"]]
+      GroupName: !Join ["-", [NP1, Ref: "ParentStack", "for",Ref: "AWS::StackName"]]
       VpcId:
         "Fn::ImportValue": !Sub "NP1-${ParentStack}-VPC"
       SecurityGroupIngress:
@@ -240,62 +257,92 @@ Resources:
           FromPort: "80"
           ToPort: "80"
           CidrIp: 10.0.0.0/8
-        - IpProtocol: tcp
-          FromPort: "8080"
-          ToPort: "8080"
-          CidrIp: 10.0.0.0/8
   
 
-  NP2WebAutoScalingGroup:
-    DependsOn: NP2TargetGroup
+  WebAutoScalingGroup:
+    DependsOn: TargetGroup
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-        - "Fn::ImportValue": !Sub "NP2-${ParentStack}-PrivateSubnetA"
-        - "Fn::ImportValue": !Sub "NP2-${ParentStack}-PrivateSubnetB"
+        - "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-PrivateSubnetA"
+        - "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-PrivateSubnetB"
       LaunchTemplate :
-        LaunchTemplateId: !Ref NP2WebLaunchTemplate
-        Version: !GetAtt NP2WebLaunchTemplate.LatestVersionNumber
+        LaunchTemplateId: !Ref WebLaunchTemplate
+        Version: !GetAtt WebLaunchTemplate.LatestVersionNumber
       MinSize: 2
       MaxSize: 2
       DesiredCapacity: 2
       TargetGroupARNs:
-        - !Ref NP2TargetGroup
+        - !Ref TargetGroup
 
-  NP2privateNLB:
+  WebNLBPrivate:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Condition: CreatePrivateNLB
     Properties:
       Type: network
-      Name: !Sub '${ParentStack}-NP2-NLB'
+      Name: !Sub '${ParentStack}-${WhichVPC}-NLB'
       Scheme: internal
       LoadBalancerAttributes:
         -
           Key: load_balancing.cross_zone.enabled
           Value: true
       Subnets:
-        - !If [CreateSubnets, !Ref Subnet1, "Fn::ImportValue": !Sub "NP2-${ParentStack}-PrivateSubnetA"]
-        - !If [CreateSubnets, !Ref Subnet2, "Fn::ImportValue": !Sub "NP2-${ParentStack}-PrivateSubnetB"]
+        - !If [CreateSubnets, !Ref Subnet1, "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-PrivateSubnetA"]
+        - !If [CreateSubnets, !Ref Subnet2, "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-PrivateSubnetB"]
         - !If [CreateSubnet3, !Ref Subnet3, !Ref "AWS::NoValue"]
         - !If [CreateSubnet4, !Ref Subnet4, !Ref "AWS::NoValue"]
         - !If [CreateSubnet5, !Ref Subnet5, !Ref "AWS::NoValue"]
       Tags:
         -
           Key: Name
-          Value: !Sub '${ParentStack}-NP2-NLB'
+          Value: !Sub '${ParentStack}-${WhichVPC}-NLB'
 
+  WebNLBPublic:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Condition: UsePublicSubnets
+    Properties:
+      Type: network
+      Name: !Sub '${ParentStack}-${WhichVPC}-NLB'
+      Scheme: internet-facing
+      LoadBalancerAttributes:
+        -
+          Key: load_balancing.cross_zone.enabled
+          Value: true
+      Subnets:
+        - !If [CreateSubnets, !Ref Subnet1, "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-PublicSubnetA"]
+        - !If [CreateSubnets, !Ref Subnet2, "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-PublicSubnetB"]
+      Tags:
+        -
+          Key: Name
+          Value: !Sub '${ParentStack}-${WhichVPC}-NLB'
 
-  NLBListener:
+  NLBListenerPublic:
     Type : AWS::ElasticLoadBalancingV2::Listener
+    Condition: UsePublicSubnets 
     Properties:
       DefaultActions:
         -
           Type: forward
-          TargetGroupArn: !Ref NP2TargetGroup
-      LoadBalancerArn: !Ref NP2privateNLB
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref WebNLBPublic
       Port: 80
       Protocol: TCP
 
-  NP2TargetGroup:
+  NLBListenerPrivate:
+    Type : AWS::ElasticLoadBalancingV2::Listener
+    Condition: CreatePrivateNLB 
+    Properties:
+      DefaultActions:
+        -
+          Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref WebNLBPrivate
+      Port: 80
+      Protocol: TCP
+
+
+
+  TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       HealthCheckIntervalSeconds: 10
@@ -306,20 +353,20 @@ Resources:
       UnhealthyThresholdCount: 2
       Matcher:
         HttpCode: 200-399
-      Name: !Sub '${ParentStack}-NP2-http-tg'
+      Name: !Sub '${ParentStack}-${WhichVPC}-http-tg'
       Port: 80
       Protocol: TCP
       Tags:
         - 
           Key: Name
-          Value: !Sub '${ParentStack}-NP2-http-tg'      
+          Value: !Sub '${ParentStack}-${WhichVPC}-http-tg'      
       VpcId:
-        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
+        "Fn::ImportValue": !Sub "${WhichVPC}-${ParentStack}-VPC"
 
-  WebServerRoleNP2:
+  WebServerRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Join ["-", [NP2, Ref: "ParentStack", "WebSSMRole"]]
+      RoleName: !Join ["-", [Ref: "WhichVPC", Ref: "ParentStack", "WebSSMRole"]]
       Path: "/"
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
@@ -333,25 +380,40 @@ Resources:
             Action:
               - sts:AssumeRole
 
-  WebInstanceProfileNP2:
+  WebInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: "/"
       Roles:
-        - !Ref WebServerRoleNP2
+        - !Ref WebServerRole
 
-  WebNP2DNSRecord:
+  WebDNSRecordPrivate:
     Type: AWS::Route53::RecordSetGroup
+    Condition: CreatePrivateNLB  
     Properties:
       HostedZoneId: 
-        "Fn::ImportValue": !Sub "${ParentStack}-NP2-Zone"
-      Comment: DNS name for NP2 Web Servers.
+        "Fn::ImportValue": !Sub "${ParentStack}-${WhichVPC}-Zone"
+      Comment: DNS name for Web Servers.
       RecordSets:
-      - Name: !Join ["", [web.np2.aws.,  "Fn::ImportValue": !Sub "${ParentStack}-Domain", .]]
+      - Name: !Join ["", [web., !Sub "${WhichVPC}", .aws.,  "Fn::ImportValue": !Sub "${ParentStack}-Domain", .]]
         Type: A
         AliasTarget:
-          HostedZoneId: !GetAtt NP2privateNLB.CanonicalHostedZoneID
-          DNSName: !GetAtt NP2privateNLB.DNSName
+          HostedZoneId: !GetAtt WebNLBPrivate.CanonicalHostedZoneID
+          DNSName: !GetAtt WebNLBPrivate.DNSName
+  
+  WebDNSRecordPublic:
+    Type: AWS::Route53::RecordSetGroup
+    Condition: UsePublicSubnets 
+    Properties:
+      HostedZoneId: 
+        "Fn::ImportValue": !Sub "${ParentStack}-${WhichVPC}-Zone"
+      Comment: DNS name for Web Servers.
+      RecordSets:
+      - Name: !Join ["", [web., !Sub "${WhichVPC}", .aws.,  "Fn::ImportValue": !Sub "${ParentStack}-Domain", .]]
+        Type: A
+        AliasTarget:
+          HostedZoneId: !GetAtt WebNLBPublic.CanonicalHostedZoneID
+          DNSName: !GetAtt WebNLBPublic.DNSName
 
 
 
