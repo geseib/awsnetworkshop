@@ -24,4 +24,4 @@ As the Service Provider, you want to enable your NLB to be shared with other VPC
 
 1. Click the **Create service** button at the bottom of the page.
 
-1. In a few minutes, the **Status** should show **Available** in the **Endpoint Services** list. 
+1. In a few minutes, the **Status** should show **Available** in the **Endpoint Services** list. Make a note of the **Service name** in the **Details** tab. It will start with **com.amazonaws.vpce.*region_name*.vpce-svc-...**. You will need to paste this **Service name** in the next module.
