@@ -12,13 +12,15 @@ A VPC peering connection is a networking connection between two VPCs that enable
 
 While we could choose to provide connectivity to an application via the Transit Gateway, there may be times where we want to share access to an VPC from another VPC when there is not a route between them. 
 
-##A couple of Scenarios:
+## A couple of Scenarios:
 1. multiple applications in a VPC that has no VPN or TGW access to other VPCS.
+
 1. you need more bandwidth that Transit Gateway provides. While TGW provides over 40Gbps per Availability Zone, Peering within the same regions is nearly unlimited, only limited by the individual Instances and services bandwidth limits. **i.e. you could have 100 instances of i3.8xlarge with 10Gbps each talking to 100 instances i3.8xlarge in another VPC. Over VPC peering, they could be running at near line rate to each other.
 
 ##Caveats
 1. The two VPCs cannot have overlapping IP address spaces in their CIDRs. 
-1. 
+1. You are limited to 50 VPC peering conections per VPC. However, this limit can be raised to 125.
+
 
 
 The most important factor in deciding to use PrivateLink is "Do I want to provide application connectivity where Broader networking connectivty is not available, possible, or desirable by security
@@ -30,10 +32,8 @@ Endpoints are virtual devices. They are horizontally scaled, redundant, and high
 
 In a multi-VPC envornment, such as this workshop, we have the path to access applications via the Transit Gateway, so we can see how accessing an application via PrivateLink differs from TGW.
 
-## Endpoint Service (Service Provider)
+## VPC Peer
 
-![public Endpoint](../images/pl-createService.png)
+![VPC peering](../images/peer-np1tonp2diagram.png)
 
-## Endpoint (Service Consumer)
 
-![Central VPC Endpoint](../images/pl-createEndpoint.png)
