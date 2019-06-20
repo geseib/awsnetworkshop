@@ -1,6 +1,6 @@
 +++
 title = "VPC Peering"
-chapter = true
+chapter = false
 weight = 55
 +++
 
