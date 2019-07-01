@@ -23,7 +23,7 @@ weight = 50
 
    ![VPCs](../images/vpc-yourvpcs.png)
 
-1. Feel free to investigate other aspects of the VPC, such as the **subnets** and the **route tables**. You will notice for example both NP1-_your_stack_name_-Priv-A Subnet and NP1-_your_stack_name_-Priv-B Subnet share a same **Route Table**, NP1-_your_stack_name_-Private Route Table. And that route table only has a route for the local VPC CIDR block. We will be changing that in the next lab, so that you can route outside of the NP1 VPC.
+1. Feel free to investigate other aspects of the VPC, such as the **subnets** and the **route tables**. You will notice for example both NP1-_your_stack_name_-Priv-A Subnet and NP1-_your_stack_name_-Priv-B Subnet share the same **route table**, NP1-_your_stack_name_-Private Route Table. And that route table only has a route for the local VPC CIDR block. We will be changing that in the next lab, so that you can route outside of the NP1 VPC.
 
    ![VPC Route Table](../images/vpc-routetable.png)
 
