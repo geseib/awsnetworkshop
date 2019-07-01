@@ -5,9 +5,9 @@ chapter = false
 weight = 50
 +++
 
-## Look at the Subnets, route tables, etc.
+## Look at the Subnets, Route Tables, etc.
 
-1. In the AWS Management Console change to the region you plan to work in and change. This is in the upper right hand drop down menu.
+1. In the AWS Management Console change to the region you plan to work in. This is in the upper right hand drop down menu.
 
 1. In the AWS Management Console choose **Services** then select **VPC**.
 
@@ -23,7 +23,7 @@ weight = 50
 
    ![VPCs](../images/vpc-yourvpcs.png)
 
-1. Feel free to look around other aspects of the VPC, such as the **subnets** and the **route tables**. You will notice for example both NP1-_your_stack_name_-Priv-A Subnet and NP1-_your_stack_name_-Priv-B Subnet share a same **Route table**, NP1-_your_stack_name_-Private Route Table. And that Route table only has a route for the local VPC CIDR block. We will be changing that in the next lab, so that you can route outside of the NP1 VPC.
+1. Feel free to investigate other aspects of the VPC, such as the **subnets** and the **route tables**. You will notice for example both NP1-_your_stack_name_-Priv-A Subnet and NP1-_your_stack_name_-Priv-B Subnet share a same **Route Table**, NP1-_your_stack_name_-Private Route Table. And that route table only has a route for the local VPC CIDR block. We will be changing that in the next lab, so that you can route outside of the NP1 VPC.
 
    ![VPC Route Table](../images/vpc-routetable.png)
 
@@ -31,9 +31,9 @@ weight = 50
 
 1. In the AWS Management Console choose **Services** then select **Systems Manager**. Systems Manager Gain Operational Insight and Take Action on AWS Resources. We are going to take a look a just one of seven capabilities of Systems Manager.
 
-1. From the menu on the left, Scroll down and select **Session Manager**. Session Manager allows us to use IAM role and policies to determine who has console access without having to manage ssh keys for our instances.
+1. From the menu on the left, Scroll down and select **Session Manager**. Session Manager allows us to use IAM roles and policies to determine who has console access without having to manage SSH keys for our instances.
 
-1. In the main pane, click the **Start session** button. Pick an Instance to shell into. You will now enter a bash shell prompt for that instance.
+1. In the main pane, click the **Start session** button. Select the radio button next to the instance you wish to log into. You will now receive a Bash shell prompt for that instance.
 
 1. Run a few commands like **ifconfig** or **cat /etc/resolv.conf**
 
@@ -66,4 +66,4 @@ weight = 50
 
 # Congratulations
 
-You now have **completed** this section. Continue to the next section to setup communication between VPCs and the Datacenter.
+You now have **completed** this section. Continue to the next section to setup communication between the VPCs and your Datacenter.
