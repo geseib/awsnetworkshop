@@ -6,8 +6,8 @@ weight = 40
 
 ## We will deploy five VPCs:
 
-- Three for our Development, Test, and Production environments.
-- One for our shared services, such as VPC Endpoints and Hybrid DNS, and NAT Gateway.
+- One each for our Development, Test, and Production environments, for a total of three.
+- One for our shared services, such as VPC Endpoints, Hybrid DNS, and NAT Gateway.
 - One emulating our Datacenter.
 
 ## Run CloudFormation template 1.tgw-vpcs.yaml to deploy the VPCs.
