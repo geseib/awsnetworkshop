@@ -22,7 +22,7 @@ Parameters:
     Default: "csr1000v-tgw"
  
   RouterChoice: 
-    Description: Juniper or Cisco Datacenter Router.
+    Description: Juniper or Cisco Datacenter Router. (OpenSwan not Working)
     Default: Cisco
     Type: String
     AllowedValues: 

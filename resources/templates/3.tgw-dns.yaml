@@ -415,6 +415,9 @@ Resources:
             Fn::ImportValue: !Sub "DCS1-${ParentStack}-VPC"
           VPCRegion: !Ref "AWS::Region"
         - VPCId:
+            Fn::ImportValue: !Sub "NP1-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+        - VPCId:
             Fn::ImportValue: !Sub "NP2-${ParentStack}-VPC"
           VPCRegion: !Ref "AWS::Region"
 
@@ -455,6 +458,27 @@ Resources:
       ResourceRecords:
         - "Fn::ImportValue": !Sub "P1-${ParentStack}-ServerIP"
 
+  # Create DCS1 Private Hosted Zone in Route 53
+  DCS1Zone:
+    Type: "AWS::Route53::HostedZone"
+    Properties:
+      HostedZoneConfig:
+        Comment: "DCS1 hosted zone"
+      Name: !Join [".", ["dcs1", "aws", Ref: Zone]]
+      VPCs:
+        - VPCId:
+            Fn::ImportValue: !Sub "DCS1-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+        - VPCId:
+            Fn::ImportValue: !Sub "P1-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+        - VPCId:
+            Fn::ImportValue: !Sub "NP1-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+        - VPCId:
+            Fn::ImportValue: !Sub "NP2-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+
 Outputs:
   BindSession:
     Description: session command
@@ -489,4 +513,17 @@ Outputs:
     Value: !Ref "P1Zone"
     Export:
       Name: !Sub "${ParentStack}-P1-Zone"
+  
+  DCS1Zone:
+    Description: DCS1 DNS Hoseted Zone ID
+    Value: !Ref "DCS1Zone"
+    Export:
+      Name: !Sub "${ParentStack}-DCS1-Zone"
+
+  Domain:
+    Description: Domain Name
+    Value: !Ref "Zone"
+    Export:
+      Name: !Sub "${ParentStack}-Domain"
+
   

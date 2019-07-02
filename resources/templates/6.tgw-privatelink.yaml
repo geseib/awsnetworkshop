@@ -185,7 +185,9 @@ Resources:
                 /bin/echo "LoadModule remoteip_module modules/mod_remoteip.so" > /etc/httpd/conf.d/remoteip.conf
                 /bin/echo "RemoteIPHeader X-Forwarded-For" >> /etc/httpd/conf.d/remoteip.conf
                 /bin/echo "RemoteIPInternalProxy 100.64.0.0/10" >> /etc/httpd/conf.d/remoteip.conf
-                /bin/echo "RemoteIPProxyProtocol On" >> /etc/httpd/conf/httpd.conf
+                /bin/echo "RemoteIPProxyProtocol Off" >> /etc/httpd/conf/httpd.conf
+                /bin/echo "RemoteIPProxyProtocolExceptions 127.0.0.1 100.64.0.0/10" >> /etc/httpd/conf/httpd.conf
+
                 /sbin/service httpd restart
 
               - parentstack: !Ref ParentStack
@@ -337,6 +339,19 @@ Resources:
       Path: "/"
       Roles:
         - !Ref WebServerRoleNP2
+
+  WebNP2DNSRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: 
+        "Fn::ImportValue": !Sub "${ParentStack}-NP2-Zone"
+      Comment: DNS name for NP2 Web Servers.
+      RecordSets:
+      - Name: !Join ["", [web.np2.aws.,  "Fn::ImportValue": !Sub "${ParentStack}-Domain", .]]
+        Type: A
+        AliasTarget:
+          HostedZoneId: !GetAtt NP2privateNLB.CanonicalHostedZoneID
+          DNSName: !GetAtt NP2privateNLB.DNSName
 
 
 

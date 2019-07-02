@@ -44,6 +44,8 @@ Mappings:
       AMI: "ami-012566705322e9a8e"
     "ap-northeast-1":
       AMI: "ami-00f9d04b3b3092052"
+      SSM: "com.amazonaws.ap-northeast-1.ssm"
+      SSMM: "com.amazonaws.ap-northeast-1.ssmmessages"
     "sa-east-1":
       AMI: "ami-0112d42866980b373"
     "ca-central-1":
@@ -245,6 +247,7 @@ Resources:
       SubnetId:
         Ref: PrivateSubnetBNP1
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      PrivateIpAddress: 10.16.22.100
       InstanceType: t2.micro
       SecurityGroupIds:
         - Ref: NP1Ec2SecGroup
@@ -516,6 +519,7 @@ Resources:
         Ref: PrivateSubnetBNP2
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       InstanceType: t2.micro
+      PrivateIpAddress: 10.17.22.100
       SecurityGroupIds:
         - Ref: NP2Ec2SecGroup
       IamInstanceProfile:
@@ -785,6 +789,7 @@ Resources:
         Ref: PrivateSubnetBP1
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       InstanceType: t2.micro
+      PrivateIpAddress: 10.8.22.100
       SecurityGroupIds:
         - Ref: P1Ec2SecGroup
       IamInstanceProfile:
@@ -1362,6 +1367,7 @@ Resources:
         Ref: PrivateSubnetBDCS1
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       InstanceType: t2.micro
+      PrivateIpAddress: 10.0.22.100
       SecurityGroupIds:
         - Ref: DCS1Ec2SecGroup
       IamInstanceProfile:
@@ -1595,7 +1601,26 @@ Outputs:
     Value: !Ref VPCP1
     Export:
       Name: !Sub "P1-${AWS::StackName}-VPC"
-
+  PublicSubnetAP1:
+    Description: "P1 Public Subnet A"
+    Value: !Ref PublicSubnetAP1
+    Export:
+      Name: !Sub "P1-${AWS::StackName}-PublicSubnetA"
+  PublicSubnetBP1:
+    Description: "P1 Public Subnet B"
+    Value: !Ref PublicSubnetBP1
+    Export:
+      Name: !Sub "P1-${AWS::StackName}-PublicSubnetB"
+  PrivateSubnetAP1:
+    Description: "P1 Private Subnet A"
+    Value: !Ref PrivateSubnetAP1
+    Export:
+      Name: !Sub "P1-${AWS::StackName}-PrivateSubnetA"
+  PrivateSubnetBP1:
+    Description: "P1 Private Subnet B"
+    Value: !Ref PrivateSubnetBP1
+    Export:
+      Name: !Sub "P1-${AWS::StackName}-PrivateSubnetB" 
   AttachSubnetAP1:
     Description: "P1 Attach Subnet A"
     Value: !Ref AttachSubnetAP1
@@ -1687,6 +1712,16 @@ Outputs:
     Value: !Ref AttachSubnetBDCS1
     Export:
       Name: !Sub "DCS1-${AWS::StackName}-AttachSubnetB"
+  PublicSubnetADCS1:
+    Description: "DCS1 Public Subnet A"
+    Value: !Ref PublicSubnetADCS1
+    Export:
+      Name: !Sub "DCS1-${AWS::StackName}-PublicSubnetA"
+  PublicSubnetBDCS1:
+    Description: "DCS1 Public Subnet B"
+    Value: !Ref PublicSubnetBDCS1
+    Export:
+      Name: !Sub "DCS1-${AWS::StackName}-PublicSubnetB"
   PrivateSubnetADCS1:
     Description: "DCS1 Private Subnet A"
     Value: !Ref PrivateSubnetADCS1
@@ -1702,6 +1737,18 @@ Outputs:
     Value: !Ref PrivateSubnetRouteTableDCS1
     Export:
       Name: !Sub "DCS1-${AWS::StackName}-PrivateRouteTable"
+
+  #NP1 Outputs
+  PublicSubnetANP1:
+    Description: "NP1 Public Subnet A"
+    Value: !Ref PublicSubnetANP1
+    Export:
+      Name: !Sub "NP1-${AWS::StackName}-PublicSubnetA"
+  PublicSubnetBNP1:
+    Description: "NP1 Public Subnet B"
+    Value: !Ref PublicSubnetBNP1
+    Export:
+      Name: !Sub "NP1-${AWS::StackName}-PublicSubnetB"
   PrivateSubnetANP1:
     Description: "NP1 Private Subnet A"
     Value: !Ref PrivateSubnetANP1
@@ -1712,6 +1759,18 @@ Outputs:
     Value: !Ref PrivateSubnetBNP1
     Export:
       Name: !Sub "NP1-${AWS::StackName}-PrivateSubnetB"  
+
+  #NP2 Outputs
+  PublicSubnetANP2:
+    Description: "NP2 Public Subnet A"
+    Value: !Ref PublicSubnetANP2
+    Export:
+      Name: !Sub "NP2-${AWS::StackName}-PublicSubnetA"
+  PublicSubnetBNP2:
+    Description: "NP2 Public Subnet B"
+    Value: !Ref PublicSubnetBNP2
+    Export:
+      Name: !Sub "NP2-${AWS::StackName}-PublicSubnetB"
   PrivateSubnetANP2:
     Description: "NP2 Private Subnet A"
     Value: !Ref PrivateSubnetANP2
@@ -1721,4 +1780,5 @@ Outputs:
     Description: "NP2 Private Subnet B"
     Value: !Ref PrivateSubnetBNP2
     Export:
-      Name: !Sub "NP2-${AWS::StackName}-PrivateSubnetB"  
+      Name: !Sub "NP2-${AWS::StackName}-PrivateSubnetB"
+
