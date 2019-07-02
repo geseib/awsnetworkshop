@@ -247,6 +247,7 @@ Resources:
       SubnetId:
         Ref: PrivateSubnetBNP1
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      PrivateIpAddress: 10.16.22.100
       InstanceType: t2.micro
       SecurityGroupIds:
         - Ref: NP1Ec2SecGroup
@@ -518,6 +519,7 @@ Resources:
         Ref: PrivateSubnetBNP2
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       InstanceType: t2.micro
+      PrivateIpAddress: 10.17.22.100
       SecurityGroupIds:
         - Ref: NP2Ec2SecGroup
       IamInstanceProfile:
@@ -787,6 +789,7 @@ Resources:
         Ref: PrivateSubnetBP1
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       InstanceType: t2.micro
+      PrivateIpAddress: 10.8.22.100
       SecurityGroupIds:
         - Ref: P1Ec2SecGroup
       IamInstanceProfile:
@@ -1364,6 +1367,7 @@ Resources:
         Ref: PrivateSubnetBDCS1
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       InstanceType: t2.micro
+      PrivateIpAddress: 10.0.22.100
       SecurityGroupIds:
         - Ref: DCS1Ec2SecGroup
       IamInstanceProfile:
