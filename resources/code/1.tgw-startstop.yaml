@@ -1,0 +1,175 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  parentStack:
+    Description: "Name of the CFN Stack for VPCs"
+    Type: String
+    Default: "net"
+Resources:
+  BasicAWSApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: Basic AWS Api Gateway
+      StageName: Staging
+
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      InlineCode: |
+        import json
+        def handler(event, context):
+        	response = {
+        		'statusCode': 200,
+        		'body': json.dumps('Hello Python')
+        	}
+        	return response
+      Handler: index.handler
+      Runtime: python3.7
+      Events:
+        HelloWorldApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BasicAWSApiGateway
+            Path: /hello
+            Method: GET
+
+  StartStopFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      InlineCode: |
+        import boto3, logging, os, json
+
+        #setup simple logging for INFO
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+
+        #define the connection
+        ec2 = boto3.resource('ec2')
+
+        def stop():    
+            filters = [{
+                    'Name': 'tag:Name',
+                    'Values': ['*'+os.environ['tagString']+'*']
+                },
+                {
+                    'Name': 'instance-state-name', 
+                    'Values': ['running']
+                }
+            ]
+            
+            #filter the instances
+            instances = ec2.instances.filter(Filters=filters)
+
+            #locate all running instances
+            RunningInstances = [instance.id for instance in instances]
+            
+            #print the instances for logging purposes
+            #print RunningInstances 
+            
+            #make sure there are actually instances to shut down. 
+            if len(RunningInstances) > 0:
+                #perform the shutdown
+                shuttingDown = ec2.instances.filter(InstanceIds=RunningInstances).stop()
+                print (shuttingDown)
+            else:
+                print ("Nothing to see here")
+            
+            return ("Stopped")
+                
+        def start():
+                # Use the filter() method of the instances collection to retrieve
+            # all running EC2 instances.
+            filters = [{
+                    'Name': 'tag:Name',
+                    'Values': ['*'+os.environ['tagString']+'*']
+                },
+                {
+                    'Name': 'instance-state-name', 
+                    'Values': ['stopped']
+                }
+            ]
+            
+            #filter the instances
+            instances = ec2.instances.filter(Filters=filters)
+
+            #locate all stopped instances
+            StoppedInstances = [instance.id for instance in instances]
+            
+            #print the instances for logging purposes
+            #print StoppedInstances 
+            
+            #make sure there are actually instances to start. 
+            if len(StoppedInstances) > 0:
+                #perform the startup
+                startingUp = ec2.instances.filter(InstanceIds=StoppedInstances).start()
+                print (startingUp)
+            else:
+                print ("Nothing to see here")
+            
+            return ("Started")
+
+        def handler(event, context):
+            # Use the filter() method of the instances collection to retrieve
+            # all running EC2 instances.
+            if event['pathParameters']['ec2action'] == "start":
+                returnStatus=start()
+            elif event['pathParameters']['ec2action'] == "stop":
+                returnStatus=stop()
+            else:
+                print("nothing to do here")
+                returnStatus="nothing to do here"
+            
+            response = {
+                'statusCode': 200,
+                'body': json.dumps(returnStatus)
+              }
+            return response
+      Handler: index.handler
+      Runtime: python3.7
+      Environment:
+        Variables:
+          tagString: !Ref parentStack
+      Events:
+        HelloWorldApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BasicAWSApiGateway
+            Path: /ec2/{ec2action}
+            Method: GET
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'ec2:StartInstances'
+                - 'ec2:StopInstances'
+              Resource: '*'
+              Condition:
+                StringLike:
+                  ec2:ResourceTag/Name: !Join ["", ['*', !Ref parentStack, '*']]
+            - Effect: Allow
+              Action:
+                - 'ec2:DescribeInstances'
+                - 'ec2:DescribeTags'
+              Resource: '*'
+
+Outputs:
+  helloWorld:
+    Description: "Start ec2 Instances"
+    Value: !Sub "https://${BasicAWSApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Staging/hello"
+    Export:
+      Name: !Sub "${AWS::StackName}-helloWorld"
+  ecs2start:
+    Description: "Start ec2 Instances"
+    Value: !Sub "https://${BasicAWSApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Staging/ec2/start"
+    Export:
+      Name: !Sub "${AWS::StackName}-ec2Start"
+  
+  ecs2stop:
+    Description: "Stop ec2 Instances"
+    Value: !Sub "https://${BasicAWSApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Staging/ec2/stop"
+    Export:
+      Name: !Sub "${AWS::StackName}-ec2Stop"
+
+
+
