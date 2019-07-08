@@ -11,7 +11,6 @@ In the earlier deployment of our Transit Gateway, we allowed CloudFormation to d
 
 ## HOW TO Attach VPC to Transit Gateway
 
-**Switch to the other account (from which one you shared the Transtit gateway**
 1. In the AWS Management Console change to the region you are working in. This is in the upper right hand drop down menu.
 
 1. In the AWS Management Console choose **Services** then select **VPC**.
@@ -40,7 +39,7 @@ In the earlier deployment of our Transit Gateway, we allowed CloudFormation to d
 1. On the **Edit routes** page, Click the **Add route** button and enter a default route by setting the destination of **0.0.0.0/0**. In the Target drop-down, select **Transit Gateway** and pick your Transit Gateway create for this project. Make sure its the one in the other account, not the account you are currently logged into.
    ![Stack Complete](../images/vpc-defaultroute.png)
 
-## Now we need to manage the routing in Transit Gateway account.
+## Now we need to manage the routing in Transit Gateway owner Account (Hub Account)
 
 1. From the Menu on the Left Select **Transit Gateway Attachments** to give the VCP attachment a name. Scan down the **Resource type** column for the Attachment with the **Name** blank. You can verify this Attachment is from the other Account by looking at the **Details** tab at the bottom of the main panel. The **Resource owner account ID** will be the other AWS account ID. \*note: Back at the top, if you click the pencil that appears when you mouse over the **Name** column, you can enter a name that is different than the first VPN. Be sure to click the _check_ mark to save the name.
 
