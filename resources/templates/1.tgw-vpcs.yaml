@@ -331,7 +331,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCNP1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssm"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -345,7 +345,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCNP1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSMM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssmmessages"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -601,7 +601,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCNP2
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssm"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -615,7 +615,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCNP2
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSMM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssmmessages"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -871,7 +871,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCP1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssm"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -885,7 +885,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCP1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSMM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssmmessages"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -1153,7 +1153,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCDC1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssm"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -1167,7 +1167,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCDC1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSMM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssmmessages"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -1438,23 +1438,23 @@ Resources:
         - IpProtocol: tcp
           FromPort: "1"
           ToPort: "65535"
-          CidrIp: 10.0.0.0/16
+          CidrIp: 10.0.0.0/8
         - IpProtocol: udp
           FromPort: "1"
           ToPort: "65535"
-          CidrIp: 10.0.0.0/16
+          CidrIp: 10.0.0.0/8
 
   SSMEndpointDCS1:
     Type: AWS::EC2::VPCEndpoint
     Properties:
       VpcId:
         Ref: VPCDCS1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssm"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
-        - Ref: AttachSubnetADCS1
-        - Ref: AttachSubnetBDCS1
+        - Ref: PrivateSubnetADCS1
+        - Ref: PrivateSubnetBDCS1
       SecurityGroupIds:
         - Ref: EndpointSecGroupDCS1
 
@@ -1463,12 +1463,12 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCDCS1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSMM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssmmessages"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
-        - Ref: AttachSubnetADCS1
-        - Ref: AttachSubnetBDCS1
+        - Ref: PrivateSubnetADCS1
+        - Ref: PrivateSubnetBDCS1
       SecurityGroupIds:
         - Ref: EndpointSecGroupDCS1
 

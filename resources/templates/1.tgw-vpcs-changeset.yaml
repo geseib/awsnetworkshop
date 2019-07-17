@@ -1354,11 +1354,11 @@ Resources:
         - IpProtocol: tcp
           FromPort: "1"
           ToPort: "65535"
-          CidrIp: 10.0.0.0/16
+          CidrIp: 10.0.0.0/8
         - IpProtocol: udp
           FromPort: "1"
           ToPort: "65535"
-          CidrIp: 10.0.0.0/16
+          CidrIp: 10.0.0.0/8
 
   SSMEndpointDCS1:
     Type: AWS::EC2::VPCEndpoint
@@ -1369,8 +1369,8 @@ Resources:
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
-        - Ref: AttachSubnetADCS1
-        - Ref: AttachSubnetBDCS1
+        - Ref: PrivateSubnetADCS1
+        - Ref: PrivateSubnetBDCS1
       SecurityGroupIds:
         - Ref: EndpointSecGroupDCS1
 
@@ -1383,8 +1383,8 @@ Resources:
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
-        - Ref: AttachSubnetADCS1
-        - Ref: AttachSubnetBDCS1
+        - Ref: PrivateSubnetADCS1
+        - Ref: PrivateSubnetBDCS1
       SecurityGroupIds:
         - Ref: EndpointSecGroupDCS1
 
@@ -1452,86 +1452,6 @@ Resources:
       RouteTableId:
         Ref: PrivateSubnetRouteTableDCS1
 
-#Whats changed: removed SSM endpoint (above) in each VPC except DCS1 and added PHZ for SSM
-  SSMDNSZone:
-    Type: "AWS::Route53::HostedZone"
-    Properties:
-      HostedZoneConfig:
-        Comment: "SSM PHZ"
-      Name: !Sub "ssm.${AWS::Region}.amazonaws.com"
-      VPCs:
-        - VPCId: !Ref VPCNP1
-          VPCRegion: !Ref "AWS::Region"
-        - VPCId: !Ref VPCNP2
-          VPCRegion: !Ref "AWS::Region"
-        - VPCId: !Ref VPCDCS1
-          VPCRegion: !Ref "AWS::Region"
-        - VPCId: !Ref VPCP1
-          VPCRegion: !Ref "AWS::Region"
-
-  SSMEPDNSRecord:
-    DependsOn: SSMEndpointDCS1
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !Ref "SSMDNSZone"
-      Comment: DNS name for SSM Endpoint.
-      Name: !Sub "ssm.${AWS::Region}.amazonaws.com"
-      Type: A
-      AliasTarget:
-        DNSName:
-          !Select [
-            1,
-            !Split [":", !Select [0, !GetAtt SSMEndpointDCS1.DnsEntries]],
-          ]
-        HostedZoneId:
-          !Select [
-            0,
-            !Split [":", !Select [0, !GetAtt SSMEndpointDCS1.DnsEntries]],
-          ]
-
-# SSM Message Central Endpoint
-  SSMMessDNSZone:
-    Type: "AWS::Route53::HostedZone"
-    Properties:
-      HostedZoneConfig:
-        Comment: "SSM Messages PHZ"
-      Name: !Sub "ssmmessages.${AWS::Region}.amazonaws.com"
-      VPCs:
-        - VPCId: !Ref VPCNP1
-          VPCRegion: !Ref "AWS::Region"
-        - VPCId: !Ref VPCNP2
-          VPCRegion: !Ref "AWS::Region"
-        - VPCId: !Ref VPCDCS1
-          VPCRegion: !Ref "AWS::Region"
-        - VPCId: !Ref VPCP1
-          VPCRegion: !Ref "AWS::Region"
-
-  SSMMessEPDNSRecord:
-    Type: AWS::Route53::RecordSet
-    DependsOn: SSMMEndpointDCS1
-    Properties:
-      HostedZoneId: !Ref "SSMMessDNSZone"
-      Comment: DNS name for SSM Messaging Endpoint.
-      Name: !Sub "ssmmessages.${AWS::Region}.amazonaws.com"
-      Type: A
-      AliasTarget:
-        DNSName:
-          !Select [
-            1,
-            !Split [":", !Select [0, !GetAtt SSMMEndpointDCS1.DnsEntries]],
-          ]
-        HostedZoneId:
-          !Select [
-            0,
-            !Split [":", !Select [0, !GetAtt SSMMEndpointDCS1.DnsEntries]],
-          ]
-  # StartStop API. see output for URL for start and stop of all EC2 instances in the workshop
-  APIStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      Parameters: 
-        parentStack : !Ref "AWS::StackName"
-      TemplateURL: "https://s3.amazonaws.com/network-resourcesbucket-9noob8qiv1uq/1.startstop.yaml"
 
 
 Outputs:
