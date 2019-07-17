@@ -24,62 +24,36 @@ Mappings:
   RegionMap:
     "ap-south-1":
       AMI: "ami-00796998f258969fd"
-      SSM: "com.amazonaws.ap-south-1.ssm"
-      SSMM: "com.amazonaws.ap-south-1.ssmmessages"
     "eu-west-3":
       AMI: "ami-04992646d54c69ef4"
-      SSM: "com.amazonaws.eu-west-3.ssm"
-      SSMM: "com.amazonaws.eu-west-3.ssmmessages"
     "eu-west-2":
       AMI: "ami-00ee3b59e07408c27"
-      SSM: "com.amazonaws.eu-west-2.ssm"
-      SSMM: "com.amazonaws.eu-west-2.ssmmessages"
     "eu-west-1":
       AMI: "ami-09693313102a30b2c"
-      SSM: "com.amazonaws.eu-west-1.ssm"
-      SSMM: "com.amazonaws.eu-west-1.ssmmessages"
     "ap-northeast-3":
       AMI: "ami-00f7ef6bf92e8f916"
     "ap-northeast-2":
       AMI: "ami-012566705322e9a8e"
     "ap-northeast-1":
       AMI: "ami-00f9d04b3b3092052"
-      SSM: "com.amazonaws.ap-northeast-1.ssm"
-      SSMM: "com.amazonaws.ap-northeast-1.ssmmessages"
     "sa-east-1":
       AMI: "ami-0112d42866980b373"
     "ca-central-1":
       AMI: "ami-05cac140c6a1fb960"
-      SSM: "com.amazonaws.ca-central-1.ssm"
-      SSMM: "com.amazonaws.ca-central-1.ssmmessages"
     "ap-southeast-1":
       AMI: "ami-01da99628f381e50a"
-      SSM: "com.amazonaws.ap-southeast-1.ssm"
-      SSMM: "com.amazonaws.ap-southeast-1.ssmmessages"
     "ap-southeast-2":
       AMI: "ami-00e17d1165b9dd3ec"
-      SSM: "com.amazonaws.ap-southeast-2.ssm"
-      SSMM: "com.amazonaws.ap-southeast-2.ssmmessages"
     "eu-central-1":
       AMI: "ami-02ea8f348fa28c108"
-      SSM: "com.amazonaws.eu-central-1.ssm"
-      SSMM: "com.amazonaws.eu-central-1.ssmmessages"
     "us-east-1":
       AMI: "ami-009d6802948d06e52"
-      SSM: "com.amazonaws.us-east-1.ssm"
-      SSMM: "com.amazonaws.us-east-1.ssmmessages"
     "us-east-2":
       AMI: "ami-02e680c4540db351e"
-      SSM: "com.amazonaws.us-east-2.ssm"
-      SSMM: "com.amazonaws.us-east-2.ssmmessages"
     "us-west-1":
       AMI: "ami-011b6930a81cd6aaf"
-      SSM: "com.amazonaws.us-west-1.ssm"
-      SSMM: "com.amazonaws.us-west-1.ssmmessages"
     "us-west-2":
       AMI: "ami-01bbe152bf19d0289"
-      SSM: "com.amazonaws.us-west-2.ssm"
-      SSMM: "com.amazonaws.us-west-2.ssmmessages"
 
 Resources:
   # Non-Prod 1 Resources
