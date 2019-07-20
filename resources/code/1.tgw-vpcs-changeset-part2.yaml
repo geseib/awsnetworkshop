@@ -22,64 +22,40 @@ Parameters:
 
 Mappings:
   RegionMap:
-    "ap-south-1":
-      AMI: "ami-00796998f258969fd"
-      SSM: "com.amazonaws.ap-south-1.ssm"
-      SSMM: "com.amazonaws.ap-south-1.ssmmessages"
-    "eu-west-3":
-      AMI: "ami-04992646d54c69ef4"
-      SSM: "com.amazonaws.eu-west-3.ssm"
-      SSMM: "com.amazonaws.eu-west-3.ssmmessages"
-    "eu-west-2":
-      AMI: "ami-00ee3b59e07408c27"
-      SSM: "com.amazonaws.eu-west-2.ssm"
-      SSMM: "com.amazonaws.eu-west-2.ssmmessages"
-    "eu-west-1":
-      AMI: "ami-09693313102a30b2c"
-      SSM: "com.amazonaws.eu-west-1.ssm"
-      SSMM: "com.amazonaws.eu-west-1.ssmmessages"
-    "ap-northeast-3":
-      AMI: "ami-00f7ef6bf92e8f916"
-    "ap-northeast-2":
-      AMI: "ami-012566705322e9a8e"
-    "ap-northeast-1":
-      AMI: "ami-00f9d04b3b3092052"
-      SSM: "com.amazonaws.ap-northeast-1.ssm"
-      SSMM: "com.amazonaws.ap-northeast-1.ssmmessages"
-    "sa-east-1":
-      AMI: "ami-0112d42866980b373"
-    "ca-central-1":
-      AMI: "ami-05cac140c6a1fb960"
-      SSM: "com.amazonaws.ca-central-1.ssm"
-      SSMM: "com.amazonaws.ca-central-1.ssmmessages"
-    "ap-southeast-1":
-      AMI: "ami-01da99628f381e50a"
-      SSM: "com.amazonaws.ap-southeast-1.ssm"
-      SSMM: "com.amazonaws.ap-southeast-1.ssmmessages"
-    "ap-southeast-2":
-      AMI: "ami-00e17d1165b9dd3ec"
-      SSM: "com.amazonaws.ap-southeast-2.ssm"
-      SSMM: "com.amazonaws.ap-southeast-2.ssmmessages"
-    "eu-central-1":
-      AMI: "ami-02ea8f348fa28c108"
-      SSM: "com.amazonaws.eu-central-1.ssm"
-      SSMM: "com.amazonaws.eu-central-1.ssmmessages"
-    "us-east-1":
-      AMI: "ami-009d6802948d06e52"
-      SSM: "com.amazonaws.us-east-1.ssm"
-      SSMM: "com.amazonaws.us-east-1.ssmmessages"
-    "us-east-2":
-      AMI: "ami-02e680c4540db351e"
-      SSM: "com.amazonaws.us-east-2.ssm"
-      SSMM: "com.amazonaws.us-east-2.ssmmessages"
-    "us-west-1":
-      AMI: "ami-011b6930a81cd6aaf"
-      SSM: "com.amazonaws.us-west-1.ssm"
-      SSMM: "com.amazonaws.us-west-1.ssmmessages"
-    "us-west-2":
-      AMI: "ami-01bbe152bf19d0289"
-      SSM: "com.amazonaws.us-west-2.ssm"
-      SSMM: "com.amazonaws.us-west-2.ssmmessages"
+    'eu-north-1':
+      AMI: "ami-3f36be41"
+    'ap-south-1':
+      AMI: "ami-0d2692b6acea72ee6"
+    'eu-west-3':
+      AMI: "ami-0adcddd3324248c4c"
+    'eu-west-2':
+      AMI: "ami-0d8e27447ec2c8410"
+    'eu-west-1':
+      AMI: "ami-0bbc25e23a7640b9b"
+    'ap-northeast-3':
+      AMI: "ami-0ee933a7f81beb045"
+    'ap-northeast-2':
+      AMI: "ami-095ca789e0549777d"
+    'ap-northeast-1':
+      AMI: "ami-0c3fd0f5d33134a76"
+    'sa-east-1':
+      AMI: "ami-058943e7d9b9cabfb"
+    'ca-central-1':
+      AMI: "ami-0d4ae09ec9361d8ac"
+    'ap-southeast-1':
+      AMI: "ami-01f7527546b557442"
+    'ap-southeast-2':
+      AMI: "ami-0dc96254d5535925f"
+    'eu-central-1':
+      AMI: "ami-0cc293023f983ed53"
+    'us-east-1':
+      AMI: "ami-0b898040803850657"
+    'us-east-2':
+      AMI: "ami-0d8f6eb4f641ef691"
+    'us-west-1':
+      AMI: "ami-056ee704806822732"
+    'us-west-2':
+      AMI: "ami-082b5a644766e0e6f"
 
 Resources:
   # Non-Prod 1 Resources
@@ -1069,7 +1045,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCDC1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssm"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -1083,7 +1059,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCDC1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSMM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssmmessages"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -1365,7 +1341,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCDCS1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssm"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -1379,7 +1355,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCDCS1
-      ServiceName: !FindInMap [RegionMap, !Ref "AWS::Region", SSMM]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssmmessages"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
