@@ -40,48 +40,55 @@ Conditions:
 
 Mappings:
   RegionMap:
-    'eu-north-1': 
-      AMI: "ami-d16fe6af"
-    'ap-south-1': 
-      AMI: "ami-0889b8a448de4fc44"
-    'eu-west-3': 
-      AMI: "ami-0451ae4fd8dd178f7"
-    'eu-west-2': 
-      AMI: "ami-09ead922c1dad67e4"
-    'eu-west-1': 
-      AMI: "ami-07683a44e80cd32c5"
+    'eu-north-1':
+      AMI: "ami-3f36be41"
       AZS: "3"
-    'ap-northeast-3': 
-      AMI: "ami-088d713d672ed235e"
-    'ap-northeast-2': 
-      AMI: "ami-047f7b46bd6dd5d84"
-    'ap-northeast-1': 
-      AMI: "ami-0f9ae750e8274075b"
-      AZS: 3
-    'sa-east-1': 
-      AMI: "ami-0669a96e355eac82f"
-    'ca-central-1': 
-      AMI: "ami-03338e1f67dae0168"
+    'ap-south-1':
+      AMI: "ami-0d2692b6acea72ee6"
+      AZS: "3"
+    'eu-west-3':
+      AMI: "ami-0adcddd3324248c4c"
+      AZS: "3"
+    'eu-west-2':
+      AMI: "ami-0d8e27447ec2c8410"
+      AZS: "3"
+    'eu-west-1':
+      AMI: "ami-0bbc25e23a7640b9b"
+      AZS: "3"
+    'ap-northeast-3':
+      AMI: "ami-0ee933a7f81beb045"
+      AZS: "3"
+    'ap-northeast-2':
+      AMI: "ami-095ca789e0549777d"
+      AZS: "3"
+    'ap-northeast-1':
+      AMI: "ami-0c3fd0f5d33134a76"
+      AZS: "3"
+    'sa-east-1':
+      AMI: "ami-058943e7d9b9cabfb"
+      AZS: "3"
+    'ca-central-1':
+      AMI: "ami-0d4ae09ec9361d8ac"
       AZS: "2"
-    'ap-southeast-1': 
-      AMI: "ami-0b419c3a4b01d1859"
+    'ap-southeast-1':
+      AMI: "ami-01f7527546b557442"
       AZS: "3"
-    'ap-southeast-2': 
-      AMI: "ami-04481c741a0311bbb"
+    'ap-southeast-2':
+      AMI: "ami-0dc96254d5535925f"
       AZS: "3"
-    'eu-central-1': 
-      AMI: "ami-09def150731bdbcc2"
-    'us-east-1': 
-      AMI: "ami-0de53d8956e8dcf80"
+    'eu-central-1':
+      AMI: "ami-0cc293023f983ed53"
+    'us-east-1':
+      AMI: "ami-0b898040803850657"
       AZS: "5"
-    'us-east-2': 
-      AMI: "ami-02bcbb802e03574ba"
+    'us-east-2':
+      AMI: "ami-0d8f6eb4f641ef691"
       AZS: "3"
-    'us-west-1': 
-      AMI: "ami-0019ef04ac50be30f"
+    'us-west-1':
+      AMI: "ami-056ee704806822732"
       AZS: "3"
-    'us-west-2': 
-      AMI: "ami-061392db613a6357b"
+    'us-west-2':
+      AMI: "ami-082b5a644766e0e6f"
       AZS: "4"
 
 Resources:
