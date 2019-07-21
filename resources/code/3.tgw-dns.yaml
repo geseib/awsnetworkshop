@@ -45,7 +45,7 @@ Mappings:
       AMI: "ami-056ee704806822732"
     'us-west-2':
       AMI: "ami-082b5a644766e0e6f"
-      
+
 Resources:
   # Datacenter Bind Server Setup
   DNSServerRole:
@@ -392,6 +392,9 @@ Resources:
           VPCRegion: !Ref "AWS::Region"
         - VPCId:
             Fn::ImportValue: !Sub "NP1-${ParentStack}-VPC"
+          VPCRegion: !Ref "AWS::Region"
+        - VPCId:
+            Fn::ImportValue: !Sub "NP2-${ParentStack}-VPC"
           VPCRegion: !Ref "AWS::Region"
 
   NP1DNSRecord:
