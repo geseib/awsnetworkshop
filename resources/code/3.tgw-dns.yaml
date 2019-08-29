@@ -484,7 +484,7 @@ Resources:
             Fn::ImportValue: !Sub "NP2-${ParentStack}-VPC"
           VPCRegion: !Ref "AWS::Region"
 
- DCS1DNSRecord:
+  DCS1DNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: !Ref "DCS1Zone"
