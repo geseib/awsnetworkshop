@@ -484,6 +484,17 @@ Resources:
             Fn::ImportValue: !Sub "NP2-${ParentStack}-VPC"
           VPCRegion: !Ref "AWS::Region"
 
+ DCS1DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref "DCS1Zone"
+      Comment: DNS name for DCS1 Server.
+      Name: !Join ["", [dcs1.aws., !Ref "Zone", .]]
+      Type: A
+      TTL: "30"
+      ResourceRecords:
+        - "Fn::ImportValue": !Sub "DCS1-${ParentStack}-ServerIP"
+
 Outputs:
   BindSession:
     Description: session command
