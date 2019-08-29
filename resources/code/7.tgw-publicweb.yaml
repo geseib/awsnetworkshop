@@ -333,7 +333,7 @@ Resources:
           TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref WebNLBPublic
       Port: 80
-      Protocol: HTTP
+      Protocol: TCP
 
   NLBListenerPrivate:
     Type : AWS::ElasticLoadBalancingV2::Listener
