@@ -328,7 +328,7 @@ Resources:
       Comment1: Launch Juniper VSRX1
     Properties:
       InstanceType:
-        c4.2xlarge
+        c5.2xlarge
       KeyName:
         Ref: KeyPair
       ImageId:
