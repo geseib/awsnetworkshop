@@ -38,53 +38,57 @@ Conditions:
 Mappings:
   # AMI for Cisco CSR1kv and Juniper SRX
   RegionMap:
-    "ap-south-1":
-      CSRAMI: "ami-0bde53dcc89863774"
-      SRXAMI: ami-26f68e49
-    "eu-west-3":
-      CSRAMI: "ami-030690944026827fc"
-    "eu-north-1":
-      CSRAMI: "ami-3872fe46"
-    "eu-west-2":
-      CSRAMI: "ami-0799bfc972a871e99"
-      SRXAMI: ami-d76f7eb3
-    "eu-west-1":
-      CSRAMI: "ami-06706de706c63bdf0"
-      SRXAMI: ami-2117ff58
-    "ap-northeast-2":
-      CSRAMI: "ami-0287d2dfaea2653e8"
-      SRXAMI: ami-2bbe6745
-    "ap-northeast-1":
-      CSRAMI: "ami-064fad029163bc712"
-      SRXAMI: ami-02729164
-    "sa-east-1":
-      CSRAMI: "ami-04e46fb7714051cd4"
-      SRXAMI: ami-0656216a
-    "ca-central-1":
-      CSRAMI: "ami-0653de36648437dca"
-      SRXAMI: ami-ab04bbcf
-    "ap-southeast-1":
-      CSRAMI: "ami-08475ba1f0c348489"
-      SRXAMI: ami-c5a331a6
-    "ap-southeast-2":
-      CSRAMI: "ami-07844289ef48951c1"
-      SRXAMI: ami-14c1de77
-    "eu-central-1":
-      CSRAMI: "ami-02fa3e99abcb32ee8"
-      SRXAMI: ami-5bdf7334
-    "us-east-1":
-      CSRAMI: "ami-0d1e6af4c329efd82"
-      SRXAMI: ami-4ca1fc37
-    "us-east-2":
-      CSRAMI: "ami-0a7ff2b6b77a28edc"
-      SRXAMI: ami-00230365
-      SWANAMI: "ami-0ebbf2179e615c338"
-    "us-west-1":
-      CSRAMI: "ami-03071ea2421d5ad89"
-      SRXAMI: ami-9186aff1
-    "us-west-2":
-      CSRAMI: "ami-0bd4d0d69610e277c"
-      SRXAMI: ami-3542584c
+    'eu-north-1':
+       CSRAMI: "ami-3a098244"
+       SRXAMI: "ami-294bc357"
+    'ap-south-1':
+       CSRAMI: "ami-0588edd878b8b8542"
+       SRXAMI: "ami-0a7f6a826ea0ac451"
+    'eu-west-3':
+       CSRAMI: "ami-07d7fa89add77fc88"
+       SRXAMI: "ami-039d31d4668a899ba"
+    'eu-west-2':
+       CSRAMI: "ami-0232c6d101adf6f0e"
+       SRXAMI: "ami-0d84c8f5c431dc76f"
+    'eu-west-1':
+       CSRAMI: "ami-061919bc753fac9f1"
+       SRXAMI: "ami-0398e0194cddc5408"
+    'ap-northeast-3':
+       CSRAMI: "ami-000954ba2aee2ea2c"
+    'ap-northeast-2':
+       CSRAMI: "ami-0bfd6b68306c37acd"
+       SRXAMI: "ami-0357d32ccb7bd98e2"
+    'ap-northeast-1':
+       CSRAMI: "ami-0a32b4f1b6dbf76e2"
+       SRXAMI: "ami-0ec7d2705a643796e"
+    'sa-east-1':
+       CSRAMI: "ami-04c9e7db483ef8f85"
+       SRXAMI: "ami-0526c2a7897d3d421"
+    'ca-central-1':
+       CSRAMI: "ami-03406d8bb9a6eb082"
+       SRXAMI: "ami-073762786c8afc95b"
+    'ap-southeast-1':
+       CSRAMI: "ami-01f265b921ce8c8ad"
+       SRXAMI: "ami-075bc9e94af4aec7b"
+    'ap-southeast-2':
+       CSRAMI: "ami-0613911a862330b2f"
+       SRXAMI: "ami-081a188490a677ff8"
+    'eu-central-1':
+       CSRAMI: "ami-0e5b92a928e8157de"
+       SRXAMI: "ami-0fc2e64b1c7dc2b76"
+    'us-east-1':
+       CSRAMI: "ami-0fc7a3d5400f4619d"
+       SRXAMI: "ami-0dd08adc01838744c"
+    'us-east-2':
+       CSRAMI: "ami-0fda690c9c2f5cbf9"
+       SRXAMI: "ami-04300509813cd8c22"
+    'us-west-1':
+       CSRAMI: "ami-0dba8e0dd8bf42ee8"
+       SRXAMI: "ami-020910b9b97481208"
+    'us-west-2':
+       CSRAMI: "ami-0ea109acd52c4b94d"
+       SRXAMI: "ami-076e30011e3e6510c"
+
 
 Resources:
   # Create Transit Gateway
@@ -736,7 +740,7 @@ Outputs:
     Value:
       !Join [
         "",
-        ["ssh -i ~/.ssh/", Ref: "KeyPair", ".pem root@", !GetAtt "vSRXInterface10.PrimaryPrivateIpAddress"],
+        ["ssh -i ~/.ssh/", Ref: "KeyPair", ".pem ec2-user@", !GetAtt "vSRXInterface10.PrimaryPrivateIpAddress"],
       ]
     Export:
       Name: !Sub "DC1-${AWS::StackName}-SRXssh"
