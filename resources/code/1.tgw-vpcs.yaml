@@ -1678,6 +1678,12 @@ Outputs:
     Export:
       Name: !Sub "DCS1-${AWS::StackName}-VPC"
 
+  ServerDCS1:
+    Description: "DCS1 EC2 IP address"
+    Value: !GetAtt ServerEc2DCS1.PrivateIp
+    Export:
+      Name: !Sub "DCS1-${AWS::StackName}-ServerIP"
+      
   AttachSubnetADCS11:
     Description: "DCS1 Attach Subnet A"
     Value: !Ref AttachSubnetADCS1
