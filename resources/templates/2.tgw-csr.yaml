@@ -38,53 +38,54 @@ Conditions:
 Mappings:
   # AMI for Cisco CSR1kv and Juniper SRX
   RegionMap:
-    "ap-south-1":
-      CSRAMI: "ami-0bde53dcc89863774"
-      SRXAMI: ami-26f68e49
-    "eu-west-3":
-      CSRAMI: "ami-030690944026827fc"
-    "eu-north-1":
-      CSRAMI: "ami-3872fe46"
-    "eu-west-2":
-      CSRAMI: "ami-0799bfc972a871e99"
-      SRXAMI: ami-d76f7eb3
-    "eu-west-1":
-      CSRAMI: "ami-06706de706c63bdf0"
-      SRXAMI: ami-2117ff58
-    "ap-northeast-2":
-      CSRAMI: "ami-0287d2dfaea2653e8"
-      SRXAMI: ami-2bbe6745
-    "ap-northeast-1":
-      CSRAMI: "ami-064fad029163bc712"
-      SRXAMI: ami-02729164
-    "sa-east-1":
-      CSRAMI: "ami-04e46fb7714051cd4"
-      SRXAMI: ami-0656216a
-    "ca-central-1":
-      CSRAMI: "ami-0653de36648437dca"
-      SRXAMI: ami-ab04bbcf
-    "ap-southeast-1":
-      CSRAMI: "ami-08475ba1f0c348489"
-      SRXAMI: ami-c5a331a6
-    "ap-southeast-2":
-      CSRAMI: "ami-07844289ef48951c1"
-      SRXAMI: ami-14c1de77
-    "eu-central-1":
-      CSRAMI: "ami-02fa3e99abcb32ee8"
-      SRXAMI: ami-5bdf7334
-    "us-east-1":
-      CSRAMI: "ami-0d1e6af4c329efd82"
-      SRXAMI: ami-4ca1fc37
-    "us-east-2":
-      CSRAMI: "ami-0a7ff2b6b77a28edc"
-      SRXAMI: ami-00230365
-      SWANAMI: "ami-0ebbf2179e615c338"
-    "us-west-1":
-      CSRAMI: "ami-03071ea2421d5ad89"
-      SRXAMI: ami-9186aff1
-    "us-west-2":
-      CSRAMI: "ami-0bd4d0d69610e277c"
-      SRXAMI: ami-3542584c
+    'eu-north-1': 
+      CSRAMI: "ami-3a098244"
+      SRXAMI: "ami-085fe94b25b149b15"
+    'ap-south-1': 
+      CSRAMI: "ami-0588edd878b8b8542"
+      SRXAMI: "ami-0226a50a098822e10"
+    'eu-west-3': 
+      CSRAMI: "ami-024110581164ebca0"
+      SRXAMI: "ami-06d807b6a2f6d40cf"
+    'eu-west-2': 
+      CSRAMI: "ami-0232c6d101adf6f0e"
+      SRXAMI: "ami-081b7343fa3fc4ad5"
+    'eu-west-1': 
+      CSRAMI: "ami-061919bc753fac9f1"
+      SRXAMI: "ami-011bf8edd15d85e68"
+    'ap-northeast-2': 
+      CSRAMI: "ami-012cfe281288b2d7e"
+      SRXAMI: "ami-01d196e6322b990bf"
+    'ap-northeast-1': 
+      CSRAMI: "ami-0780948d5cf2947df"
+      SRXAMI: "ami-044109ada8a8895d7"
+    'sa-east-1': 
+      CSRAMI: "ami-04c9e7db483ef8f85"
+      SRXAMI: "ami-0047fa28665ef6a1e"
+    'ca-central-1': 
+      CSRAMI: "ami-03406d8bb9a6eb082"
+      SRXAMI: "ami-03bb7849a3faba0af"
+    'ap-southeast-1': 
+      CSRAMI: "ami-01f265b921ce8c8ad"
+      SRXAMI: "ami-029042ae2571949c2"
+    'ap-southeast-2': 
+      CSRAMI: "ami-0613911a862330b2f"
+      SRXAMI: "ami-04af0cbad3afab8a8"
+    'eu-central-1': 
+      CSRAMI: "ami-0c1afdb9c2e52df4c"
+      SRXAMI: "ami-013ebd4df94770150"
+    'us-east-1': 
+      CSRAMI: "ami-0d02b4d07ea2eb6bd"
+      SRXAMI: "ami-0014b94c93b61736a"
+    'us-east-2': 
+      CSRAMI: "ami-0c4624bbcad7d2583"
+      SRXAMI: "ami-017389bd7a77470df"
+    'us-west-1': 
+      CSRAMI: "ami-0dba8e0dd8bf42ee8"
+      SRXAMI: "ami-005ca12cb547551f0"
+    'us-west-2': 
+      CSRAMI: "ami-090a90db7c0c96761"
+      SRXAMI: "ami-03d736b5fa5b3632e"
 
 Resources:
   # Create Transit Gateway

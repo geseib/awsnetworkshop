@@ -38,7 +38,7 @@ In a real production environment we would setup a second router for redundancy a
 
 1.  From the menu on the left, Scroll down and select **Transit Gateway Attachments**. We need to verify that the attachment we created above is no longer in status **pending**. Instead it should be is state **available** like all of the VPC attachments in the list.
 
-    ![Create VPN Attachment](/images/tgw-createvpnattach.png)
+    ![VPN Attachment Available](/images/vpn-available.png)
 
 1.  From the Menu on the Left Select **Transit Gateway Route Tables**. From the table in the main panel select **Green Route Table**. Lets take a look toward the bottom, and click the **Associations** tab. Associations mean that traffic coming from the outside toward the Transit gateway will use this route table to know where the packet will go after routing through the TGW. _note: An attachment can only be Associated with one route table. But a route table can have multiple associations_. Here in the **Green Route Table**, We already have one association, The **Datacenter Services VPC**. Click **Create associations** in the **Associations** tab. From the drop-down list, select the vpn. _note:it should be the only one in the list without a **Association route table** ._ Click **Create association**.
     ![Associate VPN](/images/tgw-vpnassocationspending.png)
@@ -67,7 +67,7 @@ In a real production environment we would setup a second router for redundancy a
 
 1.  using a bash tab in cloud9, ssh back into the CSR. note: the **ssh** command for the CSR is given for you from the **Exports** menu in **CloudFormation**.
 
-1.  enter configuration mode, which will take you to a config prompt
+1.  enter configuration mode by entering **config t**, which will take you to a config prompt
 
     ```
     ip-10-4-0-17#conf t
