@@ -30,7 +30,7 @@ In order to access and work on the Datacenter router, we will use AWS Cloud9. Cl
 
 1.From another browser tab, again navigate to the Management Console and choose **Services** then select **CloudFormation**.
 
-1. From the left-hand menu, select **Exports** in the left hand menu and find the export for ssh to the SRX: DC1-_stack-name_-SRXssh and copy the **Export value**
+1. From the left-hand menu, select **Exports** in the left hand menu and find the export for ssh to the SRX: DC1-_stack-name_-SRX, ssh and copy the **Export value**
    ![ssh key and ssh to SRX](/images/cloudformation-csrssh.png)
 
 1. Back on the **Cloud9** Browser tab paste this into the bash shell. _note: in the command you will notice the -i reference to the pem file you just copied, this is the private half of the key pair. The public key is on the Juniper SRX_. Answer **yes** to **Are you sure you want to continue connecting (yes/no)?**

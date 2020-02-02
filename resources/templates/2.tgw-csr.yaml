@@ -52,13 +52,13 @@ Mappings:
       SRXAMI: "ami-081b7343fa3fc4ad5"
     'eu-west-1': 
       CSRAMI: "ami-061919bc753fac9f1"
-      SRXAMI: "ami-011bf8edd15d85e68"
+      SRXAMI: "ami-0f205c30b354f5e45"
     'ap-northeast-2': 
       CSRAMI: "ami-012cfe281288b2d7e"
       SRXAMI: "ami-01d196e6322b990bf"
     'ap-northeast-1': 
       CSRAMI: "ami-0780948d5cf2947df"
-      SRXAMI: "ami-044109ada8a8895d7"
+      SRXAMI: "ami-03ae341ee6d3d762c"
     'sa-east-1': 
       CSRAMI: "ami-04c9e7db483ef8f85"
       SRXAMI: "ami-0047fa28665ef6a1e"
@@ -67,7 +67,7 @@ Mappings:
       SRXAMI: "ami-03bb7849a3faba0af"
     'ap-southeast-1': 
       CSRAMI: "ami-01f265b921ce8c8ad"
-      SRXAMI: "ami-029042ae2571949c2"
+      SRXAMI: "ami-0181af4c1a92f1db9"
     'ap-southeast-2': 
       CSRAMI: "ami-0613911a862330b2f"
       SRXAMI: "ami-04af0cbad3afab8a8"
@@ -76,16 +76,16 @@ Mappings:
       SRXAMI: "ami-013ebd4df94770150"
     'us-east-1': 
       CSRAMI: "ami-0d02b4d07ea2eb6bd"
-      SRXAMI: "ami-0014b94c93b61736a"
+      SRXAMI: "ami-09558a4a82a78e96e"
     'us-east-2': 
       CSRAMI: "ami-0c4624bbcad7d2583"
-      SRXAMI: "ami-017389bd7a77470df"
+      SRXAMI: "ami-086a155b145c5d833"
     'us-west-1': 
       CSRAMI: "ami-0dba8e0dd8bf42ee8"
-      SRXAMI: "ami-005ca12cb547551f0"
+      SRXAMI: "ami-0d2c0e1479e495e44"
     'us-west-2': 
       CSRAMI: "ami-090a90db7c0c96761"
-      SRXAMI: "ami-03d736b5fa5b3632e"
+      SRXAMI: "ami-0b848cc208c59bb21"
 
 Resources:
   # Create Transit Gateway
@@ -737,7 +737,7 @@ Outputs:
     Value:
       !Join [
         "",
-        ["ssh -i ~/.ssh/", Ref: "KeyPair", ".pem root@", !GetAtt "vSRXInterface10.PrimaryPrivateIpAddress"],
+        ["ssh -i ~/.ssh/", Ref: "KeyPair", ".pem ec2-user@", !GetAtt "vSRXInterface10.PrimaryPrivateIpAddress"],
       ]
     Export:
       Name: !Sub "DC1-${AWS::StackName}-SRXssh"
