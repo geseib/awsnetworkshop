@@ -154,28 +154,6 @@ Resources:
                 BucketName: !Ref ResourcesBucket
               RunOrder: 1
 
-            - Name: update-web-s3-public-acl
-              ActionTypeId:
-                Category: Invoke
-                Owner: AWS
-                Provider: Lambda
-                Version: 1
-              InputArtifacts:
-                - Name: WebsiteArtifact
-              Configuration:
-                FunctionName: !GetAtt CodePipelineWebsiteS3ObjectsPublicRead.Outputs.PublicReadAclFunctionName
-              RunOrder: 2
-            - Name: update-resources-s3-public-acl
-              ActionTypeId:
-                Category: Invoke
-                Owner: AWS
-                Provider: Lambda
-                Version: 1
-              InputArtifacts:
-                - Name: ResourcesArtifact
-              Configuration:
-                FunctionName: !GetAtt CodePipelineResourcesS3ObjectsPublicRead.Outputs.PublicReadAclFunctionName
-              RunOrder: 2
 
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
@@ -195,26 +173,7 @@ Resources:
         Type: CODEPIPELINE
         BuildSpec: workshop/buildspec.yml
 
-  CodePipelineWebsiteS3ObjectsPublicRead:
-    Type: AWS::Serverless::Application
-    Properties:
-      Location:
-        ApplicationId: arn:aws:serverlessrepo:us-east-1:511976418858:applications/codepipeline-s3-objects-public-read
-        SemanticVersion: 0.0.5
-      Parameters:
-        S3BucketParameter: !Ref WebsiteBucket
-        BuildArtifactParameter: WebsiteArtifact
-
-  CodePipelineResourcesS3ObjectsPublicRead:
-    Type: AWS::Serverless::Application
-    Properties:
-      Location:
-        ApplicationId: arn:aws:serverlessrepo:us-east-1:511976418858:applications/codepipeline-s3-objects-public-read
-        SemanticVersion: 0.0.5
-      Parameters:
-        S3BucketParameter: !Ref ResourcesBucket
-        BuildArtifactParameter: ResourcesArtifact
-
+ 
   CodePipelineServiceRole:
     Type: AWS::IAM::Role
     Properties:
