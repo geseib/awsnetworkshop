@@ -13,7 +13,7 @@ The first scenario we want to walk through is sharing the Transit Gateway so tha
 
 1. In the AWS Management Console change to the region you plan to work in and change. This is in the upper right hand drop down menu.
 
-1. Lets determine the scope of the share. If you are pairing up with someone, choose **Option 1** below, we will use their Account number. If you are working in your Organziation, you can also use **Option 2** and share with all of the accounts in your AWS organization.
+1. Lets determine the scope of the share. If you are pairing up with someone, choose **Option 1** below, we will use their Account number. If you are working in your Organization, you can also use **Option 2** and share with all of the accounts in your AWS organization.
 
    **OPTION 1**
 
@@ -24,7 +24,7 @@ The first scenario we want to walk through is sharing the Transit Gateway so tha
 
    - Just to the left of the Region Drop down, click on your login drop-down menu and select **My organization**. On **Your account belongs to the following organization:** screen, make a note of the **Organization ID** (it will start with an **o-**)
 
-   _note: in order for organziation sharing to work, you must change your Resource Access Manger Settings from the master account. login to the master account and change this setting as shown below._
+   _note: in order for organization sharing to work, you must change your Resource Access Manger Settings from the master account. login to the master account and change this setting as shown below._
 
    ![Org Sharing](../images/ram-orgSettings.png)
 
@@ -37,9 +37,9 @@ The first scenario we want to walk through is sharing the Transit Gateway so tha
 1. Fill out the **Create Resource Share** details:
 
 - **Name** - give it a Descriptive name for the Share
-- **Seclect Resource type** - from the drop down select **Transit Gateways**.
+- **Select Resource type** - from the drop down select **Transit Gateways**.
 - **ID** - from the list, select the Transit Gateway you created for the Lab
-- **Seclect Resource type** - from the drop down select **Resolver Rules**.
+- **Select Resource type** - from the drop down select **Resolver Rules**.
 - **ID** - from the list, select the resolver rules created for the Lab
 - **Principals - optional** - in the search box, paste the account number or organization ID you recorded a few steps up (depending on which option you picked above). Click the **add** button to the right.
 

@@ -22,7 +22,7 @@ Run CloudFormation template 2.tgw-csr.yaml to deploy the Transit Gateway, route 
 1. For the **Specify stack details** give the stack a name (compounded names work well. i.e. if the VPC stack created in the setup module was named **TGW1** name this stack **TGW1-SRX**), pick the keypair you created earlier, and enter the name of your first stack (must be entered exactly to work). Click **Next**.
    ![Stack Parameters](/images/createStack-SRXparameters.png)
 
-1. For **Configuration stack options** we dont need to change anything, so just click **Next** in the bottom right.
+1. For **Configuration stack options** we don't need to change anything, so just click **Next** in the bottom right.
 
 1. Scroll down to the bottom of the **Review name_of_your_stack** and check the **I acknowledge the AWS CloudFormation might create IAM resources with custom names.** Click the **Create** button in the lower right.
    ![Create Stack](/images/createStack-VPCiam.png)
