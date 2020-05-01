@@ -38,54 +38,58 @@ Conditions:
 Mappings:
   # AMI for Cisco CSR1kv and Juniper SRX
   RegionMap:
-    'eu-north-1': 
+    'eu-north-1':
       CSRAMI: "ami-3a098244"
-      SRXAMI: "ami-085fe94b25b149b15"
-    'ap-south-1': 
+      SRXAMI: "ami-070c22dc10f3fe11c"
+    'ap-south-1':
       CSRAMI: "ami-0588edd878b8b8542"
-      SRXAMI: "ami-0226a50a098822e10"
-    'eu-west-3': 
-      CSRAMI: "ami-024110581164ebca0"
-      SRXAMI: "ami-06d807b6a2f6d40cf"
-    'eu-west-2': 
+      SRXAMI: "ami-0d8cde425328270f6"
+    'eu-west-3':
+      CSRAMI: "ami-07d7fa89add77fc88"
+      SRXAMI: "ami-09a7010143753ffab"
+    'eu-west-2':
       CSRAMI: "ami-0232c6d101adf6f0e"
-      SRXAMI: "ami-081b7343fa3fc4ad5"
-    'eu-west-1': 
+      SRXAMI: "ami-06da0d44a148bf6c4"
+    'eu-west-1':
       CSRAMI: "ami-061919bc753fac9f1"
-      SRXAMI: "ami-0f205c30b354f5e45"
-    'ap-northeast-2': 
-      CSRAMI: "ami-012cfe281288b2d7e"
-      SRXAMI: "ami-01d196e6322b990bf"
-    'ap-northeast-1': 
-      CSRAMI: "ami-0780948d5cf2947df"
-      SRXAMI: "ami-03ae341ee6d3d762c"
-    'sa-east-1': 
+      SRXAMI: "ami-0c56da2afd28b9eeb"
+    'ap-northeast-3':
+      CSRAMI: "ami-000954ba2aee2ea2c"
+      SRXAMI: null
+    'ap-northeast-2':
+      CSRAMI: "ami-0bfd6b68306c37acd"
+      SRXAMI: "ami-0b18a6631c4336cc5"
+    'ap-northeast-1':
+      CSRAMI: "ami-0a32b4f1b6dbf76e2"
+      SRXAMI: "ami-04c7106309afea609"
+    'sa-east-1':
       CSRAMI: "ami-04c9e7db483ef8f85"
-      SRXAMI: "ami-0047fa28665ef6a1e"
-    'ca-central-1': 
+      SRXAMI: "ami-03436612decf8bc60"
+    'ca-central-1':
       CSRAMI: "ami-03406d8bb9a6eb082"
-      SRXAMI: "ami-03bb7849a3faba0af"
-    'ap-southeast-1': 
+      SRXAMI: "ami-01806173d935e9a59"
+    'ap-southeast-1':
       CSRAMI: "ami-01f265b921ce8c8ad"
-      SRXAMI: "ami-0181af4c1a92f1db9"
-    'ap-southeast-2': 
+      SRXAMI: "ami-07b3028c0c01a0766"
+    'ap-southeast-2':
       CSRAMI: "ami-0613911a862330b2f"
-      SRXAMI: "ami-04af0cbad3afab8a8"
-    'eu-central-1': 
-      CSRAMI: "ami-0c1afdb9c2e52df4c"
-      SRXAMI: "ami-013ebd4df94770150"
-    'us-east-1': 
-      CSRAMI: "ami-0d02b4d07ea2eb6bd"
-      SRXAMI: "ami-09558a4a82a78e96e"
-    'us-east-2': 
-      CSRAMI: "ami-0c4624bbcad7d2583"
-      SRXAMI: "ami-086a155b145c5d833"
-    'us-west-1': 
+      SRXAMI: "ami-016655050b5a20b43"
+    'eu-central-1':
+      CSRAMI: "ami-0e5b92a928e8157de"
+      SRXAMI: "ami-0e986c61d4fe926e2"
+    'us-east-1':
+      CSRAMI: "ami-0fc7a3d5400f4619d"
+      SRXAMI: "ami-05fa9647b42f06203"
+    'us-east-2':
+      CSRAMI: "ami-0fda690c9c2f5cbf9"
+      SRXAMI: "ami-0941daed95357e040"
+    'us-west-1':
       CSRAMI: "ami-0dba8e0dd8bf42ee8"
-      SRXAMI: "ami-0d2c0e1479e495e44"
-    'us-west-2': 
-      CSRAMI: "ami-090a90db7c0c96761"
-      SRXAMI: "ami-0b848cc208c59bb21"
+      SRXAMI: "ami-04283cf0a2bf7c17c"
+    'us-west-2':
+      CSRAMI: "ami-0ea109acd52c4b94d"
+      SRXAMI: "ami-09bb11b7dabb0f165"
+
 
 Resources:
   # Create Transit Gateway
@@ -325,7 +329,7 @@ Resources:
       Comment1: Launch Juniper VSRX1
     Properties:
       InstanceType:
-        c4.2xlarge
+        c5.2xlarge
       KeyName:
         Ref: KeyPair
       ImageId:

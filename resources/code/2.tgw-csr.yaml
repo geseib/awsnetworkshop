@@ -39,55 +39,56 @@ Mappings:
   # AMI for Cisco CSR1kv and Juniper SRX
   RegionMap:
     'eu-north-1':
-       CSRAMI: "ami-3a098244"
-       SRXAMI: "ami-294bc357"
+      CSRAMI: "ami-3a098244"
+      SRXAMI: "ami-070c22dc10f3fe11c"
     'ap-south-1':
-       CSRAMI: "ami-0588edd878b8b8542"
-       SRXAMI: "ami-0a7f6a826ea0ac451"
+      CSRAMI: "ami-0588edd878b8b8542"
+      SRXAMI: "ami-0d8cde425328270f6"
     'eu-west-3':
-       CSRAMI: "ami-07d7fa89add77fc88"
-       SRXAMI: "ami-039d31d4668a899ba"
+      CSRAMI: "ami-07d7fa89add77fc88"
+      SRXAMI: "ami-09a7010143753ffab"
     'eu-west-2':
-       CSRAMI: "ami-0232c6d101adf6f0e"
-       SRXAMI: "ami-0d84c8f5c431dc76f"
+      CSRAMI: "ami-0232c6d101adf6f0e"
+      SRXAMI: "ami-06da0d44a148bf6c4"
     'eu-west-1':
-       CSRAMI: "ami-061919bc753fac9f1"
-       SRXAMI: "ami-0398e0194cddc5408"
+      CSRAMI: "ami-061919bc753fac9f1"
+      SRXAMI: "ami-0c56da2afd28b9eeb"
     'ap-northeast-3':
-       CSRAMI: "ami-000954ba2aee2ea2c"
+      CSRAMI: "ami-000954ba2aee2ea2c"
+      SRXAMI: null
     'ap-northeast-2':
-       CSRAMI: "ami-0bfd6b68306c37acd"
-       SRXAMI: "ami-0357d32ccb7bd98e2"
+      CSRAMI: "ami-0bfd6b68306c37acd"
+      SRXAMI: "ami-0b18a6631c4336cc5"
     'ap-northeast-1':
-       CSRAMI: "ami-0a32b4f1b6dbf76e2"
-       SRXAMI: "ami-0ec7d2705a643796e"
+      CSRAMI: "ami-0a32b4f1b6dbf76e2"
+      SRXAMI: "ami-04c7106309afea609"
     'sa-east-1':
-       CSRAMI: "ami-04c9e7db483ef8f85"
-       SRXAMI: "ami-0526c2a7897d3d421"
+      CSRAMI: "ami-04c9e7db483ef8f85"
+      SRXAMI: "ami-03436612decf8bc60"
     'ca-central-1':
-       CSRAMI: "ami-03406d8bb9a6eb082"
-       SRXAMI: "ami-073762786c8afc95b"
+      CSRAMI: "ami-03406d8bb9a6eb082"
+      SRXAMI: "ami-01806173d935e9a59"
     'ap-southeast-1':
-       CSRAMI: "ami-01f265b921ce8c8ad"
-       SRXAMI: "ami-075bc9e94af4aec7b"
+      CSRAMI: "ami-01f265b921ce8c8ad"
+      SRXAMI: "ami-07b3028c0c01a0766"
     'ap-southeast-2':
-       CSRAMI: "ami-0613911a862330b2f"
-       SRXAMI: "ami-081a188490a677ff8"
+      CSRAMI: "ami-0613911a862330b2f"
+      SRXAMI: "ami-016655050b5a20b43"
     'eu-central-1':
-       CSRAMI: "ami-0e5b92a928e8157de"
-       SRXAMI: "ami-0fc2e64b1c7dc2b76"
+      CSRAMI: "ami-0e5b92a928e8157de"
+      SRXAMI: "ami-0e986c61d4fe926e2"
     'us-east-1':
-       CSRAMI: "ami-0fc7a3d5400f4619d"
-       SRXAMI: "ami-0dd08adc01838744c"
+      CSRAMI: "ami-0fc7a3d5400f4619d"
+      SRXAMI: "ami-05fa9647b42f06203"
     'us-east-2':
-       CSRAMI: "ami-0fda690c9c2f5cbf9"
-       SRXAMI: "ami-04300509813cd8c22"
+      CSRAMI: "ami-0fda690c9c2f5cbf9"
+      SRXAMI: "ami-0941daed95357e040"
     'us-west-1':
-       CSRAMI: "ami-0dba8e0dd8bf42ee8"
-       SRXAMI: "ami-020910b9b97481208"
+      CSRAMI: "ami-0dba8e0dd8bf42ee8"
+      SRXAMI: "ami-04283cf0a2bf7c17c"
     'us-west-2':
-       CSRAMI: "ami-0ea109acd52c4b94d"
-       SRXAMI: "ami-076e30011e3e6510c"
+      CSRAMI: "ami-0ea109acd52c4b94d"
+      SRXAMI: "ami-09bb11b7dabb0f165"
 
 
 Resources:
