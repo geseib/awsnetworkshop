@@ -55,7 +55,6 @@ Mappings:
       SRXAMI: "ami-0c56da2afd28b9eeb"
     'ap-northeast-3':
       CSRAMI: "ami-000954ba2aee2ea2c"
-      SRXAMI: null
     'ap-northeast-2':
       CSRAMI: "ami-0bfd6b68306c37acd"
       SRXAMI: "ami-0b18a6631c4336cc5"
