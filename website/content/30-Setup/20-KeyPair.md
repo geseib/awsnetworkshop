@@ -16,7 +16,7 @@ For our simulated Datacenter Router we will need to use a SSH key pair for secur
 
 1. From the left-hand menu select **Key Pairs**. _It's half way down, in the **Network & Security** section._
 
-1. Click **Create Key Pair** in the main panel 
+1. Click **Create Key Pair** in the main panel
 
 1. Give your new key a name and choose **pem** for **File format** (_we will be using this key on an AWS Cloud9 running Amazon Linux_). Click **Create**.
 

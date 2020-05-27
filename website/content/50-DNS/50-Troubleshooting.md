@@ -1,5 +1,5 @@
 +++
-menutitle = "Troublshooting DNS"
+menutitle = "Troubleshooting DNS"
 chapter = false
 weight = 50
 +++

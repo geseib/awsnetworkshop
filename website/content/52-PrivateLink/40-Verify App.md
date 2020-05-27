@@ -6,7 +6,7 @@ weight = 40
 +++
 
 ## Verify connectivity to the new app
-If you deployed to new subnets you will only be able to test in the NP2 VPC. if you used exisiting 
+If you deployed to new subnets you will only be able to test in the NP2 VPC. if you used exisiting
 
 1. In the AWS Management Console choose **Services** then select **Systems Manager**.
 
@@ -32,7 +32,7 @@ If you chose add new subnets and tested between the NP1 server and the web servi
  <details>
    <summary>SPOLIER Diving deeper into VPC routing</summary><p>
 
-  If you take a look at the addresses resolved when doing a DIG or looking in the console at the new subents that were created, you should have a pretty good hint.
+  If you take a look at the addresses resolved when doing a DIG or looking in the console at the new subnets that were created, you should have a pretty good hint.
 
 Is it the Transit Gateway Routes?
 

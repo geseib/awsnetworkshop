@@ -22,7 +22,7 @@ While we could choose to provide connectivity to an application via the Transit 
 
 1. The two VPCs cannot have overlapping IP address spaces in their CIDRs. 
 
-1. You are limited to 50 VPC peering conections per VPC. However, this limit can be raised to 125.
+1. You are limited to 50 VPC peering connections per VPC. However, this limit can be raised to 125.
 
 
 ## VPC Peer

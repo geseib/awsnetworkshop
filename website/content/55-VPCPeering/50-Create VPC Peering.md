@@ -5,7 +5,7 @@ weight = 50
 +++
 
 ## Create VPC Peering Request in NP1
-As the Service Provider, you want to enable your NLB to be shared with other VPCs. You Can whitelist AWS accounts that can create Endpoints in their VPCs if they explicitly know the name of your new Endpoint Service. if with the Whitelisting, you also have the ability to require explicit aknowledgement from the service provider side, before their PrivateLink becomes active.
+As the Service Provider, you want to enable your NLB to be shared with other VPCs. You Can whitelist AWS accounts that can create Endpoints in their VPCs if they explicitly know the name of your new Endpoint Service. if with the Whitelisting, you also have the ability to require explicit acknowledgement from the service provider side, before their PrivateLink becomes active.
 
 1. In the AWS Management Console choose **Services** then select **VPC**.
 
@@ -44,10 +44,10 @@ As the Service Provider, you want to enable your NLB to be shared with other VPC
 
 ![Edit Route Table](../images/peer-routeTable.png)
 
-1. From the **Actions** button, select **Edit Routes**. We are going to add a route to just the two NP2 Public Subnets, which can be summerized as 10.17.0.0/21 (10.17.0.0/22 + 10.17.4.0/22)
+1. From the **Actions** button, select **Edit Routes**. We are going to add a route to just the two NP2 Public Subnets, which can be summarized as 10.17.0.0/21 (10.17.0.0/22 + 10.17.4.0/22)
 
 1. From the **Edit Routes** pane, Click the **Add Route** button and add the following entry:
-Desitnation: 10.17.0.0/21  
+Destination: 10.17.0.0/21  
 Target: *Select **Peering Connection**  and from the drop down list select the peering connection (should only be one in the lab)*
 
 1. Click **Save Routes** in the bottom right.
@@ -64,10 +64,10 @@ Target: *Select **Peering Connection**  and from the drop down list select the p
 
 ![Edit Route Table](../images/peer-routeTable.png)
 
-1. From the **Actions** button, select **Edit Routes**. We are going to add a route to just the two NP1 Public Subnets, which can be summerized as 10.16.0.0/21 (10.16.0.0/22 + 10.16.4.0/22)
+1. From the **Actions** button, select **Edit Routes**. We are going to add a route to just the two NP1 Public Subnets, which can be summarized as 10.16.0.0/21 (10.16.0.0/22 + 10.16.4.0/22)
 
 1. From the **Edit Routes** pane, Click the **Add Route** button and add the following entry:
-Desitnation: 10.16.0.0/21  
+Destination: 10.16.0.0/21  
 Target: *Select **Peering Connection**  and from the drop down list select the peering connection (should only be one in the lab)*
 
 1. Click **Save Routes** in the bottom right.
