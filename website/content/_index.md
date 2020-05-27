@@ -6,7 +6,7 @@ weight = 1
 
 ### What to expect
 
-This Networking workshop shows how to setup communication between multiple VPCs and on-premise resources in our Datacenter.
+This Networking workshop shows how to setup communication between multiple VPCs and on-premises resources in our Datacenter.
 
 Within your own AWS account, you can explore how a scalable hybrid network works with Transit Gateway, VPN, Route 53 Resolver, and VPC Endpoints.
 
