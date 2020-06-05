@@ -532,51 +532,51 @@ Resources:
               mark=200
 
             EOT
-            cat <<EOT >>/etc/ipsec-vti.sh
+            cat <<'EOT' >>/etc/ipsec-vti.sh
             IP=$(which ip)
             IPTABLES=$(which iptables)
 
-            PLUTO_MARK_OUT_ARR=(\${PLUTO_MARK_OUT//// })
-            PLUTO_MARK_IN_ARR=(\${PLUTO_MARK_IN//// })
-            case "\$PLUTO_CONNECTION" in
-            dc2aws1)
-            VTI_INTERFACE=vti1
-            VTI_LOCALADDR=169.254.10.2/30
-            VTI_REMOTEADDR=169.254.10.1/30
-            ;;
-            dc2aws2)
-            VTI_INTERFACE=vti2
-            VTI_LOCALADDR=169.254.11.2/30
-            VTI_REMOTEADDR=169.254.11.1/30
-            ;;
-            dc2aws3)
-            VTI_INTERFACE=vti2
-            VTI_LOCALADDR=169.254.12.2/30
-            VTI_REMOTEADDR=169.254.12.1/30
-            ;;
-            dc2aws4)
-            VTI_INTERFACE=vti2
-            VTI_LOCALADDR=169.254.13.2/30
-            VTI_REMOTEADDR=169.254.13.1/30
-            ;;
+            PLUTO_MARK_OUT_ARR=(${!PLUTO_MARK_OUT//// })
+            PLUTO_MARK_IN_ARR=(${!PLUTO_MARK_IN//// })
+            case "${!PLUTO_CONNECTION}" in
+              dc2aws1)
+                VTI_INTERFACE=vti1
+                VTI_LOCALADDR=169.254.10.2/30
+                VTI_REMOTEADDR=169.254.10.1/30
+                ;;
+              dc2aws2)
+                VTI_INTERFACE=vti2
+                VTI_LOCALADDR=169.254.11.2/30
+                VTI_REMOTEADDR=169.254.11.1/30
+                ;;
+              dc2aws3)
+                VTI_INTERFACE=vti2
+                VTI_LOCALADDR=169.254.12.2/30
+                VTI_REMOTEADDR=169.254.12.1/30
+                ;;
+              dc2aws4)
+                VTI_INTERFACE=vti2
+                VTI_LOCALADDR=169.254.13.2/30
+                VTI_REMOTEADDR=169.254.13.1/30
+                ;;
             esac
 
-            case "\${PLUTO_VERB}" in
-            up-client)
-            \$IP link add \${VTI_INTERFACE} type vti local \${PLUTO_ME} remote \${PLUTO_PEER} okey \${PLUTO_MARK_OUT_ARR[0]} ikey \${PLUTO_MARK_IN_ARR[0]}
-            sysctl -w net.ipv4.conf.\${VTI_INTERFACE}.disable_policy=1
-            sysctl -w net.ipv4.conf.\${VTI_INTERFACE}.rp_filter=2 || sysctl -w net.ipv4.conf.\${VTI_INTERFACE}.rp_filter=0
-            \$IP addr add \${VTI_LOCALADDR} remote \${VTI_REMOTEADDR} dev \${VTI_INTERFACE}
-            \$IP link set \${VTI_INTERFACE} up mtu 1436
-            \$IPTABLES -t mangle -I FORWARD -o \${VTI_INTERFACE} -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
-            \$IPTABLES -t mangle -I INPUT -p esp -s \${PLUTO_PEER} -d \${PLUTO_ME} -j MARK --set-xmark ${PLUTO_MARK_IN}
-            \$IP route flush table 220
-            ;;
-            down-client)
-            \$IP link del \${VTI_INTERFACE}
-            \$IPTABLES -t mangle -D FORWARD -o \${VTI_INTERFACE} -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
-            \$IPTABLES -t mangle -D INPUT -p esp -s \${PLUTO_PEER} -d \${PLUTO_ME} -j MARK --set-xmark \${PLUTO_MARK_IN}
-            ;;
+            case "${!PLUTO_VERB}" in
+              up-client)
+                ${!IP} link add ${!VTI_INTERFACE} type vti local ${!PLUTO_ME} remote ${!PLUTO_PEER} okey ${!PLUTO_MARK_OUT_ARR[0]} ikey ${!PLUTO_MARK_IN_ARR[0]}
+                sysctl -w net.ipv4.conf.${!VTI_INTERFACE}.disable_policy=1
+                sysctl -w net.ipv4.conf.${!VTI_INTERFACE}.rp_filter=2 || sysctl -w net.ipv4.conf.${!VTI_INTERFACE}.rp_filter=0
+                ${!IP} addr add ${!VTI_LOCALADDR} remote ${!VTI_REMOTEADDR} dev ${!VTI_INTERFACE}
+                ${!IP} link set ${!VTI_INTERFACE} up mtu 1436
+                ${!IPTABLES} -t mangle -I FORWARD -o ${!VTI_INTERFACE} -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+                ${!IPTABLES} -t mangle -I INPUT -p esp -s ${!PLUTO_PEER} -d ${!PLUTO_ME} -j MARK --set-xmark ${!PLUTO_MARK_IN}
+                ${!IP} route flush table 220
+                ;;
+              down-client)
+                ${!IP} link del ${!VTI_INTERFACE}
+                ${!IPTABLES} -t mangle -D FORWARD -o ${!VTI_INTERFACE} -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+                ${!IPTABLES} -t mangle -D INPUT -p esp -s ${!PLUTO_PEER} -d ${!PLUTO_ME} -j MARK --set-xmark ${!PLUTO_MARK_IN}
+                ;;
             esac
 
             sysctl -w net.ipv4.ip_forward=1
@@ -585,8 +585,8 @@ Resources:
 
             EOT
             chmod +x /etc/ipsec-vti.sh
-            sed -i "s/{PUBLICIP}/$PUBLICIP/" /etc/strongswan/ipsec.conf > /etc/strongswan/ipsec.conf
-            sed -i "s/{PRIVATEIP}/$PRIVATEIP/" /etc/strongswan/ipsec.conf > /etc/strongswan/ipsec.conf
+            sed -i "s/{PUBLIC_IP}/$PUBLICIP/g" /etc/strongswan/ipsec.conf
+            sed -i "s/{PRIVATE_IP}/$PRIVATEIP/g" /etc/strongswan/ipsec.conf
             echo "$PUBLICIP $PRIVATEIP : PSK \"awsamazon\"" >> /etc/strongswan/ipsec.secrets
             systemctl enable strongswan
             
