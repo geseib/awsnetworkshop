@@ -22,18 +22,18 @@ Parameters:
     Default: "csr1000v-tgw"
  
   RouterChoice: 
-    Description: Juniper or Cisco Datacenter Router. (OpenSwan not Working)
+    Description: Juniper, Cisco or StrongSwan Datacenter Router.
     Default: Cisco
     Type: String
     AllowedValues: 
       - Cisco
       - Juniper
-      - OpenSwan
-    ConstraintDescription: must specify Cisco, Juniper, or OpenSwan.
+      - StrongSwan
+    ConstraintDescription: must specify Cisco, Juniper, or StrongSwan.
 Conditions: 
   CreateCiscoCSR: !Equals [ !Ref RouterChoice, Cisco ]
   CreateJuniperSRX: !Equals [ !Ref RouterChoice, Juniper ]
-  CreateOpenSwan: !Equals [ !Ref RouterChoice, OpenSwan]
+  CreateStrongSwan: !Equals [ !Ref RouterChoice, StrongSwan]
 
 Mappings:
   # AMI for Cisco CSR1kv and Juniper SRX
@@ -41,53 +41,70 @@ Mappings:
     'eu-north-1':
       CSRAMI: "ami-3a098244"
       SRXAMI: "ami-070c22dc10f3fe11c"
+      SWANAMI: "ami-0b7a46b4bd694e8a6"
     'ap-south-1':
       CSRAMI: "ami-0588edd878b8b8542"
       SRXAMI: "ami-0d8cde425328270f6"
+      SWANAMI: "ami-0470e33cd681b2476"
     'eu-west-3':
       CSRAMI: "ami-07d7fa89add77fc88"
       SRXAMI: "ami-09a7010143753ffab"
+      SWANAMI: "ami-00077e3fed5089981"
     'eu-west-2':
       CSRAMI: "ami-0232c6d101adf6f0e"
       SRXAMI: "ami-06da0d44a148bf6c4"
+      SWANAMI: "ami-01a6e31ac994bbc09"
     'eu-west-1':
       CSRAMI: "ami-061919bc753fac9f1"
       SRXAMI: "ami-0c56da2afd28b9eeb"
+      SWANAMI: "ami-06ce3edf0cff21f07"
     'ap-northeast-3':
       CSRAMI: "ami-000954ba2aee2ea2c"
+      SWANAMI: "ami-028238ef8d1df506f"
     'ap-northeast-2':
       CSRAMI: "ami-0bfd6b68306c37acd"
       SRXAMI: "ami-0b18a6631c4336cc5"
+      SWANAMI: "ami-01288945bd24ed49a"
     'ap-northeast-1':
       CSRAMI: "ami-0a32b4f1b6dbf76e2"
       SRXAMI: "ami-04c7106309afea609"
+      SWANAMI: "ami-0f310fced6141e627"
     'sa-east-1':
       CSRAMI: "ami-04c9e7db483ef8f85"
       SRXAMI: "ami-03436612decf8bc60"
+      SWANAMI: "ami-003449ffb2605a74c"
     'ca-central-1':
       CSRAMI: "ami-03406d8bb9a6eb082"
       SRXAMI: "ami-01806173d935e9a59"
+      SWANAMI: "ami-054362537f5132ce2"
     'ap-southeast-1':
       CSRAMI: "ami-01f265b921ce8c8ad"
       SRXAMI: "ami-07b3028c0c01a0766"
+      SWANAMI: "ami-0ec225b5e01ccb706"
     'ap-southeast-2':
       CSRAMI: "ami-0613911a862330b2f"
       SRXAMI: "ami-016655050b5a20b43"
+      SWANAMI: "ami-0970010f37c4f9c8d"
     'eu-central-1':
       CSRAMI: "ami-0e5b92a928e8157de"
       SRXAMI: "ami-0e986c61d4fe926e2"
+      SWANAMI: "ami-076431be05aaf8080"
     'us-east-1':
       CSRAMI: "ami-0fc7a3d5400f4619d"
       SRXAMI: "ami-05fa9647b42f06203"
+      SWANAMI: "ami-0323c3dd2da7fb37d"
     'us-east-2':
       CSRAMI: "ami-0fda690c9c2f5cbf9"
       SRXAMI: "ami-0941daed95357e040"
+      SWANAMI: "ami-0f7919c33c90f5b58"
     'us-west-1':
       CSRAMI: "ami-0dba8e0dd8bf42ee8"
       SRXAMI: "ami-04283cf0a2bf7c17c"
+      SWANAMI: "ami-06fcc1f0bc2c8943f"
     'us-west-2':
       CSRAMI: "ami-0ea109acd52c4b94d"
       SRXAMI: "ami-09bb11b7dabb0f165"
+      SWANAMI: "ami-0d6621c01e8c2de2c"
 
 
 Resources:
@@ -159,7 +176,7 @@ Resources:
       Type: ipsec.1
   
   SwanCustomerGateway:
-    Condition: CreateOpenSwan
+    Condition: CreateStrongSwan
     Type: AWS::EC2::CustomerGateway
     DependsOn: SwanIP
     Properties:
@@ -383,12 +400,12 @@ Resources:
       NetworkInterfaceId:
         Ref: vSRXInterface11
 
-#OpenSwan VPN 
+#StrongSwan VPN
   SwanSecGroup:
-    Condition: CreateOpenSwan
+    Condition: CreateStrongSwan
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: OpenSwan Security Group Rules
+      GroupDescription: StrongSwan Security Group Rules
       VpcId:
         Fn::ImportValue: !Sub "DC1-${ParentStack}-VPC"
       SecurityGroupIngress:
@@ -407,13 +424,13 @@ Resources:
           CidrIp: 0.0.0.0/0
 
   SwanIP:
-    Condition: CreateOpenSwan
+    Condition: CreateStrongSwan
     Type: "AWS::EC2::EIP"
     Properties:
       Domain: vpc
 
   SwanInterface:
-    Condition: CreateOpenSwan
+    Condition: CreateStrongSwan
     Type: AWS::EC2::NetworkInterface
     Properties:
       SubnetId:
@@ -424,11 +441,17 @@ Resources:
       SourceDestCheck: false
       Tags:
         - Key: Name
-          Value: OpenSwan  
+          Value: StrongSwan
+
+  SwanEIPAssoc:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt SwanIP.AllocationId
+      NetworkInterfaceId: !Ref SwanInterface
 
   SwanInstance:
     Type: AWS::EC2::Instance
-    Condition: CreateOpenSwan
+    Condition: CreateStrongSwan
     DependsOn:
     - SwanInterface
     Properties:
@@ -448,7 +471,7 @@ Resources:
       SourceDestCheck: false
       Tags:
       - Key: Name
-        Value: OpenSwan VPN
+        Value: StrongSwan VPN
       UserData:
         Fn::Base64:
           !Sub |
@@ -456,62 +479,119 @@ Resources:
             yum update -y
             yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
             amazon-linux-extras install epel
-            yum install -y strongswan
+            yum install -y strongswan quagga
+            groupadd -r quagga
+            groupadd -r quaggavt
+            useradd -r -g quagga quagga
+            cp /usr/share/doc/quagga-*/zebra.conf.sample /etc/quagga/zebra.conf
+            cp /usr/share/doc/quagga-*/bgpd.conf.sample /etc/quagga/bgpd.conf
+            chown -R quagga:quagga /etc/quagga
+            systemctl enable zebra
+            systemctl enable bgpd
             echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
             sysctl -p /etc/sysctl.conf
             PUBLICIP=$(curl -s http://169.254.169.254/2018-09-24/meta-data/public-ipv4)
             PRIVATEIP=$(curl -s http://169.254.169.254/2018-09-24/meta-data/local-ipv4)
-            cat <<EOT >>/tmp/ipsec.conf.template
+            cat <<EOT >/etc/strongswan/ipsec.conf
             conn %default
-              ikelifetime=60m
-              keylife=20m
-              rekeymargin=3m
-              keyingtries=1
-              authby=secret
-              keyexchange=ikev2
+              leftauth=psk
+              rightauth=psk
+              ike=aes128-sha1-modp1024!
+              ikelifetime=28800s
+              aggressive=no
+              esp=aes128-sha1-modp1024!
+              type=tunnel
+              dpddelay=10s
+              dpdtimeout=30s
+              keyexchange=ikev1
+              rekey=yes
+              reauth=no
+              dpdaction=restart
+              closeaction=restart
+              leftsubnet=0.0.0.0/0
+              rightsubnet=0.0.0.0/0
+              leftupdown=/etc/ipsec-vti.sh
+              installpolicy=yes
+              compress=no
               mobike=no
 
             conn dc2aws1
-              closeaction=restart
-              dpdaction=restart
-              authby=secret
-              left={PRIVATEIP}
-              leftid={PUBLICIP}
-              leftsubnet=0.0.0.0/0
-              right={VPN1}
-              rightsubnet=10.0.0.0/8
-              ike=aes256-sha1-modp1024!
-              esp=aes256-sha1!
-              reauth=no
+              left={PRIVATE_IP}
+              leftid={PUBLIC_IP}
+              right=TUNNEL_1_IP
+              rightid=TUNNEL_1_IP
               auto=start
-            
-            conn dc2aws2
-              closeaction=restart
-              dpdaction=restart
-              authby=secret
-              left={PRIVATEIP}
-              leftid={PUBLICIP}
-              leftsubnet=0.0.0.0/0
-              right={VPN2}
-              rightsubnet=10.0.0.0/8
-              ike=aes256-sha1-modp1024!
-              esp=aes256-sha1!
-              reauth=no
-              auto=start
+              mark=100
 
+            conn dc2aws2
+              left={PRIVATE_IP}
+              leftid={PUBLIC_IP}
+              right=TUNNEL_2_IP
+              rightid=TUNNEL_2_IP
+              auto=start
+              mark=200
 
             EOT
-            sed -i "s/{PUBLICIP}/$PUBLICIP/" /tmp/ipsec.conf.template
-            sed -i "s/{PRIVATEIP}/$PRIVATEIP/" /tmp/ipsec.conf.template
-            mv -f /tmp/ipsec.conf.template /etc/strongswan/ipsec.conf
-            echo "$PUBLICIP 10.1.1.1 : PSK \"amazonaws\"" >> /etc/strongswan/ipsec.secrets
+            cat <<'EOT' >>/etc/ipsec-vti.sh
+            IP=$(which ip)
+            IPTABLES=$(which iptables)
+
+            PLUTO_MARK_OUT_ARR=(${!PLUTO_MARK_OUT//// })
+            PLUTO_MARK_IN_ARR=(${!PLUTO_MARK_IN//// })
+            case "${!PLUTO_CONNECTION}" in
+              dc2aws1)
+                VTI_INTERFACE=vti1
+                VTI_LOCALADDR=169.254.10.2/30
+                VTI_REMOTEADDR=169.254.10.1/30
+                ;;
+              dc2aws2)
+                VTI_INTERFACE=vti2
+                VTI_LOCALADDR=169.254.11.2/30
+                VTI_REMOTEADDR=169.254.11.1/30
+                ;;
+              dc2aws3)
+                VTI_INTERFACE=vti2
+                VTI_LOCALADDR=169.254.12.2/30
+                VTI_REMOTEADDR=169.254.12.1/30
+                ;;
+              dc2aws4)
+                VTI_INTERFACE=vti2
+                VTI_LOCALADDR=169.254.13.2/30
+                VTI_REMOTEADDR=169.254.13.1/30
+                ;;
+            esac
+
+            case "${!PLUTO_VERB}" in
+              up-client)
+                ${!IP} link add ${!VTI_INTERFACE} type vti local ${!PLUTO_ME} remote ${!PLUTO_PEER} okey ${!PLUTO_MARK_OUT_ARR[0]} ikey ${!PLUTO_MARK_IN_ARR[0]}
+                sysctl -w net.ipv4.conf.${!VTI_INTERFACE}.disable_policy=1
+                sysctl -w net.ipv4.conf.${!VTI_INTERFACE}.rp_filter=2 || sysctl -w net.ipv4.conf.${!VTI_INTERFACE}.rp_filter=0
+                ${!IP} addr add ${!VTI_LOCALADDR} remote ${!VTI_REMOTEADDR} dev ${!VTI_INTERFACE}
+                ${!IP} link set ${!VTI_INTERFACE} up mtu 1436
+                ${!IPTABLES} -t mangle -I FORWARD -o ${!VTI_INTERFACE} -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+                ${!IPTABLES} -t mangle -I INPUT -p esp -s ${!PLUTO_PEER} -d ${!PLUTO_ME} -j MARK --set-xmark ${!PLUTO_MARK_IN}
+                ${!IP} route flush table 220
+                ;;
+              down-client)
+                ${!IP} link del ${!VTI_INTERFACE}
+                ${!IPTABLES} -t mangle -D FORWARD -o ${!VTI_INTERFACE} -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+                ${!IPTABLES} -t mangle -D INPUT -p esp -s ${!PLUTO_PEER} -d ${!PLUTO_ME} -j MARK --set-xmark ${!PLUTO_MARK_IN}
+                ;;
+            esac
+
+            sysctl -w net.ipv4.ip_forward=1
+            sysctl -w net.ipv4.conf.eth0.disable_xfrm=1
+            sysctl -w net.ipv4.conf.eth0.disable_policy=1
+
+            EOT
+            chmod +x /etc/ipsec-vti.sh
+            sed -i "s/{PUBLIC_IP}/$PUBLICIP/g" /etc/strongswan/ipsec.conf
+            sed -i "s/{PRIVATE_IP}/$PRIVATEIP/g" /etc/strongswan/ipsec.conf
+            echo "$PUBLICIP $PRIVATEIP : PSK \"awsamazon\"" >> /etc/strongswan/ipsec.secrets
             systemctl enable strongswan
-            systemctl start strongswan
-            strongswan up dc2aws1
-            strongswan up dc2aws2
             
   SwanPrivateDefaultRoute:
-    Condition: CreateOpenSwan
+    Condition: CreateStrongSwan
     Type: AWS::EC2::Route
     DependsOn: SwanInterface
     Properties:
@@ -745,4 +825,13 @@ Outputs:
     Export:
       Name: !Sub "DC1-${AWS::StackName}-SRXssh"
 
-
+  StrongSwanAddress:
+    Condition: CreateStrongSwan
+    Description: ssh command for StrongSwan
+    Value:
+      !Join [
+        "",
+        ["ssh -i ~/.ssh/", Ref: "KeyPair", ".pem ec2-user@", !GetAtt "SwanInterface.PrimaryPrivateIpAddress"],
+      ]
+    Export:
+      Name: !Sub "DC1-${AWS::StackName}-Swanssh"
