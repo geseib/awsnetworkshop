@@ -444,6 +444,7 @@ Resources:
           Value: StrongSwan
 
   SwanEIPAssoc:
+    Condition: CreateStrongSwan
     Type: AWS::EC2::EIPAssociation
     Properties:
       AllocationId: !GetAtt SwanIP.AllocationId
