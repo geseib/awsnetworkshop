@@ -11,8 +11,9 @@ Finally, if you are looking to build something entirely different, take a look a
 ├── buildspec.yml                     <-- Build Spec used to build this project in CodeBuild
 ├── LICENSE.txt                       <-- License file
 ├── README.md                         <-- This instructions file
-├── website                           <-- Website configuration and deployment
+├── website/templates                 <-- Website configuration and deployment
 │   └── pipeline-template.yaml        <-- Cloudformation templates for CodePipeline
+│   └── workshop-cloudfront.yaml      <-- Cloudformation templates for Cloudfront(Access to S3 Website)
 ├── code                              <-- Source code for the workshop
 ├── content                           <-- Website content for the workshop
 └── deck                              <-- Presentation deck
