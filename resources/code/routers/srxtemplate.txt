@@ -122,5 +122,8 @@ set routing-instances aws protocols bgp group ebgp neighbor 169.254.11.1 peer-as
 set routing-instances aws protocols bgp group ebgp neighbor 169.254.11.1 hold-time 30
 set routing-instances aws protocols bgp group ebgp neighbor 169.254.11.1 local-as 65001
 
-
+set security policies from-zone trust to-zone trust policy permit-any match source-address any
+set security policies from-zone trust to-zone trust policy permit-any match destination-address any
+set security policies from-zone trust to-zone trust policy permit-any match application any
+set security policies from-zone trust to-zone trust policy permit-any then permit
 
