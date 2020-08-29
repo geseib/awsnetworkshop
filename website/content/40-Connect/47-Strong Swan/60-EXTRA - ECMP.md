@@ -54,7 +54,7 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
     ssh -i ~/.ssh/StrongSwan.pem ec2-user@10.4.3.247
     sudo nano /etc/strongswan/ipsec.conf
     ```
-    This is a sample configuration file with the updated place holders. dc2aws1 its the tunnel with CIDR 169.254.10.0/30 and dc2aws2 its the tunnel with CIDR 169.254.11.0/30, double check the public IP Address for each tunnel and leftid must be the EIP assigned to the StrongSwan EC2 instance.
+    This is a sample configuration file with the updated place holders. dc2aws1 is the tunnel with CIDR 169.254.10.0/30, dc2aws2 is the tunnel with CIDR 169.254.11.0/30, dc3aws3 is the tunnel with CIDR 169.254.12.0/30, and dc3aws4 is the tunnel with CIDR 169.254.13.0/30, double check the public IP Address for each tunnel and leftid must be the EIP assigned to the StrongSwan EC2 instance.
     ```
     conn %default
       leftauth=psk
@@ -100,7 +100,7 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
       right=52.3.204.56
       rightid=52.3.204.56
       auto=start
-      mark=200
+      mark=300
     
     conn dc2aws4
       left=10.4.3.247
@@ -108,7 +108,7 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
       right=54.145.177.84
       rightid=54.145.177.84
       auto=start
-      mark=200
+      mark=400
     ```
     To save and close the nano editor press Ctrl+X and answer Y. **NOTE: Make sure the name of the tunnels are dc2aws3 and dc2aws4.**
 
