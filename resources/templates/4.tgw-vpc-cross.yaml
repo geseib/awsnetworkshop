@@ -304,7 +304,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCNP3
-      ServiceName: "com.amazonaws.${AWS::Region}.ssm"
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssm"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:
@@ -318,7 +318,7 @@ Resources:
     Properties:
       VpcId:
         Ref: VPCNP3
-      ServiceName: "com.amazonaws.${AWS::Region}.ssmmessages"
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssmmessages"
       VpcEndpointType: Interface
       PrivateDnsEnabled: True
       SubnetIds:

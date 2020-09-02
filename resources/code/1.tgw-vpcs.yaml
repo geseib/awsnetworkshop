@@ -1719,6 +1719,11 @@ Outputs:
     Value: !Ref PrivateSubnetRouteTableDCS1
     Export:
       Name: !Sub "DCS1-${AWS::StackName}-PrivateRouteTable"
+  PublicSubnetRouteTableDSC1:
+    Description: "DCS1 Public Route Table"
+    Value: !Ref PublicSubnetRouteTableDCS1
+    Export:
+      Name: !Sub "DCS1-${AWS::StackName}-PublicRouteTable"
 
   #NP1 Outputs
   PublicSubnetANP1:
@@ -1741,7 +1746,12 @@ Outputs:
     Value: !Ref PrivateSubnetBNP1
     Export:
       Name: !Sub "NP1-${AWS::StackName}-PrivateSubnetB"  
-
+  PrivateSubnetRouteTableNP1:
+    Description: "NP1 Private Route Table"
+    Value: !Ref PrivateSubnetRouteTableNP1
+    Export:
+      Name: !Sub "NP1-${AWS::StackName}-PrivateRouteTable"
+      
   #NP2 Outputs
   PublicSubnetANP2:
     Description: "NP2 Public Subnet A"
@@ -1763,4 +1773,8 @@ Outputs:
     Value: !Ref PrivateSubnetBNP2
     Export:
       Name: !Sub "NP2-${AWS::StackName}-PrivateSubnetB"
-
+  PrivateSubnetRouteTableNP2:
+    Description: "NP2 Private Route Table"
+    Value: !Ref PrivateSubnetRouteTableNP2
+    Export:
+      Name: !Sub "NP2-${AWS::StackName}-PrivateRouteTable" 
