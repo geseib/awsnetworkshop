@@ -64,7 +64,6 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 1.  enter configuration mode, which will take you to a config prompt
 
     ```
-    root% cli
     root> configure
     Enter configuration commands, one per line.  End with CNTL/Z.
     (edit)
@@ -76,23 +75,54 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 1.  At the root# prompt, type **commit** and press enter, type **exit** and press enter.
 
 1.  Now lets look at the new interfaces: **sh int br**. You should see new interfaces: st0.3 and st0.4 and they both should show up. \*note: if they do not change from down to up after a 2 minutes, likely cause is the ip addresses were flipped in the createcsr script.
-    ![ssh key and ssh to CSR](/images/csr-showtunnel.png)
 
+```
+ec2-user> show interfaces brief st0  
+Physical interface: st0, Enabled, Physical link is Up
+  Type: Secure-Tunnel, Link-level type: Secure-Tunnel, MTU: 9192, Speed: Unspecified
+  Device flags   : Present Running
+  Interface flags: Point-To-Point
+
+  Logical interface st0.1 
+    Flags: Up Point-To-Point SNMP-Traps Encapsulation: Secure-Tunnel
+    Security: Zone: trust
+    Allowed host-inbound traffic : bgp
+    inet  169.254.10.2/30 
+
+  Logical interface st0.2 
+    Flags: Up Point-To-Point SNMP-Traps Encapsulation: Secure-Tunnel
+    Security: Zone: trust
+    Allowed host-inbound traffic : bgp
+    inet  169.254.11.2/30 
+
+  Logical interface st0.3 
+    Flags: Up Point-To-Point SNMP-Traps Encapsulation: Secure-Tunnel
+    Security: Zone: trust
+    Allowed host-inbound traffic : bgp
+    inet  169.254.12.2/30 
+
+  Logical interface st0.4 
+    Flags: Up Point-To-Point SNMP-Traps Encapsulation: Secure-Tunnel
+    Security: Zone: trust
+    Allowed host-inbound traffic : bgp
+    inet  169.254.13.2/30 
+```
+	
 1.  Lets make sure we are seeing the routes on the Cisco CSR. first we can look at what BGP is seeing: **show bgp summary**. The most important thing to see is the State/PfxRcd (Prefixes received). If this is in Active or Idle (likely if neighbor statement is wrong: IP address, AS number) there is a configuration issue. What we want to see is a number. In fact if everything is setup correctly we should see 4 for each neighbor.
 
-    ```
-     root> show bgp summary
-    Groups: 1 Peers: 2 Down peers: 0
-    Peer                     AS      InPkt     OutPkt    OutQ   Flaps Last Up/Dwn State|#Active/Received/Accepted/Damped...
-    169.254.10.1          65000        374        415       0       0     1:01:54 Establ
-    aws.inet.0: 4/4/4/0
-    169.254.11.1          65000        373        414       0       0     1:01:51 Establ
-    aws.inet.0: 4/4/4/0
-    169.254.12.1          65000        374        415       0       0     1:01:54 Establ
-    aws.inet.0: 4/4/4/0
-    169.254.13.1          65000        373        414       0       0     1:01:51 Establ
-    aws.inet.0: 4/4/4/0
-    ```
+```
+root> show bgp summary
+Groups: 1 Peers: 2 Down peers: 0
+Peer                     AS      InPkt     OutPkt    OutQ   Flaps Last Up/Dwn State|#Active/Received/Accepted/Damped...
+169.254.10.1          65000        374        415       0       0     1:01:54 Establ
+aws.inet.0: 4/4/4/0
+169.254.11.1          65000        373        414       0       0     1:01:51 Establ
+aws.inet.0: 4/4/4/0
+169.254.12.1          65000        374        415       0       0     1:01:54 Establ
+aws.inet.0: 4/4/4/0
+169.254.13.1          65000        373        414       0       0     1:01:51 Establ
+aws.inet.0: 4/4/4/0
+```
 
 1.  Lets verify Equal Cost Multipathing (ECMP). Making sure we setup ECMP, back in config mode we will add maximum-paths to 8:
 
@@ -102,44 +132,101 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 
     Now, run **sh route table aws** command . See, both the tunnels are showing up!
 
-    ```
-    + = Active Route, - = Last Active, * = Both
+```
+ec2-user> show route table aws 
 
-    0.0.0.0/0 _[Static/5] 01:25:10 > to 10.4.0.1 via ge-0/0/1.0
-    10.0.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-    to 169.254.11.1 via st0.2
-    [BGP/170] 01:12:58, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-    10.4.0.0/16 _[Static/5] 01:25:11 > to 10.4.8.1 via ge-0/0/0.0
-    10.4.0.0/22 _[Direct/0] 01:25:10 > via ge-0/0/1.0
-    10.4.0.12/32 _[Local/0] 01:25:10
-    Local via ge-0/0/1.0
-    10.4.8.0/21 _[Direct/0] 01:25:11 > via ge-0/0/0.0
-    10.4.8.11/32 _[Local/0] 01:25:11
-    Local via ge-0/0/0.0
-    10.8.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-    to 169.254.11.1 via st0.2
-    [BGP/170] 01:12:58, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-    10.16.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-    to 169.254.11.1 via st0.2
-    [BGP/170] 01:12:58, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-    10.17.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-    to 169.254.11.1 via st0.2
-    [BGP/170] 01:12:58, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-    169.254.10.0/30 _[Direct/0] 01:25:10 > via st0.1
-    169.254.10.2/32 _[Local/0] 01:25:10
-    Local via st0.1
-    169.254.11.0/30 _[Direct/0] 01:25:10 > via st0.2
-    169.254.11.2/32 _[Local/0] 01:25:10
-    Local via st0.2
+aws.inet.0: 18 destinations, 30 routes (18 active, 0 holddown, 0 hidden)
++ = Active Route, - = Last Active, * = Both
 
-    ```
+0.0.0.0/0          *[Static/5] 00:21:22
+                    >  to 10.4.0.1 via ge-0/0/1.0
+10.0.0.0/16        *[BGP/170] 00:01:36, MED 100, localpref 100, from 169.254.11.1
+                      AS path: 65000 I, validation-state: unverified
+                       to 169.254.10.1 via st0.1
+                       to 169.254.11.1 via st0.2
+                    >  to 169.254.12.1 via st0.3
+                       to 169.254.13.1 via st0.4
+                    [BGP/170] 00:21:09, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+                    [BGP/170] 00:01:40, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.12.1 via st0.3
+                    [BGP/170] 00:01:36, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.13.1 via st0.4
+10.4.0.0/16        *[Static/5] 00:21:22
+                    >  to 10.4.8.1 via ge-0/0/0.0
+10.4.0.0/22        *[Direct/0] 00:21:22
+                    >  via ge-0/0/1.0
+10.4.0.12/32       *[Local/0] 00:21:22
+                       Local via ge-0/0/1.0
+10.4.8.0/21        *[Direct/0] 00:21:22
+                    >  via ge-0/0/0.0
+10.4.8.11/32       *[Local/0] 00:21:22
+                       Local via ge-0/0/0.0
+10.8.0.0/16        *[BGP/170] 00:01:36, MED 100, localpref 100, from 169.254.11.1
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+                       to 169.254.11.1 via st0.2
+                       to 169.254.12.1 via st0.3
+                       to 169.254.13.1 via st0.4
+                    [BGP/170] 00:21:09, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+                    [BGP/170] 00:01:40, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.12.1 via st0.3
+                    [BGP/170] 00:01:36, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.13.1 via st0.4
+10.16.0.0/16       *[BGP/170] 00:01:36, MED 100, localpref 100, from 169.254.11.1
+                      AS path: 65000 I, validation-state: unverified
+                       to 169.254.10.1 via st0.1
+                       to 169.254.11.1 via st0.2
+                    >  to 169.254.12.1 via st0.3
+                       to 169.254.13.1 via st0.4
+                    [BGP/170] 00:21:09, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+                    [BGP/170] 00:01:40, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.12.1 via st0.3
+                    [BGP/170] 00:01:36, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.13.1 via st0.4
+10.17.0.0/16       *[BGP/170] 00:01:36, MED 100, localpref 100, from 169.254.11.1
+                      AS path: 65000 I, validation-state: unverified
+                       to 169.254.10.1 via st0.1
+                       to 169.254.11.1 via st0.2
+                    >  to 169.254.12.1 via st0.3
+                       to 169.254.13.1 via st0.4
+                    [BGP/170] 00:21:09, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+                    [BGP/170] 00:01:40, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.12.1 via st0.3
+                    [BGP/170] 00:01:36, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.13.1 via st0.4
+169.254.10.0/30    *[Direct/0] 00:21:34
+                    >  via st0.1
+169.254.10.2/32    *[Local/0] 00:21:34
+                       Local via st0.1
+169.254.11.0/30    *[Direct/0] 00:21:34
+                    >  via st0.2
+169.254.11.2/32    *[Local/0] 00:21:34
+                       Local via st0.2
+169.254.12.0/30    *[Direct/0] 00:01:46
+                    >  via st0.3
+169.254.12.2/32    *[Local/0] 00:01:46
+                       Local via st0.3
+169.254.13.0/30    *[Direct/0] 00:01:46
+                    >  via st0.4
+169.254.13.2/32    *[Local/0] 00:01:46
+                       Local via st0.4
+...
+```
 
 1.  Just to verify where those routes are coming from, we can take a look at the **Green Route Table**. _note: remember, it's under the **VPC** service and **Transit Gateway Route Tables** at the bottom of the left menu._

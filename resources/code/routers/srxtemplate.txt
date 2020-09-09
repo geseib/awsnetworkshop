@@ -127,3 +127,4 @@ set security policies from-zone trust to-zone trust policy permit-any match dest
 set security policies from-zone trust to-zone trust policy permit-any match application any
 set security policies from-zone trust to-zone trust policy permit-any then permit
 
+
