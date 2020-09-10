@@ -43,6 +43,8 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 
 1.  While at the **Transit Gateway Route Tables**, take a look at the **Propagations** tab. These are the Resources that Dynamically inform the route table. An attachment can propagate to multiple route tables. For the Datacenter, we want to propagate to all of the route tables so the VPC associated with each route table can route back to the datacenter. Lets start with the **Green Route Table**. We can see all of the VPCs are propagating their CIDR to the route table. Since the **Datacenter Services VPC** is also associated with this route table, we need to propagate this new second set of VPN routes to the **Green Route Table**.
 
+1.  Click in **Create Propagation**on the field “chose attachment to propagate”, select the attachment of the VPN (previously named by you) and click in **Create propagation**.
+
 1.  Repeat the above step on the propagations tab for the **Red Route Table** and the **Blue Route Table** so VPCs associated with these route tables also get four paths to the datacenter.
 
 1.  Take a look at each of the route tables and notice the tab **Routes**. You can see the routes that are propagated, as well as a static route table that was created for you by the CloudFormation template. That's the default route (0.0.0.0/0) that will direct traffic destined for the internet to the **Datacenter Services VPC** and ultimately through the NAT Gateway in that VPC. _note: there is also a route table with no name. This is the default route table. In this lab we do not intend to use the default route table_.
@@ -54,7 +56,7 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
     ssh -i ~/.ssh/StrongSwan.pem ec2-user@10.4.3.247
     sudo nano /etc/strongswan/ipsec.conf
     ```
-    This is a sample configuration file with the updated place holders. dc2aws1 its the tunnel with CIDR 169.254.10.0/30 and dc2aws2 its the tunnel with CIDR 169.254.11.0/30, double check the public IP Address for each tunnel and leftid must be the EIP assigned to the StrongSwan EC2 instance.
+    This is a sample configuration file with the updated place holders. dc2aws1 is the tunnel with CIDR 169.254.10.0/30, dc2aws2 is the tunnel with CIDR 169.254.11.0/30, dc3aws3 is the tunnel with CIDR 169.254.12.0/30, and dc3aws4 is the tunnel with CIDR 169.254.13.0/30, double check the public IP Address for each tunnel and leftid must be the EIP assigned to the StrongSwan EC2 instance.
     ```
     conn %default
       leftauth=psk
@@ -100,7 +102,7 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
       right=52.3.204.56
       rightid=52.3.204.56
       auto=start
-      mark=200
+      mark=300
     
     conn dc2aws4
       left=10.4.3.247
@@ -108,7 +110,7 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
       right=54.145.177.84
       rightid=54.145.177.84
       auto=start
-      mark=200
+      mark=400
     ```
     To save and close the nano editor press Ctrl+X and answer Y. **NOTE: Make sure the name of the tunnels are dc2aws3 and dc2aws4.**
 
