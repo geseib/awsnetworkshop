@@ -74,7 +74,7 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 
 1.  At the root# prompt, type **commit** and press enter, type **exit** and press enter.
 
-1.  Now lets look at the new interfaces: **sh int br**. You should see new interfaces: st0.3 and st0.4 and they both should show up. \*note: if they do not change from down to up after a 2 minutes, likely cause is the ip addresses were flipped in the createcsr script.
+1.  Now lets look at the new interfaces: **show interfaces brief st0**. You should see new interfaces: st0.3 and st0.4 and they both should show up. \*note: if they do not change from down to up after a 2 minutes, likely cause is the ip addresses were flipped in the createcsr script.
 
 ```
 ec2-user> show interfaces brief st0  
