@@ -35,6 +35,8 @@ url = "https://github.com/geseib/awsnetworkshop"
 weight = 30
 
 [[menu.shortcuts]]
-name = "<i class='fas fa-envelope'></i> Have questions?"
+name = "<i class='fas fa-envelope'></i>i Have questions?"
 url = "mailto:tgwworkshop@amazon.com"
 weight = 40
+
+
