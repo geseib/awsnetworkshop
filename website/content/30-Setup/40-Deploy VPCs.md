@@ -22,7 +22,7 @@ weight = 40
    [![EU West (Singapore)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/ap-southeast-1.svg)](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-1#/stacks/create/review?stackName=tgw&templateURL=https://s3.amazonaws.com/{{<codebucket>}}/1.tgw-vpcs.yaml&param_AvailabilityZoneA=ap-southeast-1a&param_AvailabilityZoneB=ap-southeast-1b)
    [![AP Northeast (Tokyo)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/ap-northeast-1.svg)](https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-1#/stacks/create/review?stackName=tgw&templateURL=https://s3.amazonaws.com/{{<codebucket>}}/1.tgw-vpcs.yaml&param_AvailabilityZoneA=ap-northeast-1a&param_AvailabilityZoneB=ap-northeast-1c)
 
-1. If you are shareing the account with someone else doing the workshop, add your initals to the **Stack name**. This will make any IAM roles or other global resource unique.
+1. If you are sharing the account with someone else doing the workshop, add your initals to the **Stack name**. This will make any IAM roles or other global resource unique.
 
 1. Scroll down to the bottom of the **Review name_of_your_stack** and check the **I acknowledge that AWS CloudFormation might create IAM resources with custom names.** Click the **Create** button in the lower right.
    ![Create Stack](../images/createStack-VPCiam.png)

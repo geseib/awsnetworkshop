@@ -6,7 +6,7 @@ weight = 60
 
 ![Speficy Details Screenshot](../images/hybrid-subnets-diagram.png)
 
-Carving up and assigning private IP address space (RFC 1918 addresses) is a big subject and can be daunting of you have a large enterprise, especially considering large business events with network impact, such as mergers. Even when you have a centralized IP address management system (IPAM), you will find undocumented address space being used, and sometimes finding useable space is difficult. In spite of this, we as network professionals want to find large non-fragmented spaces so we can create a well-summarized network. Don't laugh: we got into this because we like a challenge, right?
+Carving up and assigning private IP address space (RFC 1918 addresses) is a big subject and can be daunting if you have a large enterprise, especially considering large business events with network impact, such as mergers. Even when you have a centralized IP address management system (IPAM), you will find undocumented address space being used, and sometimes finding useable space is difficult. In spite of this, we as network professionals want to find large non-fragmented spaces so we can create a well-summarized network. Don't laugh: we got into this because we like a challenge, right?
 In our case we found that the 10.0.0.0/11 space was available (spoiler alert: the previous statement is fictional in every network but this one, yet representative). So we are going to carve up /13's for our production and non-production and we will grab a /16's for our shared service and a /16 for our simulated Datacenter.
 If you're just getting into CIDR notation, you may wonder, "um, what does that mean?" Here's another way of looking at it:
 

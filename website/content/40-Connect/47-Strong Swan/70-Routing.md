@@ -6,7 +6,7 @@ weight = 70
 
 ## Routing in the VPCs
 
-![Specify Details Screenshot](/images/hybrid-routes-diagram.png)
+![Specify Details Screenshot](/images/hybrid-swan-routes-diagram.png)
 
 ## Create Routes in the VPC to the Transit Gateway Attachments
 

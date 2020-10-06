@@ -29,11 +29,11 @@ weight = 50
 
 ## Connect to the shell of a Linux EC2 instance
 
-1. In the AWS Management Console choose **Services** then select **Systems Manager**. Systems Manager Gain Operational Insight and Take Action on AWS Resources. We are going to take a look a just one of seven capabilities of Systems Manager.
+1. In the AWS Management Console choose **Services** then select **Systems Manager**. *AWS Systems Manager allows you to gain operational insight and take action on AWS resources. We are going to take a look a just one of several capabilities of Systems Manager.*
 
 1. From the menu on the left, Scroll down and select **Session Manager**. Session Manager allows us to use IAM roles and policies to determine who has console access without having to manage SSH keys for our instances.
 
-1. In the main pane, click the **Start session** button. Select the radio button next to the instance you wish to log into. You will now receive a Bash shell prompt for that instance.
+1. In the main pane, click the **Start session** button. Select the radio button next to the instance you wish to log into ( such as NP1-*Your_-_Stack_Name*-server). You will now receive a Bash shell prompt for that instance.
 
 1. Run a few commands like **ifconfig** or **cat /etc/resolv.conf**
 
@@ -63,6 +63,9 @@ weight = 50
    options timeout:2 attempts:5
    nameserver 10.16.0.2
    ```
+
+*You can also access the **AWS Systems Manager Session Manager** via the **EC2** Console's **Action** button. From there select **Connect** and choose the **Session Manager** tab and click the **Connect** button on the bottom right.*
+
 
 # Congratulations
 

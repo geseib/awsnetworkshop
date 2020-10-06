@@ -102,7 +102,13 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
     ```
 
 1.  Lets verify Equal Cost Multipathing (ECMP). Making sure we setup ECMP, back in config mode we will add maximum-paths to 8:
-    `ip-10-4-0-17# config t router bgp 65001 address-family-ipv4 maximum-paths 8 end`
+    ```
+    ip-10-4-0-17# config t 
+    router bgp 65001
+    address-family ipv4 
+    maximum-paths 8 
+    end
+    ```
     Now, run **sh ip ro** command . See, both the tunnels are showing up!
 
     ```

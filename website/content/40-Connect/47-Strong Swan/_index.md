@@ -8,4 +8,4 @@ weight = 45
 
 Using a predefined CloudFormation template, we will deploy a Strong Swan Router into the Simulated Datacenter VPC, as well as the Transit Gateway.
 
-![Specify Details Screenshot](/images/hybrid-tgw-diagram.png)
+![Specify Details Screenshot](/images/hybrid-swan-tgw-diagram.png)

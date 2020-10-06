@@ -8,7 +8,7 @@ weight = 60
 
 Bandwidth scaling and High Availability are built into the Transit Gateway inherently as well via the multiple Availability Zone (AZ) attachments to our VPCs. However; for connectivity back to our Datacenter, we have some things to consider. In the real world, we would create another customer gateway on a totally separate physical device. Ideally this is physically as fault-isolated from the first Customer Gateway as we can make it (think, in across the room or even in another communications room. With separate connectivity and power if we have it). But in order to distribute load across both Customer gateways from the datacenter, you typically would use another tier of routers (shown below via a core router) to balance the traffic. For our demo purposes, lets build it on the same Strong Swan we have in our simulated Datacenter so we can see ECMP in action.
 
-![ECMP on VPNs](/images/vpn-ecmp.png)
+![ECMP on VPNs](/images/vpn-swan-ecmp.png)
 
 ## Creating Four Equal Cost paths between our VPCs and the Datacenter
 
