@@ -60,7 +60,7 @@ In a real production environment we would setup a second router for redundancy a
     ```
     sudo nano /etc/strongswan/ipsec.conf
     ```
-    To configure the IP Sec tunnel, you need to replace the configuration file place holders.  This is a sample configuration file with the updated place holders. **dc2aws1** is the tunnel with CIDR 169.254.10.0/30 and **dc2aws2** is the tunnel with CIDR 169.254.11.0/30.  The public IP Address for each tunnel and **leftid** must be the EIP assigned to the StrongSwan EC2 instance.  The **right** and **rightid** value for each must be the corresponding **Outside IP Address** of the VPN Connection.
+    To configure the IP Sec tunnel, you need to replace the configuration file place holders.  This is a sample configuration file with the updated place holders. **dc2aws1** is the tunnel with CIDR 169.254.10.0/30 and **dc2aws2** is the tunnel with CIDR 169.254.11.0/30.  The public IP Address for each tunnel and **leftid** must be the EIP assigned to the StrongSwan EC2 instance.  The **right** and **rightid** values for each must be the corresponding **Outside IP Address** of the VPN Connection.
     ```
     conn %default
       leftauth=psk
