@@ -51,16 +51,16 @@ In a real production environment we would setup a second router for redundancy a
 
 1.  Take a look at each of the route tables and notice the tab **Routes**. You can see the routes that are propagated, as well as a static route table that was created for you by the CloudFormation template. That's the default route (0.0.0.0/0) that will direct traffic destined for the internet to the **Datacenter Services VPC** and ultimately through the NAT Gateway in that VPC. _note: there is also a route table with no name. This is the default route table. In this lab we do not intend to use the default route table_.
 
-1.  Back on the Cloud9 browser tab, using the two VPN tunnel endpoint address generated from the step above, ssh to the Strong Swan and Quagga Box to edit the VPN configuration file:
-    Example from Site-to-Site VPN
+1.  Back on the Cloud9 browser tab, using the two VPN tunnel endpoint address generated from the step above (example from Site-to-Site VPN)
+
     ![VPN tunnel Addresses](/images/vpn-tunneladdresses.png)
 
-    To configure the IP  Sec tunnel you need to replace the configuration file place holders, to do that edit the ipsec.conf file.
+    SSH to the Strong Swan and Quagga Box if not already.  The SSH command can be found under the **Exports** tab of the **CloudFormation** template.  Edit the VPN configuration file ipsec.conf.
+    
     ```
-    ssh -i ~/.ssh/StrongSwan.pem ec2-user@10.4.3.247
     sudo nano /etc/strongswan/ipsec.conf
     ```
-    This is a sample configuration file with the updated place holders. dc2aws1 its the tunnel with CIDR 169.254.10.0/30 and dc2aws2 its the tunnel with CIDR 169.254.11.0/30, double check the public IP Address for each tunnel and leftid must be the EIP assigned to the StrongSwan EC2 instance.
+    To configure the IP Sec tunnel, you need to replace the configuration file place holders.  This is a sample configuration file with the updated place holders. **dc2aws1** is the tunnel with CIDR 169.254.10.0/30 and **dc2aws2** is the tunnel with CIDR 169.254.11.0/30.  The public IP Address for each tunnel and **leftid** must be the EIP assigned to the StrongSwan EC2 instance.  The **right** and **rightid** value for each must be the corresponding **Outside IP Address** of the VPN Connection.
     ```
     conn %default
       leftauth=psk
@@ -106,9 +106,15 @@ In a real production environment we would setup a second router for redundancy a
 
 1.  Start the tunnel and check its status with the following commands. _Note: Strong Swan only will provide the IP Sec tunnels._
     ```
-    $ sudo strongswan start
+    sudo strongswan start
+    ```
+    ```
     Starting strongSwan 5.7.2 IPsec [starter]...
-    $ sudo strongswan status
+    ```
+    ```
+    sudo strongswan status
+    ```
+    ```
     Security Associations (2 up, 0 connecting):
          dc2aws2[2]: ESTABLISHED 46 seconds ago, 10.4.3.247[54.204.203.49]...34.198.46.228[34.198.46.228]
          dc2aws2{2}:  INSTALLED, TUNNEL, reqid 1, ESP in UDP SPIs: ce18c0e6_i 0a683749_o
@@ -120,16 +126,18 @@ In a real production environment we would setup a second router for redundancy a
 
 1.  Configure Quagga to provide BGP. First start the daemon and then configure BGP.
     ```
-    $ sudo systemctl start bgpd
-    $ sudo vtysh
-    # conf t
-    # no router bgp 7675
-    # router bgp 65001
-    # network 10.4.0.0/16
-    # neighbor 169.254.10.1 remote-as 65000
-    # neighbor 169.254.11.1 remote-as 65000
-    # end
-    # wr
+    sudo systemctl start bgpd
+    sudo vtysh
+    conf t
+    no router bgp 7675
+    router bgp 65001
+    network 10.4.0.0/16
+    neighbor 169.254.10.1 remote-as 65000
+    neighbor 169.254.11.1 remote-as 65000
+    end
+    wr
+    ```
+    ```
     Building Configuration...
     Configuration saved to /etc/quagga/zebra.conf
     Configuration saved to /etc/quagga/bgpd.conf
@@ -139,7 +147,9 @@ In a real production environment we would setup a second router for redundancy a
 1.  Lets make sure we are seeing the routes on the Quagga router. first we can look at what BGP is seeing: **show ip bgp summary**. The most important thing to see is the Prefixes received. If this is in Active or Idle (likely if neighbor statement is wrong: IP address, AS number) there is a configuration issue. What we want to see is a number. In fact if everything is setup correctly we should see 4 for each neighbor.
 
     ```
-    # show ip bgp summary
+    show ip bgp summary
+    ```
+    ```
     BGP router identifier 10.4.3.247, local AS number 65001
     RIB entries 9, using 1008 bytes of memory
     Peers 2, using 9120 bytes of memory
@@ -154,7 +164,9 @@ In a real production environment we would setup a second router for redundancy a
 1.  We can also see what those routes are and how many paths we have with the **show ip route** command.
 
     ```
-    # show ip route
+    show ip route
+    ```
+    ```
     Codes: K - kernel route, C - connected, S - static, R - RIP,
            O - OSPF, I - IS-IS, B - BGP, A - Babel,
            > - selected route, * - FIB route
@@ -175,17 +187,19 @@ In a real production environment we would setup a second router for redundancy a
     Back in config mode we will set maximum-paths to 8 in our BGP router:
 
     ```
-    # conf t
-    # router bgp 65001
-    # maximum-paths  8
-    # end
-    # wr
+    conf t
+    router bgp 65001
+    maximum-paths  8
+    end
+    wr
     ```
 
     Now, run **show  ip route** command again. See, both the tunnels are showing up!
 
     ```
-    # show  ip route
+    show  ip route
+    ```
+    ```
     Codes: K - kernel route, C - connected, S - static, R - RIP,
            O - OSPF, I - IS-IS, B - BGP, A - Babel,
            > - selected route, * - FIB route
