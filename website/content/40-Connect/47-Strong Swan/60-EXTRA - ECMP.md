@@ -47,14 +47,15 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 
 1.  Take a look at each of the route tables and notice the tab **Routes**. You can see the routes that are propagated, as well as a static route table that was created for you by the CloudFormation template. That's the default route (0.0.0.0/0) that will direct traffic destined for the internet to the **Datacenter Services VPC** and ultimately through the NAT Gateway in that VPC. _note: there is also a route table with no name. This is the default route table. In this lab we do not intend to use the default route table_.
 
-1.  Back on the Cloud9 browser tab, using the two VPN tunnel endpoint address generated from the step above, ssh to the Strong Swan and Quagga Box to edit the VPN configuration file:
-    Lets add the additional tunnels in the Strong Swan configuration file. Example from Site-to-Site VPN
+1.  Back on the Cloud9 browser tab, using the two VPN tunnel endpoint address generated from the step above (example from Site-to-Site VPN)
+
     ![VPN tunnel Addresses](/images/vpn-tunneladdresses.png)
+    
+    SSH to the Strong Swan and Quagga Box if not already.  The SSH command can be found under the **Exports** tab of the **CloudFormation** template.  Edit the VPN configuration file ipsec.conf.
     ```
-    ssh -i ~/.ssh/StrongSwan.pem ec2-user@10.4.3.247
     sudo nano /etc/strongswan/ipsec.conf
     ```
-    This is a sample configuration file with the updated place holders. dc2aws1 its the tunnel with CIDR 169.254.10.0/30 and dc2aws2 its the tunnel with CIDR 169.254.11.0/30, double check the public IP Address for each tunnel and leftid must be the EIP assigned to the StrongSwan EC2 instance.
+    To configure the IP Sec tunnel, you need to replace the configuration file place holders.  This is a sample configuration file with the updated place holders. **dc2aws3** is the tunnel with CIDR 169.254.12.0/30 and **dc2aws4** is the tunnel with CIDR 169.254.13.0/30.  The public IP Address for each tunnel and **leftid** must be the EIP assigned to the StrongSwan EC2 instance.  The **right** and **rightid** values for each must be the corresponding **Outside IP Address** of the VPN Connection.
     ```
     conn %default
       leftauth=psk
@@ -115,9 +116,13 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
     _note: AWS generates starter templates to assist with the configuration for the on-prem router. For your real world deployments, you can get a starter template from the console for various devices (Cisco, Juniper, Palo Alto, F5, Checkpoint, etc). Word of Caution is to look closely at the routing policy in the BGP section. you may not want to send a default route out. You likely also want to consider using a route filter to prevent certain routes from being propagated to you._
 
 1.  Re start the tunnel and check its status with the following commands. _Note: Strong Swan only will provide the IP Sec tunnels._
+    Command:
     ```
     $ sudo strongswan restart
     $ sudo strongswan status
+    ```
+    Command Output:
+    ```
     Security Associations (4 up, 0 connecting):
          dc2aws4[4]: ESTABLISHED 8 seconds ago, 10.4.3.247[54.204.203.49]...54.145.177.84[54.145.177.84]
          dc2aws4{3}:  INSTALLED, TUNNEL, reqid 2, ESP in UDP SPIs: c8ea20a2_i f09118d2_o
@@ -135,13 +140,16 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 
 1.  Now enter Quagga configuration terminal and add the new neighbours.
     ```
-    $ sudo vtysh
-    # conf t
-    # router bgp 65001
-    # neighbor 169.254.12.1 remote-as 65000
-    # neighbor 169.254.13.1 remote-as 65000
-    # end
-    # wr
+    sudo vtysh
+    conf t
+    router bgp 65001
+    neighbor 169.254.12.1 remote-as 65000
+    neighbor 169.254.13.1 remote-as 65000
+    end
+    wr
+    ```
+    Command Output:
+    ```
     Building Configuration...
     Configuration saved to /etc/quagga/zebra.conf
     Configuration saved to /etc/quagga/bgpd.conf
@@ -152,6 +160,9 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 
     ```
     # show  ip route
+    ```
+    Command Output:
+    ```
     Codes: K - kernel route, C - connected, S - static, R - RIP,
            O - OSPF, I - IS-IS, B - BGP, A - Babel,
            > - selected route, * - FIB route
