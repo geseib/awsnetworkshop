@@ -109,7 +109,7 @@ In a real production environment we would setup a second router for redundancy a
     ```
     sudo strongswan start
     ```
-    Command Output"
+    Command Output:
     ```
     Starting strongSwan 5.7.2 IPsec [starter]...
     ```
@@ -141,6 +141,7 @@ In a real production environment we would setup a second router for redundancy a
     end
     wr
     ```
+    Command Output:
     ```
     Building Configuration...
     Configuration saved to /etc/quagga/zebra.conf
@@ -153,6 +154,7 @@ In a real production environment we would setup a second router for redundancy a
     ```
     show ip bgp summary
     ```
+    Command Output:
     ```
     BGP router identifier 10.4.3.247, local AS number 65001
     RIB entries 9, using 1008 bytes of memory
@@ -170,6 +172,7 @@ In a real production environment we would setup a second router for redundancy a
     ```
     show ip route
     ```
+    Command Ouptut:
     ```
     Codes: K - kernel route, C - connected, S - static, R - RIP,
            O - OSPF, I - IS-IS, B - BGP, A - Babel,
@@ -203,6 +206,7 @@ In a real production environment we would setup a second router for redundancy a
     ```
     show  ip route
     ```
+    Command Output:
     ```
     Codes: K - kernel route, C - connected, S - static, R - RIP,
            O - OSPF, I - IS-IS, B - BGP, A - Babel,
