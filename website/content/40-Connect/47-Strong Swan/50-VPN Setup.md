@@ -105,15 +105,19 @@ In a real production environment we would setup a second router for redundancy a
     _note: AWS generates starter templates to assist with the configuration for the on-prem router. For your real world deployments, you can get a starter template from the console for various devices (Cisco, Juniper, Palo Alto, F5, Checkpoint, etc). Word of Caution is to look closely at the routing policy in the BGP section. you may not want to send a default route out. You likely also want to consider using a route filter to prevent certain routes from being propagated to you._
 
 1.  Start the tunnel and check its status with the following commands. _Note: Strong Swan only will provide the IP Sec tunnels._
+    Start Command:
     ```
     sudo strongswan start
     ```
+    Command Output"
     ```
     Starting strongSwan 5.7.2 IPsec [starter]...
     ```
+    Check Status Command:
     ```
     sudo strongswan status
     ```
+    Command Output:
     ```
     Security Associations (2 up, 0 connecting):
          dc2aws2[2]: ESTABLISHED 46 seconds ago, 10.4.3.247[54.204.203.49]...34.198.46.228[34.198.46.228]
