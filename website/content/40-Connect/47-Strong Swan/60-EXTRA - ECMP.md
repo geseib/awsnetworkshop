@@ -152,26 +152,33 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 
 1.  Now, run **show  ip route** command again. You should see something like this, notice that 4 tunnels are up!
 
-    ```
-    # show  ip route
-    Codes: K - kernel route, C - connected, S - static, R - RIP,
-           O - OSPF, I - IS-IS, B - BGP, A - Babel,
-           > - selected route, * - FIB route
-    
-    K>* 0.0.0.0/0 via 10.4.0.1, eth0
-    B>* 10.0.0.0/16 [20/100] via 169.254.10.1, vti1, 00:01:01
-      *                      via 169.254.13.1, vti4, 00:01:01
-    C>* 10.4.0.0/22 is directly connected, eth0
-    B>* 10.8.0.0/16 [20/100] via 169.254.10.1, vti1, 00:01:01
-      *                      via 169.254.13.1, vti4, 00:01:01
-    B>* 10.16.0.0/16 [20/100] via 169.254.10.1, vti1, 00:01:01
-      *                       via 169.254.13.1, vti4, 00:01:01
-    B>* 10.17.0.0/16 [20/100] via 169.254.10.1, vti1, 00:01:01
-      *                       via 169.254.13.1, vti4, 00:01:01
-    C>* 127.0.0.0/8 is directly connected, lo
-    C>* 169.254.10.0/30 is directly connected, vti1
-    C>* 169.254.11.0/30 is directly connected, vti2
-    C>* 169.254.12.0/30 is directly connected, vti3
-    C>* 169.254.13.0/30 is directly connected, vti4
-    K>* 169.254.169.254/32 is directly connected, eth0
-    ```
+```
+Codes: K - kernel route, C - connected, S - static, R - RIP,
+       O - OSPF, I - IS-IS, B - BGP, A - Babel,
+       > - selected route, * - FIB route
+
+K>* 0.0.0.0/0 via 10.4.0.1, eth0
+B>* 10.0.0.0/16 [20/100] via 169.254.10.1, vti1, 00:00:06
+  *                      via 169.254.11.1, vti2, 00:00:06
+  *                      via 169.254.12.1, vti3, 00:00:06
+  *                      via 169.254.13.1, vti4, 00:00:06
+C>* 10.4.0.0/22 is directly connected, eth0
+B>* 10.8.0.0/16 [20/100] via 169.254.10.1, vti1, 00:00:06
+  *                      via 169.254.11.1, vti2, 00:00:06
+  *                      via 169.254.12.1, vti3, 00:00:06
+  *                      via 169.254.13.1, vti4, 00:00:06
+B>* 10.16.0.0/16 [20/100] via 169.254.10.1, vti1, 00:00:06
+  *                       via 169.254.11.1, vti2, 00:00:06
+  *                       via 169.254.12.1, vti3, 00:00:06
+  *                       via 169.254.13.1, vti4, 00:00:06
+B>* 10.17.0.0/16 [20/100] via 169.254.10.1, vti1, 00:00:06
+  *                       via 169.254.11.1, vti2, 00:00:06
+  *                       via 169.254.12.1, vti3, 00:00:06
+  *                       via 169.254.13.1, vti4, 00:00:06
+C>* 127.0.0.0/8 is directly connected, lo
+C>* 169.254.10.0/30 is directly connected, vti1
+C>* 169.254.11.0/30 is directly connected, vti2
+C>* 169.254.12.0/30 is directly connected, vti3
+C>* 169.254.13.0/30 is directly connected, vti4
+K>* 169.254.169.254/32 is directly connected, eth0
+```
