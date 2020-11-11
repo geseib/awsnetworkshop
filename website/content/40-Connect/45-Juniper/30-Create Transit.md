@@ -7,7 +7,7 @@ weight = 30
 ## Deploy Transit Gateway and Datacenter Router
 
 We now are ready to start our connectivity and routing policy.
-Run CloudFormation template 2.tgw-csr.yaml to deploy the Transit Gateway, route Tables, and the Datacenter Router (Cisco CSR).
+Run CloudFormation template 2.tgw-csr.yaml to deploy the Transit Gateway, route Tables, and the Datacenter Router (Juniper SRX).
 
 1. Click on the CloudFormation Launch link below that corresponds to the AWS Region in which you deploy the first stack.
 
