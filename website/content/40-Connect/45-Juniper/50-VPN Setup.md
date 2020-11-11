@@ -45,6 +45,8 @@ In a real production environment we would setup a second router for redundancy a
 
 1.  While at the **Transit Gateway Route Tables**, take a look at the **Propagations** tab. These are the Resources that Dynamically inform the route table. An attachment can propagate to multiple route tables. For the Datacenter, we want to propagate to all of the route tables so the VPC associated with each route table can route back to the datacenter. Lets start with the **Green Route Table**. We can see all of the VPCs are propagating their CIDR to the route table. Since the **Datacenter Services VPC** is also associated with this route table, we need to propagate the VPN routes to the **Green Route Table**.
 
+1.  Click in **Create Propagation** on the field “chose attachment to propagate”, select the attachment of the VPN (previously named by you) and click in **Create propagation**.
+
 1.  Repeat the above step on the propagations tab for the **Red Route Table** and the **Blue Route Table**.
 
 1.  Take a look at each of the route tables and notice the tab **Routes**. You can see the routes that are propagated, as well as a static route table that was created for you by the CloudFormation template. That's the default route (0.0.0.0/0) that will direct traffic destined for the internet to the **Datacenter Services VPC** and ultimately through the NAT Gateway in that VPC. _note: there is also a route table with no name. This is the default route table. In this lab we do not intend to use the default route table_.
@@ -68,7 +70,6 @@ In a real production environment we would setup a second router for redundancy a
 1.  enter configuration mode, which will take you to a config prompt
 
     ```
-    root% cli
     root> configure
     Enter configuration commands, one per line.  End with CNTL/Z.
     (edit)
@@ -79,60 +80,94 @@ In a real production environment we would setup a second router for redundancy a
 
 1.  Once, the paste is finished, while you are still at the root# prompt, type **commit**, wait a few seconds, and then type **exit** and press enter.
 
-1.  Now lets look at the new interfaces: **sh int br**. You should see new interfaces: st0.1 and st0.2 and they both should show up. \*note: if they do not change from down to up after a minute, likely cause is the ip addresses were flipped in the createsrx script.
-    ![ssh key and ssh to SRX](/images/csr-showtunnel.png)
+1.  Now lets look at the new interfaces: **show interfaces brief st0**. You should see new interfaces: st0.1 and st0.2 and they both should show up. \*note: if they do not change from down to up after a minute, likely cause is the ip addresses were flipped in the createsrx script.
+
+```
+ec2-user> show interfaces brief st0 
+Physical interface: st0, Enabled, Physical link is Up
+  Type: Secure-Tunnel, Link-level type: Secure-Tunnel, MTU: 9192, Speed: Unspecified
+  Device flags   : Present Running
+  Interface flags: Point-To-Point
+
+  Logical interface st0.1 
+    Flags: Up Point-To-Point SNMP-Traps Encapsulation: Secure-Tunnel
+    Security: Zone: trust
+    Allowed host-inbound traffic : bgp
+    inet  169.254.10.2/30 
+
+  Logical interface st0.2 
+    Flags: Up Point-To-Point SNMP-Traps Encapsulation: Secure-Tunnel
+    Security: Zone: trust
+    Allowed host-inbound traffic : bgp
+    inet  169.254.11.2/30 
+```
 
 1.  Lets make sure we are seeing the routes on the Juniper SRX. first we can look at what BGP is seeing: **show bgp summary**. The most important thing to see is the Prefixes received. If this is in Active or Idle (likely if neighbor statement is wrong: IP address, AS number) there is a configuration issue. What we want to see is a number. In fact if everything is setup correctly we should see 4 for each neighbor.
 
-    ```
-    root> show bgp summary
-    Groups: 1 Peers: 2 Down peers: 0
-    Peer                     AS      InPkt     OutPkt    OutQ   Flaps Last Up/Dwn State|#Active/Received/Accepted/Damped...
-    169.254.10.1          65000        374        415       0       0     1:01:54 Establ
-    aws.inet.0: 4/4/4/0
-    169.254.11.1          65000        373        414       0       0     1:01:51 Establ
-    aws.inet.0: 0/4/4/0
-    ```
+```
+root> show bgp summary
+Groups: 1 Peers: 2 Down peers: 0
+Peer                     AS      InPkt     OutPkt    OutQ   Flaps Last Up/Dwn State|#Active/Received/Accepted/Damped...
+169.254.10.1          65000        374        415       0       0     1:01:54 Establ
+aws.inet.0: 4/4/4/0
+169.254.11.1          65000        373        414       0       0     1:01:51 Establ
+aws.inet.0: 0/4/4/0
+```
 
 1.  We can also see what those routes are and how many paths we have with the **show route table aws** command.
 
-        ```
-
-    root> show route table aws
+```
+ec2-user> show route table aws 
 
 aws.inet.0: 14 destinations, 18 routes (14 active, 0 holddown, 0 hidden)
++ = Active Route, - = Last Active, * = Both
 
-- = Active Route, - = Last Active, \* = Both
-
-  0.0.0.0/0 _[Static/5] 01:05:47 > to 10.4.0.1 via ge-0/0/1.0
-  10.0.0.0/16 _[BGP/170] 00:53:39, MED 100, localpref 100
-  AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-  [BGP/170] 00:53:35, MED 100, localpref 100
-  AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-  10.4.0.0/16 _[Static/5] 01:05:48 > to 10.4.8.1 via ge-0/0/0.0
-  10.4.0.0/22 _[Direct/0] 01:05:47 > via ge-0/0/1.0
-  10.4.0.12/32 _[Local/0] 01:05:47
-  Local via ge-0/0/1.0
-  10.4.8.0/21 _[Direct/0] 01:05:48 > via ge-0/0/0.0
-  10.4.8.11/32 _[Local/0] 01:05:48
-  Local via ge-0/0/0.0
-  10.8.0.0/16 _[BGP/170] 00:53:39, MED 100, localpref 100
-  AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-  [BGP/170] 00:53:35, MED 100, localpref 100
-  AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-  10.16.0.0/16 _[BGP/170] 00:53:39, MED 100, localpref 100
-  AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-  [BGP/170] 00:53:35, MED 100, localpref 100
-  AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-  10.17.0.0/16 _[BGP/170] 00:53:39, MED 100, localpref 100
-  AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-  [BGP/170] 00:53:35, MED 100, localpref 100
-  AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-  <output omitted>
-
-  ```
-
-  ```
+0.0.0.0/0          *[Static/5] 00:01:42
+                    >  to 10.4.0.1 via ge-0/0/1.0
+10.0.0.0/16        *[BGP/170] 00:01:37, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.11.1 via st0.2
+                    [BGP/170] 00:01:29, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+10.4.0.0/16        *[Static/5] 00:01:42
+                    >  to 10.4.8.1 via ge-0/0/0.0
+10.4.0.0/22        *[Direct/0] 00:01:42
+                    >  via ge-0/0/1.0
+10.4.0.12/32       *[Local/0] 00:01:42
+                       Local via ge-0/0/1.0
+10.4.8.0/21        *[Direct/0] 00:01:42
+                    >  via ge-0/0/0.0
+10.4.8.11/32       *[Local/0] 00:01:42
+                       Local via ge-0/0/0.0
+10.8.0.0/16        *[BGP/170] 00:01:37, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.11.1 via st0.2
+                    [BGP/170] 00:01:29, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+10.16.0.0/16       *[BGP/170] 00:01:37, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.11.1 via st0.2
+                    [BGP/170] 00:01:29, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+10.17.0.0/16       *[BGP/170] 00:01:37, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.11.1 via st0.2
+                    [BGP/170] 00:01:29, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+169.254.10.0/30    *[Direct/0] 00:01:54
+                    >  via st0.1
+169.254.10.2/32    *[Local/0] 00:01:54
+                       Local via st0.1
+169.254.11.0/30    *[Direct/0] 00:01:54
+                    >  via st0.2
+169.254.11.2/32    *[Local/0] 00:01:54
+                       Local via st0.2
+...
+```
 
 1.  Notice that there is only one next-hop address for each of the VPCs CIDRs. We can fix this by allow Equal Cost Multipathing (ECMP).
     Back in config mode we will set maximum-paths to 8 in our BGP router:
@@ -143,48 +178,62 @@ aws.inet.0: 14 destinations, 18 routes (14 active, 0 holddown, 0 hidden)
 
     Now, run **sh route table aws** command again. See, both the tunnels are showing up!
 
-    ```
-    + = Active Route, - = Last Active, * = Both
+```
+ec2-user> show route table aws    
 
-    0.0.0.0/0 _[Static/5] 01:25:10 > to 10.4.0.1 via ge-0/0/1.0
-    10.0.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-    to 169.254.11.1 via st0.2
-    [BGP/170] 01:12:58, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-    10.4.0.0/16 _[Static/5] 01:25:11 > to 10.4.8.1 via ge-0/0/0.0
-    10.4.0.0/22 _[Direct/0] 01:25:10 > via ge-0/0/1.0
-    10.4.0.12/32 _[Local/0] 01:25:10
-    Local via ge-0/0/1.0
-    10.4.8.0/21 _[Direct/0] 01:25:11 > via ge-0/0/0.0
-    10.4.8.11/32 _[Local/0] 01:25:11
-    Local via ge-0/0/0.0
-    10.8.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-    to 169.254.11.1 via st0.2
-    [BGP/170] 01:12:58, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-    10.16.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-    to 169.254.11.1 via st0.2
-    [BGP/170] 01:12:58, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-    10.17.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-    to 169.254.11.1 via st0.2
-    [BGP/170] 01:12:58, MED 100, localpref 100
-    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-    169.254.10.0/30 _[Direct/0] 01:25:10 > via st0.1
-    169.254.10.2/32 _[Local/0] 01:25:10
-    Local via st0.1
-    169.254.11.0/30 _[Direct/0] 01:25:10 > via st0.2
-    169.254.11.2/32 _[Local/0] 01:25:10
-    Local via st0.2
+aws.inet.0: 14 destinations, 18 routes (14 active, 0 holddown, 0 hidden)
++ = Active Route, - = Last Active, * = Both
 
-    ```
+0.0.0.0/0          *[Static/5] 00:04:20
+                    >  to 10.4.0.1 via ge-0/0/1.0
+10.0.0.0/16        *[BGP/170] 00:00:05, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                       to 169.254.10.1 via st0.1
+                    >  to 169.254.11.1 via st0.2
+                    [BGP/170] 00:04:07, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+10.4.0.0/16        *[Static/5] 00:04:20
+                    >  to 10.4.8.1 via ge-0/0/0.0
+10.4.0.0/22        *[Direct/0] 00:04:20
+                    >  via ge-0/0/1.0
+10.4.0.12/32       *[Local/0] 00:04:20
+                       Local via ge-0/0/1.0
+10.4.8.0/21        *[Direct/0] 00:04:20
+                    >  via ge-0/0/0.0
+10.4.8.11/32       *[Local/0] 00:04:20
+                       Local via ge-0/0/0.0
+10.8.0.0/16        *[BGP/170] 00:00:05, MED 100, localpref 100, from 169.254.11.1
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+                       to 169.254.11.1 via st0.2
+                    [BGP/170] 00:04:07, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+10.16.0.0/16       *[BGP/170] 00:00:05, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                       to 169.254.10.1 via st0.1
+                    >  to 169.254.11.1 via st0.2
+                    [BGP/170] 00:04:07, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+10.17.0.0/16       *[BGP/170] 00:00:05, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                       to 169.254.10.1 via st0.1
+                    >  to 169.254.11.1 via st0.2
+                    [BGP/170] 00:04:07, MED 100, localpref 100
+                      AS path: 65000 I, validation-state: unverified
+                    >  to 169.254.10.1 via st0.1
+169.254.10.0/30    *[Direct/0] 00:04:32
+                    >  via st0.1
+169.254.10.2/32    *[Local/0] 00:04:32
+                       Local via st0.1
+169.254.11.0/30    *[Direct/0] 00:04:32
+                    >  via st0.2
+169.254.11.2/32    *[Local/0] 00:04:32
+                       Local via st0.2
+...
+```
 
 1.  Just to verify where those routes are coming from, we can take a look at the **Green Route Table**. _note: remember, it's under the **VPC** service and **Transit Gateway Route Tables** at the bottom of the left menu._ There should be **5** routes listed. Any ideas why only **4** show up on the SRX?
 
-```
-
-```

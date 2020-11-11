@@ -45,7 +45,7 @@ In a real production environment we would setup a second router for redundancy a
 
 1.  While at the **Transit Gateway Route Tables**, take a look at the **Propagations** tab. These are the Resources that Dynamically inform the route table. An attachment can propagate to multiple route tables. For the Datacenter, we want to propagate to all of the route tables so the VPC associated with each route table can route back to the datacenter. Lets start with the **Green Route Table**. We can see all of the VPCs are propagating their CIDR to the route table. Since the **Datacenter Services VPC** is also associated with this route table, we need to propagate the VPN routes to the **Green Route Table**.
 
-1. Click in **Create Propagation** on the field "chose attachment to propagate" select the attachment with "Name Tag" NP3Attac and click in **create propagation**.
+1.  Click in **Create Propagation** on the field “chose attachment to propagate”, select the attachment of the VPN (previously named by you) and click in **Create propagation**.
 
 1.  Repeat the above step on the propagations tab for the **Red Route Table** and the **Blue Route Table**.
 
@@ -127,7 +127,7 @@ In a real production environment we would setup a second router for redundancy a
     ```
 
 1.  Notice that there is only one next-hop address for each of the VPCs CIDRs. We can fix this by allow Equal Cost Multipathing (ECMP).
-    Back in config mode we will set maximum-paths to 8 in our BGP router:
+    Back in config mode (**config t**) we will set maximum-paths to 8 in our BGP router:
 
     ```ip-10-4-0-17# config t
       router bgp 65001

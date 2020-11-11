@@ -45,7 +45,7 @@ In a real production environment we would setup a second router for redundancy a
 
 1.  While at the **Transit Gateway Route Tables**, take a look at the **Propagations** tab. These are the Resources that Dynamically inform the route table. An attachment can propagate to multiple route tables. For the Datacenter, we want to propagate to all of the route tables so the VPC associated with each route table can route back to the datacenter. Lets start with the **Green Route Table**. We can see all of the VPCs are propagating their CIDR to the route table. Since the **Datacenter Services VPC** is also associated with this route table, we need to propagate the VPN routes to the **Green Route Table**.
 
-1.  Click in **Create Propagation** on the field "chose attachment to propagate" select the attachment of the VPN (previously pamed by you) and click in **create propagation**.
+1.  Click in **Create Propagation** on the field “chose attachment to propagate”, select the attachment of the VPN (previously named by you) and click in **Create propagation**.
 
 1.  Repeat the above step on the propagations tab for the **Red Route Table** and the **Blue Route Table**.
 
@@ -227,5 +227,6 @@ In a real production environment we would setup a second router for redundancy a
     C>* 169.254.11.0/30 is directly connected, vti2
     K>* 169.254.169.254/32 is directly connected, eth0
     ```
+
 
 1.  Just to verify where those routes are coming from, we can take a look at the **Green Route Table**. _note: remember, it's under the **VPC** service and **Transit Gateway Route Tables** at the bottom of the left menu._ There should be **5** routes listed. Any ideas why only **4** show up on the Strong Swan?

@@ -786,6 +786,36 @@ Resources:
       TransitGatewayAttachmentId: !Ref AttachDCS1
       TransitGatewayRouteTableId: !Ref RouteTableBlue
 
+  DCS1PublicInternalRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachDCS1
+    Properties:
+      DestinationCidrBlock: 10.0.0.0/8
+      TransitGatewayId: !Ref TransitGateway
+      RouteTableId:
+        Fn::ImportValue:
+          !Sub "DCS1-${ParentStack}-PublicRouteTable"
+
+  NP2PrivateDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachNP2
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: !Ref TransitGateway
+      RouteTableId:
+        Fn::ImportValue:
+          !Sub "NP2-${ParentStack}-PrivateRouteTable"
+ 
+  P1PrivateDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachP1
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: !Ref TransitGateway
+      RouteTableId:
+        Fn::ImportValue:
+          !Sub "P1-${ParentStack}-PrivateRouteTable"
+          
 Outputs:
   # Datacenter 1 Outputs
   CSRSSH:

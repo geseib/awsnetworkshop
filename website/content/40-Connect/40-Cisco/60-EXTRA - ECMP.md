@@ -43,6 +43,8 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 
 1.  While at the **Transit Gateway Route Tables**, take a look at the **Propagations** tab. These are the Resources that Dynamically inform the route table. An attachment can propagate to multiple route tables. For the Datacenter, we want to propagate to all of the route tables so the VPC associated with each route table can route back to the datacenter. Lets start with the **Green Route Table**. We can see all of the VPCs are propagating their CIDR to the route table. Since the **Datacenter Services VPC** is also associated with this route table, we need to propagate this new second set of VPN routes to the **Green Route Table**.
 
+1.  Click in **Create Propagation**on the field “chose attachment to propagate”, select the attachment of the VPN (previously named by you) and click in **Create propagation**.
+
 1.  Repeat the above step on the propagations tab for the **Red Route Table** and the **Blue Route Table** so VPCs associated with these route tables also get four paths to the datacenter.
 
 1.  Take a look at each of the route tables and notice the tab **Routes**. You can see the routes that are propagated, as well as a static route table that was created for you by the CloudFormation template. That's the default route (0.0.0.0/0) that will direct traffic destined for the internet to the **Datacenter Services VPC** and ultimately through the NAT Gateway in that VPC. _note: there is also a route table with no name. This is the default route table. In this lab we do not intend to use the default route table_.
