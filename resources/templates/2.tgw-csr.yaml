@@ -230,10 +230,6 @@ Resources:
       SecurityGroupIngress:
         - IpProtocol: -1
           CidrIp: 10.4.0.0/16
-        - IpProtocol: tcp
-          FromPort: "22"
-          ToPort: "22"
-          CidrIp: 10.4.0.0/16
 
   CSRENI:
     Condition: CreateCiscoCSR
@@ -375,14 +371,8 @@ Resources:
       VpcId:
         Fn::ImportValue: !Sub "DC1-${ParentStack}-VPC"
       SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: "22"
-          ToPort: "22"
+        - IpProtocol: -1
           CidrIp: 10.4.0.0/16
-        - IpProtocol: icmp
-          FromPort: "-1"
-          ToPort: "-1"
-          CidrIp: 10.0.0.0/8
       SecurityGroupEgress:
         - IpProtocol: "-1"
           FromPort: "0"
@@ -409,14 +399,8 @@ Resources:
       VpcId:
         Fn::ImportValue: !Sub "DC1-${ParentStack}-VPC"
       SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: "22"
-          ToPort: "22"
+        - IpProtocol: -1
           CidrIp: 10.4.0.0/16
-        - IpProtocol: icmp
-          FromPort: "-1"
-          ToPort: "-1"
-          CidrIp: 10.0.0.0/8
       SecurityGroupEgress:
         - IpProtocol: "-1"
           FromPort: "0"
