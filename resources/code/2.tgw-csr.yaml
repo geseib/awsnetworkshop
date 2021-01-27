@@ -38,74 +38,73 @@ Conditions:
 Mappings:
   # AMI for Cisco CSR1kv and Juniper SRX
   RegionMap:
-    'eu-north-1':
-      CSRAMI: "ami-3a098244"
-      SRXAMI: "ami-05f0bf0004d897cd4"
-      SWANAMI: "ami-0b7a46b4bd694e8a6"
-    'ap-south-1':
-      CSRAMI: "ami-0588edd878b8b8542"
-      SRXAMI: "ami-03af9c5ca9f7dc439"
-      SWANAMI: "ami-0470e33cd681b2476"
-    'eu-west-3':
-      CSRAMI: "ami-07d7fa89add77fc88"
-      SRXAMI: "ami-001de4508040d47f3"
-      SWANAMI: "ami-00077e3fed5089981"
-    'eu-west-2':
-      CSRAMI: "ami-0232c6d101adf6f0e"
-      SRXAMI: "ami-03bad381feea144a7"
-      SWANAMI: "ami-01a6e31ac994bbc09"
-    'eu-west-1':
-      CSRAMI: "ami-061919bc753fac9f1"
-      SRXAMI: "ami-06bd440013b81fb62"
-      SWANAMI: "ami-06ce3edf0cff21f07"
-    'ap-northeast-3':
-      CSRAMI: "ami-000954ba2aee2ea2c"
-      SWANAMI: "ami-028238ef8d1df506f"
-    'ap-northeast-2':
-      CSRAMI: "ami-0bfd6b68306c37acd"
-      SRXAMI: "ami-02cdb6b1e05d0b892"
-      SWANAMI: "ami-01288945bd24ed49a"
-    'ap-northeast-1':
-      CSRAMI: "ami-0a32b4f1b6dbf76e2"
-      SRXAMI: "ami-0b6e00703ed66b38f"
-      SWANAMI: "ami-0f310fced6141e627"
-    'sa-east-1':
-      CSRAMI: "ami-04c9e7db483ef8f85"
-      SRXAMI: "ami-0db94fe1b7054c941"
-      SWANAMI: "ami-003449ffb2605a74c"
-    'ca-central-1':
-      CSRAMI: "ami-03406d8bb9a6eb082"
-      SRXAMI: "ami-0a98e40baef586cd9"
-      SWANAMI: "ami-054362537f5132ce2"
-    'ap-southeast-1':
-      CSRAMI: "ami-01f265b921ce8c8ad"
-      SRXAMI: "ami-0202abb09bbfff8e8"
-      SWANAMI: "ami-0ec225b5e01ccb706"
-    'ap-southeast-2':
-      CSRAMI: "ami-0613911a862330b2f"
-      SRXAMI: "ami-0130411dfd49760f1"
-      SWANAMI: "ami-0970010f37c4f9c8d"
-    'eu-central-1':
-      CSRAMI: "ami-0e5b92a928e8157de"
-      SRXAMI: "ami-04bc759966295c78d"
-      SWANAMI: "ami-076431be05aaf8080"
-    'us-east-1':
-      CSRAMI: "ami-0fc7a3d5400f4619d"
-      SRXAMI: "ami-016c15d19bd2cbf61"
-      SWANAMI: "ami-0323c3dd2da7fb37d"
-    'us-east-2':
-      CSRAMI: "ami-0fda690c9c2f5cbf9"
-      SRXAMI: "ami-0608e55bfecf32e4e"
-      SWANAMI: "ami-0f7919c33c90f5b58"
-    'us-west-1':
-      CSRAMI: "ami-0dba8e0dd8bf42ee8"
-      SRXAMI: "ami-0f7ec4e60b482365a"
-      SWANAMI: "ami-06fcc1f0bc2c8943f"
-    'us-west-2':
-      CSRAMI: "ami-0ea109acd52c4b94d"
-      SRXAMI: "ami-047df409d805388cd"
-      SWANAMI: "ami-0d6621c01e8c2de2c"
-
+    'eu-north-1': 
+        'CSRAMI': "ami-01ba12d895b5a38b0"
+        'SRXAMI': "ami-05f0bf0004d897cd4"
+        'SWANAMI': "ami-0b7a46b4bd694e8a6"
+    'ap-south-1': 
+        'CSRAMI': "ami-091d21d09823ec134"
+        'SRXAMI': "ami-03af9c5ca9f7dc439"
+        'SWANAMI': "ami-0470e33cd681b2476"
+    'eu-west-3': 
+        'CSRAMI': "ami-01b2e74381d614c9f"
+        'SRXAMI': "ami-001de4508040d47f3"
+        'SWANAMI': "ami-00077e3fed5089981"
+    'eu-west-2': 
+        'CSRAMI': "ami-05fecfb63c095734c"
+        'SRXAMI': "ami-03bad381feea144a7"
+        'SWANAMI': "ami-01a6e31ac994bbc09"
+    'eu-west-1': 
+        'CSRAMI': "ami-0be86973d568c44f9"
+        'SRXAMI': "ami-06bd440013b81fb62"
+        'SWANAMI': "ami-06ce3edf0cff21f07"
+    'ap-northeast-3': 
+        'CSRAMI': "ami-04606393d0137bd2d"
+        'SWANAMI': "ami-028238ef8d1df506f"
+    'ap-northeast-2': 
+        'CSRAMI': "ami-0c8205ed92456f139"
+        'SRXAMI': "ami-02cdb6b1e05d0b892"
+        'SWANAMI': "ami-01288945bd24ed49a"
+    'ap-northeast-1': 
+        'CSRAMI': "ami-073c200f81aa01c74"
+        'SRXAMI': "ami-0b6e00703ed66b38f"
+        'SWANAMI': "ami-0f310fced6141e627"
+    'sa-east-1': 
+        'CSRAMI': "ami-0aca8cef375484124"
+        'SRXAMI': "ami-0db94fe1b7054c941"
+        'SWANAMI': "ami-003449ffb2605a74c"
+    'ca-central-1': 
+        'CSRAMI': "ami-05cd01b176c1ed632"
+        'SRXAMI': "ami-0a98e40baef586cd9"
+        'SWANAMI': "ami-054362537f5132ce2"
+    'ap-southeast-1': 
+        'CSRAMI': "ami-057079fcc266a5fd2"
+        'SRXAMI': "ami-0202abb09bbfff8e8"
+        'SWANAMI': "ami-0ec225b5e01ccb706"
+    'ap-southeast-2': 
+        'CSRAMI': "ami-085ed82cdf4adab40"
+        'SRXAMI': "ami-0130411dfd49760f1"
+        'SWANAMI': "ami-0970010f37c4f9c8d"
+    'eu-central-1': 
+        'CSRAMI': "ami-0abb603bd69a2b763"
+        'SRXAMI': "ami-04bc759966295c78d"
+        'SWANAMI': "ami-076431be05aaf8080"
+    'us-east-1': 
+        'CSRAMI': "ami-06fb3765405ee3735"
+        'SRXAMI': "ami-016c15d19bd2cbf61"
+        'SWANAMI': "ami-0323c3dd2da7fb37d"
+    'us-east-2': 
+        'CSRAMI': "ami-0baf9674ec64b2b3c"
+        'SRXAMI': "ami-0608e55bfecf32e4e"
+        'SWANAMI': "ami-0f7919c33c90f5b58"
+    'us-west-1': 
+        'CSRAMI': "ami-084708bd4b3e2c014"
+        'SRXAMI': "ami-0f7ec4e60b482365a"
+        'SWANAMI': "ami-06fcc1f0bc2c8943f"
+    'us-west-2': 
+        'CSRAMI': "ami-0c8daf2aad72a2d17"
+        'SRXAMI': "ami-047df409d805388cd"
+        'SWANAMI': "ami-0d6621c01e8c2de2c"
 
 Resources:
   # Create Transit Gateway
